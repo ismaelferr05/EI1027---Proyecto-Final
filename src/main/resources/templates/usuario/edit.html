@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head><meta charset="UTF-8"><title>Editar Usuario OVI - SgOVI</title></head>
+<body>
+<h1>Editar usuario OVI</h1>
+<nav aria-label="Navegación"><a th:href="@{/usuarios/list}">Volver al listado</a></nav>
+<br>
+<form th:action="@{/usuarios/edit}" method="post" th:object="${usuario}">
+    <input type="hidden" th:field="*{idUsuario}">
+    <div><label for="nombre">Nombre</label><br><input type="text" id="nombre" th:field="*{nombre}" required></div>
+    <div><label for="apellidos">Apellidos</label><br><input type="text" id="apellidos" th:field="*{apellidos}" required></div>
+    <div><label for="direccion">Dirección</label><br><input type="text" id="direccion" th:field="*{direccion}" required></div>
+    <div><label for="provincia">Provincia</label><br><input type="text" id="provincia" th:field="*{provincia}" required></div>
+    <div><label for="ciudad">Ciudad</label><br><input type="text" id="ciudad" th:field="*{ciudad}" required></div>
+    <div><label for="edad">Edad</label><br><input type="number" id="edad" th:field="*{edad}" min="0" required></div>
+    <div><label for="genero">Género</label><br><input type="text" id="genero" th:field="*{genero}"></div>
+    <div><label for="email">Email</label><br><input type="email" id="email" th:field="*{email}" required></div>
+    <div><label for="contrasenaHash">Contraseña (dejar vacío para no cambiar)</label><br><input type="password" id="contrasenaHash" th:field="*{contrasenaHash}"></div>
+    <div><label><input type="checkbox" th:field="*{consentimientoRgpd}"> Consentimiento RGPD</label></div>
+    <div><label for="fechaConsentimiento">Fecha consentimiento</label><br><input type="date" id="fechaConsentimiento" th:field="*{fechaConsentimiento}"></div>
+    <div><label for="estado">Estado</label><br>
+        <select id="estado" th:field="*{estado}">
+            <option value="pendent_aprovacio">Pendiente aprobación</option>
+            <option value="actiu">Activo</option>
+            <option value="inactiu">Inactivo</option>
+        </select></div>
+    <br>
+    <button type="submit">Guardar cambios</button>
+    <a th:href="@{/usuarios/list}">Cancelar</a>
+</form>
+</body>
+</html>
