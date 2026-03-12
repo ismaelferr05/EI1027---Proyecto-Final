@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mensajes - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Mensajes</h1>
+    <a href="/">Volver al inicio</a> | <a href="/messages/add">Agregar Mensaje</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Message ID</th>
+                <th>Fecha/Hora</th>
+                <th>Remitente</th>
+                <th>Destinatario</th>
+                <th>Contenido</th>
+                <th>ID Negociación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="message : ${messages}">
+                <td th:text="${message.idMessage}"></td>
+                <td th:text="${message.messageId}"></td>
+                <td th:text="${message.messageDateTime}"></td>
+                <td th:text="${message.sender}"></td>
+                <td th:text="${message.receiver}"></td>
+                <td th:text="${message.content}"></td>
+                <td th:text="${message.idNegotiation}"></td>
+                <td>
+                    <a th:href="@{/messages/edit/{id}(id=${message.idMessage})}">Editar</a>
+                    <a th:href="@{/messages/delete/{id}(id=${message.idMessage})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

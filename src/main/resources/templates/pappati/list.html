@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PAP PATI - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de PAP PATI</h1>
+    <a href="/">Volver al inicio</a> | <a href="/pap-patis/add">Agregar PAP PATI</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Teléfono</th>
+                <th>Provincia</th>
+                <th>Ciudad</th>
+                <th>Código Postal</th>
+                <th>Edad</th>
+                <th>Género</th>
+                <th>Formación</th>
+                <th>Experiencia</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="papPati : ${papPatis}">
+                <td th:text="${papPati.idPapPati}"></td>
+                <td th:text="${papPati.phone}"></td>
+                <td th:text="${papPati.province}"></td>
+                <td th:text="${papPati.town}"></td>
+                <td th:text="${papPati.pc}"></td>
+                <td th:text="${papPati.age}"></td>
+                <td th:text="${papPati.gender}"></td>
+                <td th:text="${papPati.training}"></td>
+                <td th:text="${papPati.experience}"></td>
+                <td>
+                    <a th:href="@{/pap-patis/edit/{id}(id=${papPati.idPapPati})}">Editar</a>
+                    <a th:href="@{/pap-patis/delete/{id}(id=${papPati.idPapPati})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

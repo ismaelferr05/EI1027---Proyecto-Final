@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Contrato - SgOVI</title>
+</head>
+<body>
+    <h1>Editar Contrato</h1>
+    <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
+
+    <form th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+        <input type="hidden" th:field="*{idContract}">
+        <p>
+            <label for="wage">Salario:</label>
+            <input type="text" id="wage" th:field="*{wage}" required>
+        </p>
+        <p>
+            <label for="startDate">Fecha Inicio:</label>
+            <input type="date" id="startDate" th:field="*{startDate}" required>
+        </p>
+        <p>
+            <label for="endDate">Fecha Fin:</label>
+            <input type="date" id="endDate" th:field="*{endDate}" required>
+        </p>
+        <p>
+            <label for="url">URL:</label>
+            <input type="url" id="url" th:field="*{url}">
+        </p>
+        <p>
+            <button type="submit">Actualizar</button>
+            <a href="/contracts/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

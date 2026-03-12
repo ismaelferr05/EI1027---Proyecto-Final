@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Mensaje - SgOVI</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Mensaje</h1>
+    <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
+
+    <form th:action="@{/messages/add}" th:object="${message}" method="post">
+        <p>
+            <label for="messageId">Message ID:</label>
+            <input type="text" id="messageId" th:field="*{messageId}" required>
+        </p>
+        <p>
+            <label for="messageDateTime">Fecha/Hora:</label>
+            <input type="datetime-local" id="messageDateTime" th:field="*{messageDateTime}" required>
+        </p>
+        <p>
+            <label for="sender">Remitente:</label>
+            <input type="text" id="sender" th:field="*{sender}" required>
+        </p>
+        <p>
+            <label for="receiver">Destinatario:</label>
+            <input type="text" id="receiver" th:field="*{receiver}" required>
+        </p>
+        <p>
+            <label for="content">Contenido:</label>
+            <textarea id="content" th:field="*{content}"></textarea>
+        </p>
+        <p>
+            <label for="idNegotiation">ID Negociación:</label>
+            <select id="idNegotiation" th:field="*{idNegotiation}" required>
+                <option value="">Selecciona una negociación</option>
+                <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Guardar</button>
+            <a href="/messages/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

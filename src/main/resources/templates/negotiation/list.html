@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Negociaciones - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Negociaciones</h1>
+    <a href="/">Volver al inicio</a> | <a href="/negotiations/add">Agregar Negociación</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Estado de Aprobación</th>
+                <th>ID Solicitud</th>
+                <th>ID PAP PATI</th>
+                <th>ID Contrato</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="negotiation : ${negotiations}">
+                <td th:text="${negotiation.idNegotiation}"></td>
+                <td th:text="${negotiation.stateOfApproval}"></td>
+                <td th:text="${negotiation.idRequest}"></td>
+                <td th:text="${negotiation.idPapPati}"></td>
+                <td th:text="${negotiation.idContract}"></td>
+                <td>
+                    <a th:href="@{/negotiations/edit/{id}(id=${negotiation.idNegotiation})}">Editar</a>
+                    <a th:href="@{/negotiations/delete/{id}(id=${negotiation.idNegotiation})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/messages/negotiation/{id}(id=${negotiation.idNegotiation})}">Mensajes</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

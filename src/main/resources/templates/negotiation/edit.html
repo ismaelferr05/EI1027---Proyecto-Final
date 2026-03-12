@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Negociación - SgOVI</title>
+</head>
+<body>
+    <h1>Editar Negociación</h1>
+    <a href="/">Volver al inicio</a> | <a href="/negotiations/list">Volver a Negociaciones</a>
+
+    <form th:action="@{/negotiations/edit}" th:object="${negotiation}" method="post">
+        <input type="hidden" th:field="*{idNegotiation}">
+        <p>
+            <label for="stateOfApproval">Estado de Aprobación:</label>
+            <input type="text" id="stateOfApproval" th:field="*{stateOfApproval}" required>
+        </p>
+        <p>
+            <label for="idRequest">ID Solicitud:</label>
+            <select id="idRequest" th:field="*{idRequest}" required>
+                <option value="">Selecciona una solicitud</option>
+                <option th:each="request : ${requests}" th:value="${request.idRequest}" th:text="${request.training}"></option>
+            </select>
+        </p>
+        <p>
+            <label for="idPapPati">ID PAP PATI:</label>
+            <select id="idPapPati" th:field="*{idPapPati}" required>
+                <option value="">Selecciona un PAP PATI</option>
+                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="${papPati.phone}"></option>
+            </select>
+        </p>
+        <p>
+            <label for="idContract">ID Contrato:</label>
+            <select id="idContract" th:field="*{idContract}">
+                <option value="">Selecciona un contrato (opcional)</option>
+                <option th:each="contract : ${contracts}" th:value="${contract.idContract}" th:text="${contract.wage}"></option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Actualizar</button>
+            <a href="/negotiations/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

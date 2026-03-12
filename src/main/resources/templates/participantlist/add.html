@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Participante - SgOVI</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Participante</h1>
+    <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
+
+    <form th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
+        <p>
+            <label for="attendance">Asistencia:</label>
+            <input type="text" id="attendance" th:field="*{attendance}" required>
+        </p>
+        <p>
+            <label for="attendanceUrl">URL de Asistencia:</label>
+            <input type="url" id="attendanceUrl" th:field="*{attendanceUrl}">
+        </p>
+        <p>
+            <label for="idActivity">ID Actividad:</label>
+            <select id="idActivity" th:field="*{idActivity}" required>
+                <option value="">Selecciona una actividad</option>
+                <option th:each="activity : ${activities}" th:value="${activity.idActivity}" th:text="${activity.name}"></option>
+            </select>
+        </p>
+        <p>
+            <label for="idOvilUser">ID Usuario OVI:</label>
+            <select id="idOvilUser" th:field="*{idOvilUser}">
+                <option value="">Selecciona un usuario OVI (opcional)</option>
+                <option th:each="ovilUser : ${ovilUsers}" th:value="${ovilUser.idOvilUser}" th:text="${ovilUser.name}"></option>
+            </select>
+        </p>
+        <p>
+            <label for="idPapPati">ID PAP PATI:</label>
+            <select id="idPapPati" th:field="*{idPapPati}">
+                <option value="">Selecciona un PAP PATI (opcional)</option>
+                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="${papPati.phone}"></option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Guardar</button>
+            <a href="/participant-lists/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

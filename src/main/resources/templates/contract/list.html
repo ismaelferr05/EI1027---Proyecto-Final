@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contratos - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Contratos</h1>
+    <a href="/">Volver al inicio</a> | <a href="/contracts/add">Agregar Contrato</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Salario</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>URL</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="contract : ${contracts}">
+                <td th:text="${contract.idContract}"></td>
+                <td th:text="${contract.wage}"></td>
+                <td th:text="${contract.startDate}"></td>
+                <td th:text="${contract.endDate}"></td>
+                <td><a th:href="${contract.url}" target="_blank">Ver</a></td>
+                <td>
+                    <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}">Editar</a>
+                    <a th:href="@{/contracts/delete/{id}(id=${contract.idContract})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

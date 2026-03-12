@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Actividad - SgOVI</title>
+</head>
+<body>
+    <h1>Editar Actividad</h1>
+    <a href="/">Volver al inicio</a> | <a href="/activities/list">Volver a Actividades</a>
+
+    <form th:action="@{/activities/edit}" th:object="${activity}" method="post">
+        <input type="hidden" th:field="*{idActivity}">
+        <p>
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+        </p>
+        <p>
+            <label for="date">Fecha:</label>
+            <input type="date" id="date" th:field="*{date}" required>
+        </p>
+        <p>
+            <label for="duration">Duración (horas):</label>
+            <input type="number" id="duration" th:field="*{duration}" required>
+        </p>
+        <p>
+            <label for="location">Localización:</label>
+            <input type="text" id="location" th:field="*{location}" required>
+        </p>
+        <p>
+            <label for="category">Categoría:</label>
+            <input type="text" id="category" th:field="*{category}" required>
+        </p>
+        <p>
+            <label for="description">Descripción:</label>
+            <textarea id="description" th:field="*{description}"></textarea>
+        </p>
+        <p>
+            <label for="idTrainer">ID Formador:</label>
+            <select id="idTrainer" th:field="*{idTrainer}" required>
+                <option value="">Selecciona un formador</option>
+                <option th:each="trainer : ${trainers}" th:value="${trainer.idTrainer}" th:text="${trainer.name}"></option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Actualizar</button>
+            <a href="/activities/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

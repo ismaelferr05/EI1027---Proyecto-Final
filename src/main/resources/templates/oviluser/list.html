@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios OVI - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Usuarios OVI</h1>
+    <a href="/">Volver al inicio</a> | <a href="/ovil-users/add">Agregar Usuario</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Provincia</th>
+                <th>Ciudad</th>
+                <th>Código Postal</th>
+                <th>Edad</th>
+                <th>Género</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ovilUser : ${ovilUsers}">
+                <td th:text="${ovilUser.idOvilUser}"></td>
+                <td th:text="${ovilUser.name}"></td>
+                <td th:text="${ovilUser.phone}"></td>
+                <td th:text="${ovilUser.province}"></td>
+                <td th:text="${ovilUser.town}"></td>
+                <td th:text="${ovilUser.pc}"></td>
+                <td th:text="${ovilUser.age}"></td>
+                <td th:text="${ovilUser.gender}"></td>
+                <td>
+                    <a th:href="@{/ovil-users/edit/{id}(id=${ovilUser.idOvilUser})}">Editar</a>
+                    <a th:href="@{/ovil-users/delete/{id}(id=${ovilUser.idOvilUser})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

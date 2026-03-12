@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listas de Participantes - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Listas de Participantes</h1>
+    <a href="/">Volver al inicio</a> | <a href="/participant-lists/add">Agregar Participante</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Asistencia</th>
+                <th>ID Actividad</th>
+                <th>ID Usuario OVI</th>
+                <th>ID PAP PATI</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="participantList : ${participantLists}">
+                <td th:text="${participantList.idParticipantList}"></td>
+                <td th:text="${participantList.attendance}"></td>
+                <td th:text="${participantList.idActivity}"></td>
+                <td th:text="${participantList.idOvilUser}"></td>
+                <td th:text="${participantList.idPapPati}"></td>
+                <td>
+                    <a th:href="@{/participant-lists/edit/{id}(id=${participantList.idParticipantList})}">Editar</a>
+                    <a th:href="@{/participant-lists/delete/{id}(id=${participantList.idParticipantList})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

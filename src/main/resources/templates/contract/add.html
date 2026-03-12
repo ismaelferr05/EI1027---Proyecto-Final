@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Contrato - SgOVI</title>
+</head>
+<body>
+    <h1>Agregar Nuevo Contrato</h1>
+    <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
+
+    <form th:action="@{/contracts/add}" th:object="${contract}" method="post">
+        <p>
+            <label for="wage">Salario:</label>
+            <input type="text" id="wage" th:field="*{wage}" required>
+        </p>
+        <p>
+            <label for="startDate">Fecha Inicio:</label>
+            <input type="date" id="startDate" th:field="*{startDate}" required>
+        </p>
+        <p>
+            <label for="endDate">Fecha Fin:</label>
+            <input type="date" id="endDate" th:field="*{endDate}" required>
+        </p>
+        <p>
+            <label for="url">URL:</label>
+            <input type="url" id="url" th:field="*{url}">
+        </p>
+        <p>
+            <button type="submit">Guardar</button>
+            <a href="/contracts/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

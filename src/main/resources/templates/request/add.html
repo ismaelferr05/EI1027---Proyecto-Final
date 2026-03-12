@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Solicitud - SgOVI</title>
+</head>
+<body>
+    <h1>Agregar Nueva Solicitud</h1>
+    <a href="/">Volver al inicio</a> | <a href="/requests/list">Volver a Solicitudes</a>
+
+    <form th:action="@{/requests/add}" th:object="${request}" method="post">
+        <p>
+            <label for="description">Descripción:</label>
+            <textarea id="description" th:field="*{description}" required></textarea>
+        </p>
+        <p>
+            <label for="training">Formación:</label>
+            <input type="text" id="training" th:field="*{training}" required>
+        </p>
+        <p>
+            <label for="startDate">Fecha Inicio:</label>
+            <input type="date" id="startDate" th:field="*{startDate}" required>
+        </p>
+        <p>
+            <label for="endDate">Fecha Fin:</label>
+            <input type="date" id="endDate" th:field="*{endDate}" required>
+        </p>
+        <p>
+            <label for="experience">Experiencia:</label>
+            <input type="text" id="experience" th:field="*{experience}">
+        </p>
+        <p>
+            <label for="experienceType">Tipo de Experiencia:</label>
+            <input type="text" id="experienceType" th:field="*{experienceType}">
+        </p>
+        <p>
+            <label for="idOvilUser">ID Usuario OVI:</label>
+            <select id="idOvilUser" th:field="*{idOvilUser}" required>
+                <option value="">Selecciona un usuario OVI</option>
+                <option th:each="ovilUser : ${ovilUsers}" th:value="${ovilUser.idOvilUser}" th:text="${ovilUser.name}"></option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Guardar</button>
+            <a href="/requests/list">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>
+

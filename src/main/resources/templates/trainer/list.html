@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formadores - SgOVI</title>
+</head>
+<body>
+    <h1>Listado de Formadores</h1>
+    <a href="/">Volver al inicio</a> | <a href="/trainers/add">Agregar Formador</a>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Ocupación</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="trainer : ${trainers}">
+                <td th:text="${trainer.idTrainer}"></td>
+                <td th:text="${trainer.name}"></td>
+                <td th:text="${trainer.occupation}"></td>
+                <td th:text="${trainer.lastName}"></td>
+                <td th:text="${trainer.email}"></td>
+                <td th:text="${trainer.phone}"></td>
+                <td th:text="${trainer.address}"></td>
+                <td>
+                    <a th:href="@{/trainers/edit/{id}(id=${trainer.idTrainer})}">Editar</a>
+                    <a th:href="@{/trainers/delete/{id}(id=${trainer.idTrainer})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
