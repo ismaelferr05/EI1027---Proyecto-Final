@@ -8,6 +8,7 @@ public class Contract {
     private LocalDate startDate;
     private LocalDate endDate;
     private String url;
+    private int negotiation_id;
 
     public Contract() {}
 
@@ -28,5 +29,13 @@ public class Contract {
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
+
+    public int getNegotiation_id() {
+        return negotiation_id;
+    }
+
+    public void setNegotiation_id(int negotiation_id) {
+        this.negotiation_id = negotiation_id;
+    }
 }
 

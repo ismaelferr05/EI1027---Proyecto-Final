@@ -12,29 +12,29 @@ public class TrainerDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Trainer trainer) {
-        String sql = "INSERT INTO trainer (name, occupation, last_name, email, phone, address) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Trainer (name, occupation, lastName, email, phone, address) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, trainer.getName(), trainer.getOccupation(), trainer.getLastName(),
                 trainer.getEmail(), trainer.getPhone(), trainer.getAddress());
     }
 
     public void update(Trainer trainer) {
-        String sql = "UPDATE trainer SET name=?, occupation=?, last_name=?, email=?, phone=?, address=? WHERE id_trainer=?";
+        String sql = "UPDATE Trainer SET name=?, occupation=?, lastName=?, email=?, phone=?, address=? WHERE trainer_id=?";
         jdbcTemplate.update(sql, trainer.getName(), trainer.getOccupation(), trainer.getLastName(),
                 trainer.getEmail(), trainer.getPhone(), trainer.getAddress(), trainer.getTrainer_id());
     }
 
     public void delete(int idTrainer) {
-        String sql = "DELETE FROM trainer WHERE id_trainer=?";
+        String sql = "DELETE FROM Trainer WHERE trainer_id=?";
         jdbcTemplate.update(sql, idTrainer);
     }
 
     public Trainer get(int idTrainer) {
-        String sql = "SELECT * FROM trainer WHERE id_trainer=?";
+        String sql = "SELECT * FROM Trainer WHERE trainer_id=?";
         return jdbcTemplate.queryForObject(sql, new TrainerRowMapper(), idTrainer);
     }
 
     public List<Trainer> getAll() {
-        String sql = "SELECT * FROM trainer";
+        String sql = "SELECT * FROM Trainer";
         return jdbcTemplate.query(sql, new TrainerRowMapper());
     }
 }

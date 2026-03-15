@@ -9,11 +9,12 @@ public class ContractRowMapper implements RowMapper<Contract> {
     @Override
     public Contract mapRow(ResultSet rs, int rowNum) throws SQLException {
         Contract contract = new Contract();
-        contract.setIdContract(rs.getInt("id_contract"));
+        contract.setIdContract(rs.getInt("contract_id"));
         contract.setWage(rs.getString("wage"));
-        contract.setStartDate(rs.getDate("start_date").toLocalDate());
-        contract.setEndDate(rs.getDate("end_date").toLocalDate());
+        contract.setStartDate(rs.getDate("startDate").toLocalDate());
+        contract.setEndDate(rs.getDate("endDate").toLocalDate());
         contract.setUrl(rs.getString("url"));
+        contract.setNegotiation_id(rs.getInt("negotiation_id"));
         return contract;
     }
 }

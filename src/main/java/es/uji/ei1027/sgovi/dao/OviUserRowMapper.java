@@ -9,7 +9,7 @@ public class OviUserRowMapper implements RowMapper<OviUser> {
     @Override
     public OviUser mapRow(ResultSet rs, int rowNum) throws SQLException {
         OviUser ovilUser = new OviUser();
-        ovilUser.setOviuser_id(rs.getInt("id_ovil_user"));
+        ovilUser.setOviuser_id(rs.getInt("oviuser_id"));
         ovilUser.setName(rs.getString("name"));
         ovilUser.setPhone(rs.getString("phone"));
         ovilUser.setPassword(rs.getString("password"));

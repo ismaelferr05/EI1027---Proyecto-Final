@@ -12,34 +12,34 @@ public class ParticipantListDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(ParticipantList participantList) {
-        String sql = "INSERT INTO participant_list (attendance, attendance_url, id_activity, id_ovil_user, id_pap_pati) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ParticipantList (attendance, attendanceUrl, activity_id, oviuser_id, pappati_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, participantList.getAttendance(), participantList.getAttendanceUrl(),
                 participantList.getActivity_id(), participantList.getOviuser_id(), participantList.getPapPati_id());
     }
 
     public void update(ParticipantList participantList) {
-        String sql = "UPDATE participant_list SET attendance=?, attendance_url=?, id_activity=?, id_ovil_user=?, id_pap_pati=? WHERE id_participant_list=?";
+        String sql = "UPDATE ParticipantList SET attendance=?, attendanceUrl=?, activity_id=?, oviuser_id=?, pappati_id=? WHERE participantList_id=?";
         jdbcTemplate.update(sql, participantList.getAttendance(), participantList.getAttendanceUrl(),
                 participantList.getActivity_id(), participantList.getOviuser_id(), participantList.getPapPati_id(), participantList.getIdParticipantList());
     }
 
     public void delete(int idParticipantList) {
-        String sql = "DELETE FROM participant_list WHERE id_participant_list=?";
+        String sql = "DELETE FROM ParticipantList WHERE participantList_id=?";
         jdbcTemplate.update(sql, idParticipantList);
     }
 
     public ParticipantList get(int idParticipantList) {
-        String sql = "SELECT * FROM participant_list WHERE id_participant_list=?";
+        String sql = "SELECT * FROM ParticipantList WHERE participantList_id=?";
         return jdbcTemplate.queryForObject(sql, new ParticipantListRowMapper(), idParticipantList);
     }
 
     public List<ParticipantList> getAll() {
-        String sql = "SELECT * FROM participant_list";
+        String sql = "SELECT * FROM ParticipantList";
         return jdbcTemplate.query(sql, new ParticipantListRowMapper());
     }
 
     public List<ParticipantList> getByActivity(int idActivity) {
-        String sql = "SELECT * FROM participant_list WHERE id_activity=?";
+        String sql = "SELECT * FROM ParticipantList WHERE activity_id=?";
         return jdbcTemplate.query(sql, new ParticipantListRowMapper(), idActivity);
     }
 }

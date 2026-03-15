@@ -9,14 +9,14 @@ public class RequestRowMapper implements RowMapper<Request> {
     @Override
     public Request mapRow(ResultSet rs, int rowNum) throws SQLException {
         Request request = new Request();
-        request.setIdRequest(rs.getInt("id_request"));
+        request.setIdRequest(rs.getInt("request_id"));
         request.setDescription(rs.getString("description"));
         request.setTraining(rs.getString("training"));
-        request.setStartDate(rs.getDate("start_date").toLocalDate());
-        request.setEndDate(rs.getDate("end_date").toLocalDate());
+        request.setStartDate(rs.getDate("startDate").toLocalDate());
+        request.setEndDate(rs.getDate("endDate").toLocalDate());
         request.setExperience(rs.getString("experience"));
-        request.setExperienceType(rs.getString("experience_type"));
-        request.setIdOvilUser(rs.getInt("id_ovil_user"));
+        request.setExperienceType(rs.getString("experienceType"));
+        request.setIdOvilUser(rs.getInt("oviuser_id"));
         return request;
     }
 }

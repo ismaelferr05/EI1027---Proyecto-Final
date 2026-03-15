@@ -5,7 +5,6 @@ public class Negotiation {
     private String stateOfApproval;
     private Integer idRequest;
     private Integer idPapPati;
-    private Integer idContract;
 
     public Negotiation() {}
 
@@ -21,7 +20,5 @@ public class Negotiation {
     public void setIdRequest(Integer idRequest) { this.idRequest = idRequest; }
     public Integer getIdPapPati() { return idPapPati; }
     public void setIdPapPati(Integer idPapPati) { this.idPapPati = idPapPati; }
-    public Integer getIdContract() { return idContract; }
-    public void setIdContract(Integer idContract) { this.idContract = idContract; }
 }
 

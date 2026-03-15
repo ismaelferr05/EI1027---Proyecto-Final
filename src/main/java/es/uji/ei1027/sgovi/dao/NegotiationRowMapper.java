@@ -9,11 +9,10 @@ public class NegotiationRowMapper implements RowMapper<Negotiation> {
     @Override
     public Negotiation mapRow(ResultSet rs, int rowNum) throws SQLException {
         Negotiation negotiation = new Negotiation();
-        negotiation.setIdNegotiation(rs.getInt("id_negotiation"));
-        negotiation.setStateOfApproval(rs.getString("state_of_approval"));
-        negotiation.setIdRequest(rs.getInt("id_request"));
-        negotiation.setIdPapPati(rs.getInt("id_pap_pati"));
-        negotiation.setIdContract(rs.getInt("id_contract"));
+        negotiation.setIdNegotiation(rs.getInt("negotiation_id"));
+        negotiation.setStateOfApproval(rs.getString("stateOfApproval"));
+        negotiation.setIdRequest(rs.getInt("request_id"));
+        negotiation.setIdPapPati(rs.getInt("pappati_id"));
         return negotiation;
     }
 }

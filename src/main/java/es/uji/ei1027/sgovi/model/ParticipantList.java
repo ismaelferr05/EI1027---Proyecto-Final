@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.model;
 
 public class ParticipantList {
-    private int idParticipantList;
+    private int participantList_id;
     private String attendance;
     private String attendanceUrl;
     private Integer activity_id;
@@ -15,8 +15,8 @@ public class ParticipantList {
         this.attendanceUrl = attendanceUrl;
     }
 
-    public int getIdParticipantList() { return idParticipantList; }
-    public void setIdParticipantList(int idParticipantList) { this.idParticipantList = idParticipantList; }
+    public int getIdParticipantList() { return participantList_id; }
+    public void setIdParticipantList(int idParticipantList) { this.participantList_id = idParticipantList; }
     public String getAttendance() { return attendance; }
     public void setAttendance(String attendance) { this.attendance = attendance; }
     public String getAttendanceUrl() { return attendanceUrl; }

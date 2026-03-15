@@ -13,34 +13,34 @@ public class ActivityDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Activity activity) {
-        String sql = "INSERT INTO activity (name, date, duration, location, category, description, id_trainer) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Activity (name, date, duration, location, category, description, trainer_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, activity.getName(), Date.valueOf(activity.getDate()), activity.getDuration(),
                 activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getTrainer_id());
     }
 
     public void update(Activity activity) {
-        String sql = "UPDATE activity SET name=?, date=?, duration=?, location=?, category=?, description=?, id_trainer=? WHERE id_activity=?";
+        String sql = "UPDATE Activity SET name=?, date=?, duration=?, location=?, category=?, description=?, trainer_id=? WHERE activity_id=?";
         jdbcTemplate.update(sql, activity.getName(), Date.valueOf(activity.getDate()), activity.getDuration(),
                 activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getTrainer_id(), activity.getActivity_id());
     }
 
     public void delete(int idActivity) {
-        String sql = "DELETE FROM activity WHERE id_activity=?";
+        String sql = "DELETE FROM Activity WHERE activity_id=?";
         jdbcTemplate.update(sql, idActivity);
     }
 
     public Activity get(int idActivity) {
-        String sql = "SELECT * FROM activity WHERE id_activity=?";
+        String sql = "SELECT * FROM Activity WHERE activity_id=?";
         return jdbcTemplate.queryForObject(sql, new ActivityRowMapper(), idActivity);
     }
 
     public List<Activity> getAll() {
-        String sql = "SELECT * FROM activity";
+        String sql = "SELECT * FROM Activity";
         return jdbcTemplate.query(sql, new ActivityRowMapper());
     }
 
     public List<Activity> getByTrainer(int idTrainer) {
-        String sql = "SELECT * FROM activity WHERE id_trainer=?";
+        String sql = "SELECT * FROM Activity WHERE trainer_id=?";
         return jdbcTemplate.query(sql, new ActivityRowMapper(), idTrainer);
     }
 }

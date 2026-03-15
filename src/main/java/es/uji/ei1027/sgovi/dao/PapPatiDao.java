@@ -12,31 +12,31 @@ public class PapPatiDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(PapPati papPati) {
-        String sql = "INSERT INTO pap_pati (phone, password, province, town, pc, age, gender, cv_url, training, experience, experience_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PapPati (phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
                 papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(),
                 papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType());
     }
 
     public void update(PapPati papPati) {
-        String sql = "UPDATE pap_pati SET phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cv_url=?, training=?, experience=?, experience_type=? WHERE id_pap_pati=?";
+        String sql = "UPDATE PapPati SET phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cvUrl=?, training=?, experience=?, experienceType=? WHERE pappati_id=?";
         jdbcTemplate.update(sql, papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
                 papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(),
                 papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType(), papPati.getPapPati_id());
     }
 
     public void delete(int idPapPati) {
-        String sql = "DELETE FROM pap_pati WHERE id_pap_pati=?";
+        String sql = "DELETE FROM PapPati WHERE pappati_id=?";
         jdbcTemplate.update(sql, idPapPati);
     }
 
     public PapPati get(int idPapPati) {
-        String sql = "SELECT * FROM pap_pati WHERE id_pap_pati=?";
+        String sql = "SELECT * FROM PapPati WHERE pappati_id=?";
         return jdbcTemplate.queryForObject(sql, new PapPatiRowMapper(), idPapPati);
     }
 
     public List<PapPati> getAll() {
-        String sql = "SELECT * FROM pap_pati";
+        String sql = "SELECT * FROM PapPati";
         return jdbcTemplate.query(sql, new PapPatiRowMapper());
     }
 }

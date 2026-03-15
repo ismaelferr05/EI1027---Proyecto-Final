@@ -3,14 +3,14 @@ package es.uji.ei1027.sgovi.model;
 import java.time.LocalDate;
 
 public class Request {
-    private int idRequest;
+    private int request_id;
     private String description;
     private String training;
     private LocalDate startDate;
     private LocalDate endDate;
     private String experience;
     private String experienceType;
-    private Integer idOvilUser;
+    private Integer oviUser_id;
 
     public Request() {}
 
@@ -23,8 +23,8 @@ public class Request {
         this.experienceType = experienceType;
     }
 
-    public int getIdRequest() { return idRequest; }
-    public void setIdRequest(int idRequest) { this.idRequest = idRequest; }
+    public int getIdRequest() { return request_id; }
+    public void setIdRequest(int idRequest) { this.request_id = idRequest; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     public String getTraining() { return training; }
@@ -37,7 +37,7 @@ public class Request {
     public void setExperience(String experience) { this.experience = experience; }
     public String getExperienceType() { return experienceType; }
     public void setExperienceType(String experienceType) { this.experienceType = experienceType; }
-    public Integer getIdOvilUser() { return idOvilUser; }
-    public void setIdOvilUser(Integer idOvilUser) { this.idOvilUser = idOvilUser; }
+    public Integer getIdOvilUser() { return oviUser_id; }
+    public void setIdOvilUser(Integer idOvilUser) { this.oviUser_id = idOvilUser; }
 }
 

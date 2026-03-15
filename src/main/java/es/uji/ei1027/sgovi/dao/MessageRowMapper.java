@@ -9,13 +9,11 @@ public class MessageRowMapper implements RowMapper<Message> {
     @Override
     public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
         Message message = new Message();
-        message.setIdMessage(rs.getInt("id_message"));
-        message.setMessageId(rs.getString("message_id"));
-        message.setMessageDateTime(rs.getTimestamp("message_date_time").toLocalDateTime());
+        message.setIdMessage(rs.getInt("messageId"));
+        message.setMessageDateTime(rs.getTimestamp("messageDateTime").toLocalDateTime());
         message.setSender(rs.getString("sender"));
         message.setReceiver(rs.getString("receiver"));
-        message.setContent(rs.getString("content"));
-        message.setIdNegotiation(rs.getInt("id_negotiation"));
+        message.setIdNegotiation(rs.getInt("negotiation_id"));
         return message;
     }
 }
