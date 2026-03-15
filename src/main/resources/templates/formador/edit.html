@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head><meta charset="UTF-8"><title>Editar Formador - SgOVI</title></head>
+<body>
+<h1>Editar formador</h1>
+<nav aria-label="Navegación"><a th:href="@{/formador/list}">Volver al listado</a></nav>
+<br>
+<form th:action="@{/formador/edit}" method="post" th:object="${formador}">
+    <input type="hidden" th:field="*{idFormador}">
+    <div>
+        <label for="nombre">Nombre</label><br>
+        <input type="text" id="nombre" th:field="*{nombre}" required>
+    </div>
+    <div>
+        <label for="apellidos">Apellidos</label><br>
+        <input type="text" id="apellidos" th:field="*{apellidos}" required>
+    </div>
+    <div>
+        <label for="ocupacion">Ocupación</label><br>
+        <input type="text" id="ocupacion" th:field="*{ocupacion}" required>
+    </div>
+    <div>
+        <label for="telefono">Teléfono</label><br>
+        <input type="text" id="telefono" th:field="*{telefono}" required>
+    </div>
+    <div>
+        <label for="direccion">Dirección (opcional)</label><br>
+        <input type="text" id="direccion" th:field="*{direccion}">
+    </div>
+    <div>
+        <label for="email">Email (opcional)</label><br>
+        <input type="email" id="email" th:field="*{email}">
+    </div>
+    <br>
+    <button type="submit">Guardar cambios</button>
+    <a th:href="@{/formador/list}">Cancelar</a>
+</form>
+</body>
+</html>

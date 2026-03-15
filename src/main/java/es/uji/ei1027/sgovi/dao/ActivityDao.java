@@ -35,13 +35,8 @@ public class ActivityDao {
     }
 
     public List<Activity> getAll() {
-        String sql = "SELECT * FROM activity";
+        String sql = "SELECT * FROM Activity";
         return jdbcTemplate.query(sql, new ActivityRowMapper());
-    }
-
-    public List<Activity> getByTrainer(int idTrainer) {
-        String sql = "SELECT * FROM activity WHERE id_trainer=?";
-        return jdbcTemplate.query(sql, new ActivityRowMapper(), idTrainer);
     }
 }
 

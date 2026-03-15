@@ -13,29 +13,29 @@ public class ContractDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Contract contract) {
-        String sql = "INSERT INTO contract (wage, start_date, end_date, url) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Contract (wage, startDate, endDate, url) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
                 Date.valueOf(contract.getEndDate()), contract.getUrl());
     }
 
     public void update(Contract contract) {
-        String sql = "UPDATE contract SET wage=?, start_date=?, end_date=?, url=? WHERE id_contract=?";
+        String sql = "UPDATE Contract SET wage=?, startDate=?, endDate=?, url=?, negotiation_id=? WHERE contract_id=?";
         jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
-                Date.valueOf(contract.getEndDate()), contract.getUrl(), contract.getIdContract());
+                Date.valueOf(contract.getEndDate()), contract.getUrl(), contract.getNegotiation_id(), contract.getIdContract());
     }
 
     public void delete(int idContract) {
-        String sql = "DELETE FROM contract WHERE id_contract=?";
+        String sql = "DELETE FROM Contract WHERE contract_id=?";
         jdbcTemplate.update(sql, idContract);
     }
 
     public Contract get(int idContract) {
-        String sql = "SELECT * FROM contract WHERE id_contract=?";
+        String sql = "SELECT * FROM Contract WHERE contract_id=?";
         return jdbcTemplate.queryForObject(sql, new ContractRowMapper(), idContract);
     }
 
     public List<Contract> getAll() {
-        String sql = "SELECT * FROM contract";
+        String sql = "SELECT * FROM Contract";
         return jdbcTemplate.query(sql, new ContractRowMapper());
     }
 }
