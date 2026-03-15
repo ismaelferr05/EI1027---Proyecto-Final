@@ -11,15 +11,6 @@ public class Trainer {
 
     public Trainer() {}
 
-    public Trainer(String name, String lastName, String occupation, String email, String phone, String address) {
-        this.name = name;
-        this.lastName = lastName;
-        this.occupation = occupation;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-    }
-
     public String getAddress() {
         return address;
     }

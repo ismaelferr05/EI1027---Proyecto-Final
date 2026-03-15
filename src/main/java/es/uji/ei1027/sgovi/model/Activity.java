@@ -14,15 +14,6 @@ public class Activity {
 
     public Activity() {}
 
-    public Activity(String description, String category, String location, int duration, LocalDate date, String name) {
-        this.description = description;
-        this.category = category;
-        this.location = location;
-        this.duration = duration;
-        this.date = date;
-        this.name = name;
-    }
-
     public int getActivity_id() {
         return activity_id;
     }
