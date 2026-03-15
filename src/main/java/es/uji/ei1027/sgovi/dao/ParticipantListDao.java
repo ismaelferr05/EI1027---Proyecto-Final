@@ -14,13 +14,13 @@ public class ParticipantListDao {
     public void add(ParticipantList participantList) {
         String sql = "INSERT INTO participant_list (attendance, attendance_url, id_activity, id_ovil_user, id_pap_pati) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, participantList.getAttendance(), participantList.getAttendanceUrl(),
-                participantList.getIdActivity(), participantList.getIdOvilUser(), participantList.getIdPapPati());
+                participantList.getActivity_id(), participantList.getOviuser_id(), participantList.getPapPati_id());
     }
 
     public void update(ParticipantList participantList) {
         String sql = "UPDATE participant_list SET attendance=?, attendance_url=?, id_activity=?, id_ovil_user=?, id_pap_pati=? WHERE id_participant_list=?";
         jdbcTemplate.update(sql, participantList.getAttendance(), participantList.getAttendanceUrl(),
-                participantList.getIdActivity(), participantList.getIdOvilUser(), participantList.getIdPapPati(), participantList.getIdParticipantList());
+                participantList.getActivity_id(), participantList.getOviuser_id(), participantList.getPapPati_id(), participantList.getIdParticipantList());
     }
 
     public void delete(int idParticipantList) {

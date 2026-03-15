@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.controller;
 
-import es.uji.ei1027.sgovi.dao.OvilUserDao;
-import es.uji.ei1027.sgovi.model.OvilUser;
+import es.uji.ei1027.sgovi.dao.OviUserDao;
+import es.uji.ei1027.sgovi.model.OviUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/ovil-users")
-public class OvilUserController {
+public class OviUserController {
 
     @Autowired
-    private OvilUserDao ovilUserDao;
+    private OviUserDao ovilUserDao;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -22,12 +22,12 @@ public class OvilUserController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("ovilUser", new OvilUser());
+        model.addAttribute("ovilUser", new OviUser());
         return "oviluser/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute OvilUser ovilUser) {
+    public String add(@ModelAttribute OviUser ovilUser) {
         ovilUserDao.add(ovilUser);
         return "redirect:/ovil-users/list";
     }
@@ -39,8 +39,8 @@ public class OvilUserController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute OvilUser ovilUser) {
-        ovilUserDao.update(ovilUser);
+    public String edit(@ModelAttribute OviUser oviUser) {
+        ovilUserDao.update(oviUser);
         return "redirect:/ovil-users/list";
     }
 

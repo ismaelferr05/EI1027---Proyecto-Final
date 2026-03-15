@@ -2,7 +2,7 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.ParticipantListDao;
 import es.uji.ei1027.sgovi.dao.ActivityDao;
-import es.uji.ei1027.sgovi.dao.OvilUserDao;
+import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.model.ParticipantList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ParticipantListController {
     private ActivityDao activityDao;
 
     @Autowired
-    private OvilUserDao ovilUserDao;
+    private OviUserDao ovilUserDao;
 
     @Autowired
     private PapPatiDao papPatiDao;

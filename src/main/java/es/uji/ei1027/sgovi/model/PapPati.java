@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.model;
 
 public class PapPati {
-    private int idPapPati;
+    private int PapPati_id;
     private String phone;
     private String password;
     private String province;
@@ -30,8 +30,13 @@ public class PapPati {
         this.experienceType = experienceType;
     }
 
-    public int getIdPapPati() { return idPapPati; }
-    public void setIdPapPati(int idPapPati) { this.idPapPati = idPapPati; }
+    public int getPapPati_id() {
+        return PapPati_id;
+    }
+
+    public void setPapPati_id(int papPati_id) {
+        PapPati_id = papPati_id;
+    }
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
     public String getPassword() { return password; }

@@ -15,13 +15,13 @@ public class ActivityDao {
     public void add(Activity activity) {
         String sql = "INSERT INTO activity (name, date, duration, location, category, description, id_trainer) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, activity.getName(), Date.valueOf(activity.getDate()), activity.getDuration(),
-                activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getIdTrainer());
+                activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getTrainer_id());
     }
 
     public void update(Activity activity) {
         String sql = "UPDATE activity SET name=?, date=?, duration=?, location=?, category=?, description=?, id_trainer=? WHERE id_activity=?";
         jdbcTemplate.update(sql, activity.getName(), Date.valueOf(activity.getDate()), activity.getDuration(),
-                activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getIdTrainer(), activity.getIdActivity());
+                activity.getLocation(), activity.getCategory(), activity.getDescription(), activity.getTrainer_id(), activity.getActivity_id());
     }
 
     public void delete(int idActivity) {

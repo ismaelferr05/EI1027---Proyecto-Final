@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.model;
 
-public class OvilUser {
-    private int idOvilUser;
+public class OviUser {
+    private int oviuser_id;
     private String name;
     private String phone;
     private String password;
@@ -11,9 +11,9 @@ public class OvilUser {
     private int age;
     private String gender;
 
-    public OvilUser() {}
+    public OviUser() {}
 
-    public OvilUser(String name, String phone, String password, String province, String town, String pc, int age, String gender) {
+    public OviUser(String name, String phone, String password, String province, String town, String pc, int age, String gender) {
         this.name = name;
         this.phone = phone;
         this.password = password;
@@ -24,8 +24,13 @@ public class OvilUser {
         this.gender = gender;
     }
 
-    public int getIdOvilUser() { return idOvilUser; }
-    public void setIdOvilUser(int idOvilUser) { this.idOvilUser = idOvilUser; }
+    public int getOviuser_id() {
+        return oviuser_id;
+    }
+
+    public void setOviuser_id(int oviuser_id) {
+        this.oviuser_id = oviuser_id;
+    }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getPhone() { return phone; }

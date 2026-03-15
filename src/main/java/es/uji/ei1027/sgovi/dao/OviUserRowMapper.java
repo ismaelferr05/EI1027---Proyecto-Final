@@ -1,15 +1,15 @@
 package es.uji.ei1027.sgovi.dao;
 
-import es.uji.ei1027.sgovi.model.OvilUser;
+import es.uji.ei1027.sgovi.model.OviUser;
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OvilUserRowMapper implements RowMapper<OvilUser> {
+public class OviUserRowMapper implements RowMapper<OviUser> {
     @Override
-    public OvilUser mapRow(ResultSet rs, int rowNum) throws SQLException {
-        OvilUser ovilUser = new OvilUser();
-        ovilUser.setIdOvilUser(rs.getInt("id_ovil_user"));
+    public OviUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+        OviUser ovilUser = new OviUser();
+        ovilUser.setOviuser_id(rs.getInt("id_ovil_user"));
         ovilUser.setName(rs.getString("name"));
         ovilUser.setPhone(rs.getString("phone"));
         ovilUser.setPassword(rs.getString("password"));

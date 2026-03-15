@@ -9,14 +9,14 @@ public class ActivityRowMapper implements RowMapper<Activity> {
     @Override
     public Activity mapRow(ResultSet rs, int rowNum) throws SQLException {
         Activity activity = new Activity();
-        activity.setIdActivity(rs.getInt("id_activity"));
+        activity.setActivity_id(rs.getInt("id_activity"));
         activity.setName(rs.getString("name"));
         activity.setDate(rs.getDate("date").toLocalDate());
         activity.setDuration(rs.getInt("duration"));
         activity.setLocation(rs.getString("location"));
         activity.setCategory(rs.getString("category"));
         activity.setDescription(rs.getString("description"));
-        activity.setIdTrainer(rs.getInt("id_trainer"));
+        activity.setTrainer_id(rs.getInt("id_trainer"));
         return activity;
     }
 }

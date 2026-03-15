@@ -9,7 +9,7 @@ public class PapPatiRowMapper implements RowMapper<PapPati> {
     @Override
     public PapPati mapRow(ResultSet rs, int rowNum) throws SQLException {
         PapPati papPati = new PapPati();
-        papPati.setIdPapPati(rs.getInt("id_pap_pati"));
+        papPati.setPapPati_id(rs.getInt("id_pap_pati"));
         papPati.setPhone(rs.getString("phone"));
         papPati.setPassword(rs.getString("password"));
         papPati.setProvince(rs.getString("province"));

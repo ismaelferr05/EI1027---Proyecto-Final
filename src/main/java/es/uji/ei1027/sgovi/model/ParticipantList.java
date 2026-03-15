@@ -4,9 +4,9 @@ public class ParticipantList {
     private int idParticipantList;
     private String attendance;
     private String attendanceUrl;
-    private Integer idActivity;
-    private Integer idOvilUser;
-    private Integer idPapPati;
+    private Integer activity_id;
+    private Integer oviuser_id;
+    private Integer PapPati_id;
 
     public ParticipantList() {}
 
@@ -21,11 +21,29 @@ public class ParticipantList {
     public void setAttendance(String attendance) { this.attendance = attendance; }
     public String getAttendanceUrl() { return attendanceUrl; }
     public void setAttendanceUrl(String attendanceUrl) { this.attendanceUrl = attendanceUrl; }
-    public Integer getIdActivity() { return idActivity; }
-    public void setIdActivity(Integer idActivity) { this.idActivity = idActivity; }
-    public Integer getIdOvilUser() { return idOvilUser; }
-    public void setIdOvilUser(Integer idOvilUser) { this.idOvilUser = idOvilUser; }
-    public Integer getIdPapPati() { return idPapPati; }
-    public void setIdPapPati(Integer idPapPati) { this.idPapPati = idPapPati; }
+
+    public Integer getActivity_id() {
+        return activity_id;
+    }
+
+    public void setActivity_id(Integer activity_id) {
+        this.activity_id = activity_id;
+    }
+
+    public Integer getOviuser_id() {
+        return oviuser_id;
+    }
+
+    public void setOviuser_id(Integer oviuser_id) {
+        this.oviuser_id = oviuser_id;
+    }
+
+    public Integer getPapPati_id() {
+        return PapPati_id;
+    }
+
+    public void setPapPati_id(Integer papPati_id) {
+        PapPati_id = papPati_id;
+    }
 }
 

@@ -22,7 +22,7 @@ public class PapPatiDao {
         String sql = "UPDATE pap_pati SET phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cv_url=?, training=?, experience=?, experience_type=? WHERE id_pap_pati=?";
         jdbcTemplate.update(sql, papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
                 papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(),
-                papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType(), papPati.getIdPapPati());
+                papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType(), papPati.getPapPati_id());
     }
 
     public void delete(int idPapPati) {

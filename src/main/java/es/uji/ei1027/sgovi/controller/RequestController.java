@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.RequestDao;
-import es.uji.ei1027.sgovi.dao.OvilUserDao;
+import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.model.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,7 @@ public class RequestController {
     private RequestDao requestDao;
 
     @Autowired
-    private OvilUserDao ovilUserDao;
+    private OviUserDao ovilUserDao;
 
     @GetMapping("/list")
     public String list(Model model) {
