@@ -12,7 +12,7 @@ public class NegotiationDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Negotiation negotiation) {
-        String sql = "INSERT INTO Negotiation (stateOfApproval, request_id, pappati_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Negotiation (stateOfApproval, request_id, pappati_id) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, negotiation.getStateOfApproval(), negotiation.getIdRequest(),
                 negotiation.getIdPapPati());
     }

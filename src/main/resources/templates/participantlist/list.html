@@ -21,14 +21,14 @@
         </thead>
         <tbody>
             <tr th:each="participantList : ${participantLists}">
-                <td th:text="${participantList.idParticipantList}"></td>
+                <td th:text="${participantList.participantList_id}"></td>
                 <td th:text="${participantList.attendance}"></td>
-                <td th:text="${participantList.idActivity}"></td>
-                <td th:text="${participantList.idOvilUser}"></td>
-                <td th:text="${participantList.idPapPati}"></td>
+                <td th:text="${participantList.activity_id}"></td>
+                <td th:text="${participantList.oviuser_id}"></td>
+                <td th:text="${participantList.pappati_id}"></td>
                 <td>
-                    <a th:href="@{/participant-lists/edit/{id}(id=${participantList.idParticipantList})}">Editar</a>
-                    <a th:href="@{/participant-lists/delete/{id}(id=${participantList.idParticipantList})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/participant-lists/edit/{id}(id=${participantList.participantList_id})}">Editar</a>
+                    <a th:href="@{/participant-lists/delete/{id}(id=${participantList.participantList_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

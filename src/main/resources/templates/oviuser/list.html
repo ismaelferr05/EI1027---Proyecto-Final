@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Listado de Usuarios OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovil-users/add">Agregar Usuario</a>
+    <a href="/">Volver al inicio</a> | <a href="/ovi-users/add">Agregar Usuario</a>
 
     <table border="1" cellpadding="10">
         <thead>
@@ -23,18 +23,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="ovilUser : ${ovilUsers}">
-                <td th:text="${ovilUser.idOvilUser}"></td>
-                <td th:text="${ovilUser.name}"></td>
-                <td th:text="${ovilUser.phone}"></td>
-                <td th:text="${ovilUser.province}"></td>
-                <td th:text="${ovilUser.town}"></td>
-                <td th:text="${ovilUser.pc}"></td>
-                <td th:text="${ovilUser.age}"></td>
-                <td th:text="${ovilUser.gender}"></td>
+            <tr th:each="oviUser : ${oviUsers}">
+                <td th:text="${oviUser.oviuser_id}"></td>
+                <td th:text="${oviUser.name}"></td>
+                <td th:text="${oviUser.phone}"></td>
+                <td th:text="${oviUser.province}"></td>
+                <td th:text="${oviUser.town}"></td>
+                <td th:text="${oviUser.pc}"></td>
+                <td th:text="${oviUser.age}"></td>
+                <td th:text="${oviUser.gender}"></td>
                 <td>
-                    <a th:href="@{/ovil-users/edit/{id}(id=${ovilUser.idOvilUser})}">Editar</a>
-                    <a th:href="@{/ovil-users/delete/{id}(id=${ovilUser.idOvilUser})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.oviuser_id})}">Editar</a>
+                    <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.oviuser_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

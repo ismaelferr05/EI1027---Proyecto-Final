@@ -19,9 +19,10 @@ public class ContractDao {
     }
 
     public void update(Contract contract) {
-        String sql = "UPDATE Contract SET wage=?, startDate=?, endDate=?, url=?, negotiation_id=? WHERE id_contract=?";
+        String sql = "UPDATE Contract SET wage=?, startDate=?, endDate=?, url=?, negotiation_id=? WHERE contract_id=?";
         jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
-                Date.valueOf(contract.getEndDate()), contract.getUrl(), contract.getIdContract(), contract.getNegotiation_id());
+                Date.valueOf(contract.getEndDate()), contract.getUrl(),
+                contract.getNegotiation_id(), contract.getIdContract());
     }
 
     public void delete(int idContract) {

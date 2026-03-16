@@ -23,16 +23,16 @@
         </thead>
         <tbody>
             <tr th:each="request : ${requests}">
-                <td th:text="${request.idRequest}"></td>
+                <td th:text="${request.request_id}"></td>
                 <td th:text="${request.description}"></td>
                 <td th:text="${request.training}"></td>
                 <td th:text="${request.startDate}"></td>
                 <td th:text="${request.endDate}"></td>
                 <td th:text="${request.experience}"></td>
-                <td th:text="${request.idOvilUser}"></td>
+                <td th:text="${request.oviuser_id}"></td>
                 <td>
-                    <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}">Editar</a>
-                    <a th:href="@{/requests/delete/{id}(id=${request.idRequest})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/requests/edit/{id}(id=${request.request_id})}">Editar</a>
+                    <a th:href="@{/requests/delete/{id}(id=${request.request_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

@@ -13,7 +13,7 @@ public class MessageDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Message message) {
-        String sql = "INSERT INTO Message (messageId, messageDateTime, sender, receiver, negotiation_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Message (messageDateTime, sender, receiver, negotiation_id) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, Timestamp.valueOf(message.getMessageDateTime()),
                 message.getSender(), message.getReceiver(), message.getIdNegotiation());
     }
