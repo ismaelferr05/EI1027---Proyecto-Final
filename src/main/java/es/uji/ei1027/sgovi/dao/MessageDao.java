@@ -19,18 +19,18 @@ public class MessageDao {
     }
 
     public void update(Message message) {
-        String sql = "UPDATE Message SET messageDateTime=?, sender=?, receiver=?, negotiation_id=? WHERE messageId=?";
+        String sql = "UPDATE Message SET messageDateTime=?, sender=?, receiver=?, negotiation_id=? WHERE idMessage=?";
         jdbcTemplate.update(sql, Timestamp.valueOf(message.getMessageDateTime()),
                 message.getSender(), message.getReceiver(), message.getIdNegotiation(), message.getIdMessage());
     }
 
     public void delete(int idMessage) {
-        String sql = "DELETE FROM Message WHERE messageId=?";
+        String sql = "DELETE FROM Message WHERE idMessage=?";
         jdbcTemplate.update(sql, idMessage);
     }
 
     public Message get(int idMessage) {
-        String sql = "SELECT * FROM Message WHERE messageId=?";
+        String sql = "SELECT * FROM Message WHERE idMessage=?";
         return jdbcTemplate.queryForObject(sql, new MessageRowMapper(), idMessage);
     }
 

@@ -9,7 +9,7 @@ public class MessageRowMapper implements RowMapper<Message> {
     @Override
     public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
         Message message = new Message();
-        message.setIdMessage(rs.getInt("messageId"));
+        message.setIdMessage(rs.getInt("idMessage"));
         message.setMessageDateTime(rs.getTimestamp("messageDateTime").toLocalDateTime());
         message.setSender(rs.getString("sender"));
         message.setReceiver(rs.getString("receiver"));
