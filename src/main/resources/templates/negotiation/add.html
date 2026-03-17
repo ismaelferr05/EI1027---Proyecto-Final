@@ -28,13 +28,6 @@
             </select>
         </p>
         <p>
-            <label for="idContract">ID Contrato:</label>
-            <select id="idContract" th:field="*{idContract}">
-                <option value="">Selecciona un contrato (opcional)</option>
-                <option th:each="contract : ${contracts}" th:value="${contract.idContract}" th:text="${contract.wage}"></option>
-            </select>
-        </p>
-        <p>
             <button type="submit">Guardar</button>
             <a href="/negotiations/list">Cancelar</a>
         </p>

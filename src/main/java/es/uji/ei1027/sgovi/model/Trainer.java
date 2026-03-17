@@ -1,7 +1,7 @@
 package es.uji.ei1027.sgovi.model;
 
 public class Trainer {
-    private int trainer_id;
+    private int idTrainer;
     private String name;
     private String lastName;
     private String occupation;
@@ -59,12 +59,12 @@ public class Trainer {
         this.name = name;
     }
 
-    public int getTrainer_id() {
-        return trainer_id;
+    public int getIdTrainer() {
+        return idTrainer;
     }
 
-    public void setTrainer_id(int trainer_id) {
-        this.trainer_id = trainer_id;
+    public void setIdTrainer(int idTrainer) {
+        this.idTrainer = idTrainer;
     }
 }
 

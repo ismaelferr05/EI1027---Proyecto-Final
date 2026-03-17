@@ -12,9 +12,9 @@ public class ParticipantListRowMapper implements RowMapper<ParticipantList> {
         participantList.setIdParticipantList(rs.getInt("participantList_id"));
         participantList.setAttendance(rs.getString("attendance"));
         participantList.setAttendanceUrl(rs.getString("attendanceUrl"));
-        participantList.setActivity_id(rs.getInt("activity_id"));
-        participantList.setOviuser_id(rs.getInt("oviuser_id"));
-        participantList.setPapPati_id(rs.getInt("pappati_id"));
+        participantList.setIdActivity(rs.getInt("activity_id"));
+        participantList.setIdOviUser(rs.getInt("oviuser_id"));
+        participantList.setIdPapPati(rs.getInt("pappati_id"));
         return participantList;
     }
 }

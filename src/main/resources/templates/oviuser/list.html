@@ -24,7 +24,7 @@
         </thead>
         <tbody>
             <tr th:each="oviUser : ${oviUsers}">
-                <td th:text="${oviUser.oviuser_id}"></td>
+                <td th:text="${oviUser.idOviUser}"></td>
                 <td th:text="${oviUser.name}"></td>
                 <td th:text="${oviUser.phone}"></td>
                 <td th:text="${oviUser.province}"></td>
@@ -33,8 +33,8 @@
                 <td th:text="${oviUser.age}"></td>
                 <td th:text="${oviUser.gender}"></td>
                 <td>
-                    <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.oviuser_id})}">Editar</a>
-                    <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.oviuser_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.idOviUser})}">Editar</a>
+                    <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

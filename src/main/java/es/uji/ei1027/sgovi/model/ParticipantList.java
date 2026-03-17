@@ -1,12 +1,12 @@
 package es.uji.ei1027.sgovi.model;
 
 public class ParticipantList {
-    private int participantList_id;
+    private int idParticipantList;
     private String attendance;
     private String attendanceUrl;
-    private Integer activity_id;
-    private Integer oviuser_id;
-    private Integer PapPati_id;
+    private Integer idActivity;
+    private Integer idOviUser;
+    private Integer idPapPati;
 
     public ParticipantList() {}
 
@@ -15,35 +15,35 @@ public class ParticipantList {
         this.attendanceUrl = attendanceUrl;
     }
 
-    public int getIdParticipantList() { return participantList_id; }
-    public void setIdParticipantList(int idParticipantList) { this.participantList_id = idParticipantList; }
+    public int getIdParticipantList() { return idParticipantList; }
+    public void setIdParticipantList(int idParticipantList) { this.idParticipantList = idParticipantList; }
     public String getAttendance() { return attendance; }
     public void setAttendance(String attendance) { this.attendance = attendance; }
     public String getAttendanceUrl() { return attendanceUrl; }
     public void setAttendanceUrl(String attendanceUrl) { this.attendanceUrl = attendanceUrl; }
 
-    public Integer getActivity_id() {
-        return activity_id;
+    public Integer getIdActivity() {
+        return idActivity;
     }
 
-    public void setActivity_id(Integer activity_id) {
-        this.activity_id = activity_id;
+    public void setIdActivity(Integer idActivity) {
+        this.idActivity = idActivity;
     }
 
-    public Integer getOviuser_id() {
-        return oviuser_id;
+    public Integer getIdOviUser() {
+        return idOviUser;
     }
 
-    public void setOviuser_id(Integer oviuser_id) {
-        this.oviuser_id = oviuser_id;
+    public void setIdOviUser(Integer idOviUser) {
+        this.idOviUser = idOviUser;
     }
 
-    public Integer getPapPati_id() {
-        return PapPati_id;
+    public Integer getIdPapPati() {
+        return idPapPati;
     }
 
-    public void setPapPati_id(Integer papPati_id) {
-        PapPati_id = papPati_id;
+    public void setIdPapPati(Integer idPapPati) {
+        this.idPapPati = idPapPati;
     }
 }
 

@@ -13,16 +13,16 @@ public class ContractDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Contract contract) {
-        String sql = "INSERT INTO Contract (wage, startDate, endDate, url) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Contract (wage, startDate, endDate, url, negotiation_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
-                Date.valueOf(contract.getEndDate()), contract.getUrl());
+                Date.valueOf(contract.getEndDate()), contract.getUrl(), contract.getIdNegotiation());
     }
 
     public void update(Contract contract) {
         String sql = "UPDATE Contract SET wage=?, startDate=?, endDate=?, url=?, negotiation_id=? WHERE contract_id=?";
         jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
                 Date.valueOf(contract.getEndDate()), contract.getUrl(),
-                contract.getNegotiation_id(), contract.getIdContract());
+                contract.getIdNegotiation(), contract.getIdContract());
     }
 
     public void delete(int idContract) {

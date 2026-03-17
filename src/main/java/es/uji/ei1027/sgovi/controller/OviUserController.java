@@ -8,46 +8,46 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/ovil-users")
+@RequestMapping("/ovi-users")
 public class OviUserController {
 
     @Autowired
-    private OviUserDao ovilUserDao;
+    private OviUserDao oviUserDao;
 
     @GetMapping("/list")
     public String list(Model model) {
-        model.addAttribute("ovilUsers", ovilUserDao.getAll());
-        return "oviluser/list";
+        model.addAttribute("oviUsers", oviUserDao.getAll());
+        return "oviuser/list";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("ovilUser", new OviUser());
-        return "oviluser/add";
+        model.addAttribute("oviUser", new OviUser());
+        return "oviuser/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute OviUser ovilUser) {
-        ovilUserDao.add(ovilUser);
-        return "redirect:/ovil-users/list";
+    public String add(@ModelAttribute OviUser oviUser) {
+        oviUserDao.add(oviUser);
+        return "redirect:/ovi-users/list";
     }
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable int id, Model model) {
-        model.addAttribute("ovilUser", ovilUserDao.get(id));
-        return "oviluser/edit";
+        model.addAttribute("oviUser", oviUserDao.get(id));
+        return "oviuser/edit";
     }
 
     @PostMapping("/edit")
     public String edit(@ModelAttribute OviUser oviUser) {
-        ovilUserDao.update(oviUser);
-        return "redirect:/ovil-users/list";
+        oviUserDao.update(oviUser);
+        return "redirect:/ovi-users/list";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable int id) {
-        ovilUserDao.delete(id);
-        return "redirect:/ovil-users/list";
+        oviUserDao.delete(id);
+        return "redirect:/ovi-users/list";
     }
 }
 

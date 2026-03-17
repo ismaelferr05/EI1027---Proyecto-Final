@@ -19,7 +19,7 @@ public class MessageDao {
     }
 
     public void update(Message message) {
-        String sql = "UPDATE Message SET messageId=?, messageDateTime=?, sender=?, receiver=?, negotiation_id=? WHERE messageId=?";
+        String sql = "UPDATE Message SET messageDateTime=?, sender=?, receiver=?, negotiation_id=? WHERE messageId=?";
         jdbcTemplate.update(sql, Timestamp.valueOf(message.getMessageDateTime()),
                 message.getSender(), message.getReceiver(), message.getIdNegotiation(), message.getIdMessage());
     }

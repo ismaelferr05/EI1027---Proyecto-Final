@@ -9,7 +9,7 @@ public class TrainerRowMapper implements RowMapper<Trainer> {
     @Override
     public Trainer mapRow(ResultSet rs, int rowNum) throws SQLException {
         Trainer trainer = new Trainer();
-        trainer.setTrainer_id(rs.getInt("trainer_id"));
+        trainer.setIdTrainer(rs.getInt("trainer_id"));
         trainer.setName(rs.getString("name"));
         trainer.setOccupation(rs.getString("occupation"));
         trainer.setLastName(rs.getString("lastName"));

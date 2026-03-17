@@ -11,7 +11,7 @@ public class Message {
 
     public Message() {}
 
-    public Message(String messageId, LocalDateTime messageDateTime, String sender, String receiver) {
+    public Message(LocalDateTime messageDateTime, String sender, String receiver) {
         this.messageDateTime = messageDateTime;
         this.sender = sender;
         this.receiver = receiver;

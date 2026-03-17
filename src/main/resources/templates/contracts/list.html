@@ -22,15 +22,15 @@
         </thead>
         <tbody>
             <tr th:each="contract : ${contracts}">
-                <td th:text="${contract.contract_id}"></td>
+                <td th:text="${contract.idContract}"></td>
                 <td th:text="${contract.wage}"></td>
                 <td th:text="${contract.startDate}"></td>
                 <td th:text="${contract.endDate}"></td>
                 <td><a th:href="${contract.url}" target="_blank">Ver</a></td>
-                <td th:text="${contract.negotiation_id}"></td>
+                <td th:text="${contract.idNegotiation}"></td>
                 <td>
-                    <a th:href="@{/contracts/edit/{id}(id=${contract.contract_id})}">Editar</a>
-                    <a th:href="@{/contracts/delete/{id}(id=${contract.contract_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}">Editar</a>
+                    <a th:href="@{/contracts/delete/{id}(id=${contract.idContract})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

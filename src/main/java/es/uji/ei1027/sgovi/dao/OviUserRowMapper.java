@@ -8,17 +8,17 @@ import java.sql.SQLException;
 public class OviUserRowMapper implements RowMapper<OviUser> {
     @Override
     public OviUser mapRow(ResultSet rs, int rowNum) throws SQLException {
-        OviUser ovilUser = new OviUser();
-        ovilUser.setOviuser_id(rs.getInt("oviuser_id"));
-        ovilUser.setName(rs.getString("name"));
-        ovilUser.setPhone(rs.getString("phone"));
-        ovilUser.setPassword(rs.getString("password"));
-        ovilUser.setProvince(rs.getString("province"));
-        ovilUser.setTown(rs.getString("town"));
-        ovilUser.setPc(rs.getString("pc"));
-        ovilUser.setAge(rs.getInt("age"));
-        ovilUser.setGender(rs.getString("gender"));
-        return ovilUser;
+        OviUser oviUser = new OviUser();
+        oviUser.setIdOviUser(rs.getInt("oviuser_id"));
+        oviUser.setName(rs.getString("name"));
+        oviUser.setPhone(rs.getString("phone"));
+        oviUser.setPassword(rs.getString("password"));
+        oviUser.setProvince(rs.getString("province"));
+        oviUser.setTown(rs.getString("town"));
+        oviUser.setPc(rs.getString("pc"));
+        oviUser.setAge(rs.getInt("age"));
+        oviUser.setGender(rs.getString("gender"));
+        return oviUser;
     }
 }
 

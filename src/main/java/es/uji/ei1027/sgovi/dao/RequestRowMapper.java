@@ -16,7 +16,7 @@ public class RequestRowMapper implements RowMapper<Request> {
         request.setEndDate(rs.getDate("endDate").toLocalDate());
         request.setExperience(rs.getString("experience"));
         request.setExperienceType(rs.getString("experienceType"));
-        request.setIdOvilUser(rs.getInt("oviuser_id"));
+        request.setIdOviUser(rs.getInt("oviuser_id"));
         return request;
     }
 }

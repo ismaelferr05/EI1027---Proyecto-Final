@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr th:each="trainer : ${trainers}">
-                <td th:text="${trainer.trainer_id}"></td>
+                <td th:text="${trainer.idTrainer}"></td>
                 <td th:text="${trainer.name}"></td>
                 <td th:text="${trainer.occupation}"></td>
                 <td th:text="${trainer.lastName}"></td>
@@ -31,8 +31,8 @@
                 <td th:text="${trainer.phone}"></td>
                 <td th:text="${trainer.address}"></td>
                 <td>
-                    <a th:href="@{/trainers/edit/{id}(id=${trainer.trainer_id})}">Editar</a>
-                    <a th:href="@{/trainers/delete/{id}(id=${trainer.trainer_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/trainers/edit/{id}(id=${trainer.idTrainer})}">Editar</a>
+                    <a th:href="@{/trainers/delete/{id}(id=${trainer.idTrainer})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

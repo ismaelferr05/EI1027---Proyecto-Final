@@ -35,10 +35,10 @@
             <input type="text" id="experienceType" th:field="*{experienceType}">
         </p>
         <p>
-            <label for="idOvilUser">ID Usuario OVI:</label>
-            <select id="idOvilUser" th:field="*{idOvilUser}" required>
+            <label for="idOviUser">ID Usuario OVI:</label>
+            <select id="idOviUser" th:field="*{idOviUser}" required>
                 <option value="">Selecciona un usuario OVI</option>
-                <option th:each="ovilUser : ${ovilUsers}" th:value="${ovilUser.idOvilUser}" th:text="${ovilUser.name}"></option>
+                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="${oviUser.name}"></option>
             </select>
         </p>
         <p>

@@ -26,6 +26,13 @@
             <input type="url" id="url" th:field="*{url}">
         </p>
         <p>
+            <label for="idNegotiation">ID Negociación:</label>
+            <select id="idNegotiation" th:field="*{idNegotiation}" required>
+                <option value="">Selecciona una negociación</option>
+                <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
+            </select>
+        </p>
+        <p>
             <button type="submit">Guardar</button>
             <a href="/contracts/list">Cancelar</a>
         </p>

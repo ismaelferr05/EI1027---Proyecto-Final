@@ -16,7 +16,7 @@ public class RequestController {
     private RequestDao requestDao;
 
     @Autowired
-    private OviUserDao ovilUserDao;
+    private OviUserDao oviUserDao;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -27,7 +27,7 @@ public class RequestController {
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("request", new Request());
-        model.addAttribute("ovilUsers", ovilUserDao.getAll());
+        model.addAttribute("oviUsers", oviUserDao.getAll());
         return "request/add";
     }
 
@@ -40,7 +40,7 @@ public class RequestController {
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable int id, Model model) {
         model.addAttribute("request", requestDao.get(id));
-        model.addAttribute("ovilUsers", ovilUserDao.getAll());
+        model.addAttribute("oviUsers", oviUserDao.getAll());
         return "request/edit";
     }
 

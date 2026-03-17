@@ -21,7 +21,7 @@ public class ParticipantListController {
     private ActivityDao activityDao;
 
     @Autowired
-    private OviUserDao ovilUserDao;
+    private OviUserDao oviUserDao;
 
     @Autowired
     private PapPatiDao papPatiDao;
@@ -36,7 +36,7 @@ public class ParticipantListController {
     public String addForm(Model model) {
         model.addAttribute("participantList", new ParticipantList());
         model.addAttribute("activities", activityDao.getAll());
-        model.addAttribute("ovilUsers", ovilUserDao.getAll());
+        model.addAttribute("oviUsers", oviUserDao.getAll());
         model.addAttribute("papPatis", papPatiDao.getAll());
         return "participantlist/add";
     }
@@ -51,7 +51,7 @@ public class ParticipantListController {
     public String editForm(@PathVariable int id, Model model) {
         model.addAttribute("participantList", participantListDao.get(id));
         model.addAttribute("activities", activityDao.getAll());
-        model.addAttribute("ovilUsers", ovilUserDao.getAll());
+        model.addAttribute("oviUsers", oviUserDao.getAll());
         model.addAttribute("papPatis", papPatiDao.getAll());
         return "participantlist/edit";
     }

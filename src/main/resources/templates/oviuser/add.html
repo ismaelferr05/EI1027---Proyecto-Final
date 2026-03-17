@@ -6,9 +6,9 @@
 </head>
 <body>
     <h1>Agregar Nuevo Usuario OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovil-users/list">Volver a Usuarios OVI</a>
+    <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
 
-    <form th:action="@{/ovil-users/add}" th:object="${ovilUser}" method="post">
+    <form th:action="@{/ovi-users/add}" th:object="${oviUser}" method="post">
         <p>
             <label for="name">Nombre:</label>
             <input type="text" id="name" th:field="*{name}" required>
@@ -43,7 +43,7 @@
         </p>
         <p>
             <button type="submit">Guardar</button>
-            <a href="/ovil-users/list">Cancelar</a>
+            <a href="/ovi-users/list">Cancelar</a>
         </p>
     </form>
 </body>

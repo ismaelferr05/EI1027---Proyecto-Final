@@ -20,7 +20,7 @@ public class TrainerDao {
     public void update(Trainer trainer) {
         String sql = "UPDATE Trainer SET name=?, occupation=?, lastName=?, email=?, phone=?, address=? WHERE trainer_id=?";
         jdbcTemplate.update(sql, trainer.getName(), trainer.getOccupation(), trainer.getLastName(),
-                trainer.getEmail(), trainer.getPhone(), trainer.getAddress(), trainer.getTrainer_id());
+                trainer.getEmail(), trainer.getPhone(), trainer.getAddress(), trainer.getIdTrainer());
     }
 
     public void delete(int idTrainer) {

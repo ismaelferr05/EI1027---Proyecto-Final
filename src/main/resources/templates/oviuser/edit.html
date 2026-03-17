@@ -6,10 +6,10 @@
 </head>
 <body>
     <h1>Editar Usuario OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovil-users/list">Volver a Usuarios OVI</a>
+    <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
 
-    <form th:action="@{/ovil-users/edit}" th:object="${ovilUser}" method="post">
-        <input type="hidden" th:field="*{idOvilUser}">
+    <form th:action="@{/ovi-users/edit}" th:object="${oviUser}" method="post">
+        <input type="hidden" th:field="*{idOviUser}">
         <p>
             <label for="name">Nombre:</label>
             <input type="text" id="name" th:field="*{name}" required>
@@ -44,7 +44,7 @@
         </p>
         <p>
             <button type="submit">Actualizar</button>
-            <a href="/ovil-users/list">Cancelar</a>
+            <a href="/ovi-users/list">Cancelar</a>
         </p>
     </form>
 </body>

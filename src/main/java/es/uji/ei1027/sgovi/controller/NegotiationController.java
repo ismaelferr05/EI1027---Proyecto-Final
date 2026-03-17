@@ -3,7 +3,6 @@ package es.uji.ei1027.sgovi.controller;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.dao.RequestDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
-import es.uji.ei1027.sgovi.dao.ContractDao;
 import es.uji.ei1027.sgovi.model.Negotiation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,9 +22,6 @@ public class NegotiationController {
     @Autowired
     private PapPatiDao papPatiDao;
 
-    @Autowired
-    private ContractDao contractDao;
-
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("negotiations", negotiationDao.getAll());
@@ -37,7 +33,6 @@ public class NegotiationController {
         model.addAttribute("negotiation", new Negotiation());
         model.addAttribute("requests", requestDao.getAll());
         model.addAttribute("papPatis", papPatiDao.getAll());
-        model.addAttribute("contracts", contractDao.getAll());
         return "negotiation/add";
     }
 
@@ -52,7 +47,6 @@ public class NegotiationController {
         model.addAttribute("negotiation", negotiationDao.get(id));
         model.addAttribute("requests", requestDao.getAll());
         model.addAttribute("papPatis", papPatiDao.getAll());
-        model.addAttribute("contracts", contractDao.getAll());
         return "negotiation/edit";
     }
 

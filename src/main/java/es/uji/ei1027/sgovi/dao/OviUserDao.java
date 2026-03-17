@@ -20,7 +20,7 @@ public class OviUserDao {
     public void update(OviUser oviUser) {
         String sql = "UPDATE OviUser SET name=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=? WHERE oviuser_id=?";
         jdbcTemplate.update(sql, oviUser.getName(), oviUser.getPhone(), oviUser.getPassword(),
-                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(), oviUser.getOviuser_id());
+                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(), oviUser.getIdOviUser());
     }
 
     public void delete(int idOviUser) {

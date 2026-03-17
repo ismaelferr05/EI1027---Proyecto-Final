@@ -1,6 +1,7 @@
 package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.ContractDao;
+import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.model.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,16 +15,20 @@ public class ContractController {
     @Autowired
     private ContractDao contractDao;
 
+    @Autowired
+    private NegotiationDao negotiationDao;
+
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("contracts", contractDao.getAll());
-        return "contract/list";
+        return "contracts/list";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("contract", new Contract());
-        return "contract/add";
+        model.addAttribute("negotiations", negotiationDao.getAll());
+        return "contracts/add";
     }
 
     @PostMapping("/add")
@@ -35,7 +40,8 @@ public class ContractController {
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable int id, Model model) {
         model.addAttribute("contract", contractDao.get(id));
-        return "contract/edit";
+        model.addAttribute("negotiations", negotiationDao.getAll());
+        return "contracts/edit";
     }
 
     @PostMapping("/edit")

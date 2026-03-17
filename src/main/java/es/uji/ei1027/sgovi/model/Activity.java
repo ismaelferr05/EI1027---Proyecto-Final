@@ -3,23 +3,23 @@ package es.uji.ei1027.sgovi.model;
 import java.time.LocalDate;
 
 public class Activity {
-    private int activity_id;
+    private int idActivity;
     private String name;
     private LocalDate date;
     private int duration;
     private String location;
     private String category;
     private String description;
-    private Integer trainer_id;
+    private Integer idTrainer;
 
     public Activity() {}
 
-    public int getActivity_id() {
-        return activity_id;
+    public int getIdActivity() {
+        return idActivity;
     }
 
-    public void setActivity_id(int activity_id) {
-        this.activity_id = activity_id;
+    public void setIdActivity(int idActivity) {
+        this.idActivity = idActivity;
     }
 
     public String getName() {
@@ -70,12 +70,12 @@ public class Activity {
         this.description = description;
     }
 
-    public Integer getTrainer_id() {
-        return trainer_id;
+    public Integer getIdTrainer() {
+        return idTrainer;
     }
 
-    public void setTrainer_id(Integer trainer_id) {
-        this.trainer_id = trainer_id;
+    public void setIdTrainer(Integer idTrainer) {
+        this.idTrainer = idTrainer;
     }
 }
 

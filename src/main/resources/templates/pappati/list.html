@@ -25,7 +25,7 @@
         </thead>
         <tbody>
             <tr th:each="papPati : ${papPatis}">
-                <td th:text="${papPati.pappati_id}"></td>
+                <td th:text="${papPati.idPapPati}"></td>
                 <td th:text="${papPati.phone}"></td>
                 <td th:text="${papPati.province}"></td>
                 <td th:text="${papPati.town}"></td>
@@ -35,8 +35,8 @@
                 <td th:text="${papPati.training}"></td>
                 <td th:text="${papPati.experience}"></td>
                 <td>
-                    <a th:href="@{/pap-patis/edit/{id}(id=${papPati.pappati_id})}">Editar</a>
-                    <a th:href="@{/pap-patis/delete/{id}(id=${papPati.pappati_id})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/pap-patis/edit/{id}(id=${papPati.idPapPati})}">Editar</a>
+                    <a th:href="@{/pap-patis/delete/{id}(id=${papPati.idPapPati})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>

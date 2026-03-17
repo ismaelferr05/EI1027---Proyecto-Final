@@ -15,13 +15,13 @@ public class RequestDao {
     public void add(Request request) {
         String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOvilUser());
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOviUser());
     }
 
     public void update(Request request) {
         String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, oviuser_id=? WHERE request_id=?";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOvilUser(), request.getIdRequest());
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOviUser(), request.getIdRequest());
     }
 
     public void delete(int idRequest) {
@@ -39,9 +39,9 @@ public class RequestDao {
         return jdbcTemplate.query(sql, new RequestRowMapper());
     }
 
-    public List<Request> getByOvilUser(int idOvilUser) {
+    public List<Request> getByOviUser(int idOviUser) {
         String sql = "SELECT * FROM Request WHERE oviuser_id=?";
-        return jdbcTemplate.query(sql, new RequestRowMapper(), idOvilUser);
+        return jdbcTemplate.query(sql, new RequestRowMapper(), idOviUser);
     }
 }
 
