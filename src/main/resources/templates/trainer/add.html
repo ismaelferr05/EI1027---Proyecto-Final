@@ -5,10 +5,14 @@
     <title>Agregar Formador - SgOVI</title>
 </head>
 <body>
-    <h1>Agregar Nuevo Formador</h1>
-    <a href="/">Volver al inicio</a> | <a href="/trainers/list">Volver a Formadores</a>
-
-    <form th:action="@{/trainers/add}" th:object="${trainer}" method="post">
+    <header>
+        <h1>Agregar Nuevo Formador</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/trainers/list">Volver a Formadores</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/trainers/add}" th:object="${trainer}" method="post">
         <p>
             <label for="name">Nombre:</label>
             <input type="text" id="name" th:field="*{name}" required>
@@ -37,6 +41,7 @@
             <button type="submit">Guardar</button>
             <a href="/trainers/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>

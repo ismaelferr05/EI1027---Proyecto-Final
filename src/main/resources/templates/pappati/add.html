@@ -5,10 +5,14 @@
     <title>Agregar PAP PATI - SgOVI</title>
 </head>
 <body>
-    <h1>Agregar Nuevo PAP PATI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/pap-patis/list">Volver a PAP PATI</a>
-
-    <form th:action="@{/pap-patis/add}" th:object="${papPati}" method="post">
+    <header>
+        <h1>Agregar Nuevo PAP PATI</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/pap-patis/list">Volver a PAP PATI</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/pap-patis/add}" th:object="${papPati}" method="post">
         <p>
             <label for="phone">Teléfono:</label>
             <input type="tel" id="phone" th:field="*{phone}" required>
@@ -57,7 +61,8 @@
             <button type="submit">Guardar</button>
             <a href="/pap-patis/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>
 

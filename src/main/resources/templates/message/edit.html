@@ -5,10 +5,14 @@
     <title>Editar Mensaje - SgOVI</title>
 </head>
 <body>
-    <h1>Editar Mensaje</h1>
-    <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
-
-    <form th:action="@{/messages/edit}" th:object="${message}" method="post">
+    <header>
+        <h1>Editar Mensaje</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/messages/edit}" th:object="${message}" method="post">
         <input type="hidden" th:field="*{idMessage}">
         <p>
             <label for="messageDateTime">Fecha/Hora:</label>
@@ -33,7 +37,8 @@
             <button type="submit">Actualizar</button>
             <a href="/messages/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>
 

@@ -5,10 +5,14 @@
     <title>Editar Usuario OVI - SgOVI</title>
 </head>
 <body>
-    <h1>Editar Usuario OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
-
-    <form th:action="@{/ovi-users/edit}" th:object="${oviUser}" method="post">
+    <header>
+        <h1>Editar Usuario OVI</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/ovi-users/edit}" th:object="${oviUser}" method="post">
         <input type="hidden" th:field="*{idOviUser}">
         <p>
             <label for="name">Nombre:</label>
@@ -46,7 +50,8 @@
             <button type="submit">Actualizar</button>
             <a href="/ovi-users/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>
 

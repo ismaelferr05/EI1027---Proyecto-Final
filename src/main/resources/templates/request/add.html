@@ -5,10 +5,14 @@
     <title>Agregar Solicitud - SgOVI</title>
 </head>
 <body>
-    <h1>Agregar Nueva Solicitud</h1>
-    <a href="/">Volver al inicio</a> | <a href="/requests/list">Volver a Solicitudes</a>
-
-    <form th:action="@{/requests/add}" th:object="${request}" method="post">
+    <header>
+        <h1>Agregar Nueva Solicitud</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/requests/list">Volver a Solicitudes</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/requests/add}" th:object="${request}" method="post">
         <p>
             <label for="description">Descripción:</label>
             <textarea id="description" th:field="*{description}" required></textarea>
@@ -44,7 +48,8 @@
             <button type="submit">Guardar</button>
             <a href="/requests/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>
 

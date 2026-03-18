@@ -5,10 +5,14 @@
     <title>Agregar Participante - SgOVI</title>
 </head>
 <body>
-    <h1>Agregar Nuevo Participante</h1>
-    <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
-
-    <form th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
+    <header>
+        <h1>Agregar Nuevo Participante</h1>
+        <nav aria-label="Navegación">
+            <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
+        </nav>
+    </header>
+    <main>
+        <form th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
         <p>
             <label for="attendance">Asistencia:</label>
             <input type="text" id="attendance" th:field="*{attendance}" required>
@@ -42,7 +46,8 @@
             <button type="submit">Guardar</button>
             <a href="/participant-lists/list">Cancelar</a>
         </p>
-    </form>
+        </form>
+    </main>
 </body>
 </html>
 
