@@ -10,11 +10,11 @@ public class ParticipantListRowMapper implements RowMapper<ParticipantList> {
     public ParticipantList mapRow(ResultSet rs, int rowNum) throws SQLException {
         ParticipantList participantList = new ParticipantList();
         participantList.setIdParticipantList(rs.getInt("participantList_id"));
-        participantList.setAttendance(rs.getBoolean("attendance"));
+        participantList.setAttendance(rs.getString("attendance"));
         participantList.setAttendanceUrl(rs.getString("attendanceUrl"));
-        participantList.setIdActivity(rs.getObject("activity_id", Integer.class));
-        participantList.setIdOviUser(rs.getObject("oviuser_id", Integer.class));
-        participantList.setIdPapPati(rs.getObject("pappati_id", Integer.class));
+        participantList.setIdActivity(rs.getInt("activity_id"));
+        participantList.setIdOviUser(rs.getInt("oviuser_id"));
+        participantList.setIdPapPati(rs.getInt("pappati_id"));
         return participantList;
     }
 }

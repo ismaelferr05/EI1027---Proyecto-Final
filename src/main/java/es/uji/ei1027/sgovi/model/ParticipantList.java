@@ -2,7 +2,7 @@ package es.uji.ei1027.sgovi.model;
 
 public class ParticipantList {
     private int idParticipantList;
-    private boolean attendance;
+    private String attendance;
     private String attendanceUrl;
     private Integer idActivity;
     private Integer idOviUser;
@@ -10,15 +10,15 @@ public class ParticipantList {
 
     public ParticipantList() {}
 
-    public ParticipantList(boolean attendance, String attendanceUrl) {
+    public ParticipantList(String attendance, String attendanceUrl) {
         this.attendance = attendance;
         this.attendanceUrl = attendanceUrl;
     }
 
     public int getIdParticipantList() { return idParticipantList; }
     public void setIdParticipantList(int idParticipantList) { this.idParticipantList = idParticipantList; }
-    public boolean getAttendance() { return attendance; }
-    public void setAttendance(boolean attendance) { this.attendance = attendance; }
+    public String getAttendance() { return attendance; }
+    public void setAttendance(String attendance) { this.attendance = attendance; }
     public String getAttendanceUrl() { return attendanceUrl; }
     public void setAttendanceUrl(String attendanceUrl) { this.attendanceUrl = attendanceUrl; }
 
