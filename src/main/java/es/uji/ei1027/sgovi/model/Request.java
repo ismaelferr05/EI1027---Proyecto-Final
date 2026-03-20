@@ -8,13 +8,13 @@ public class Request {
     private String training;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Integer experience;
+    private String experience;
     private String experienceType;
     private Integer idOviUser;
 
     public Request() {}
 
-    public Request(String description, String training, LocalDate startDate, LocalDate endDate, Integer experience, String experienceType) {
+    public Request(String description, String training, LocalDate startDate, LocalDate endDate, String experience, String experienceType) {
         this.description = description;
         this.training = training;
         this.startDate = startDate;
@@ -33,8 +33,8 @@ public class Request {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-    public Integer getExperience() { return experience; }
-    public void setExperience(Integer experience) { this.experience = experience; }
+    public String getExperience() { return experience; }
+    public void setExperience(String experience) { this.experience = experience; }
     public String getExperienceType() { return experienceType; }
     public void setExperienceType(String experienceType) { this.experienceType = experienceType; }
     public Integer getIdOviUser() { return idOviUser; }

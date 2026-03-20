@@ -16,7 +16,7 @@
         <input type="hidden" th:field="*{idContract}">
         <p>
             <label for="wage">Salario:</label>
-            <input type="number" id="wage" th:field="*{wage}" step="0.01" required>
+            <input type="text" id="wage" th:field="*{wage}" required>
         </p>
         <p>
             <label for="startDate">Fecha Inicio:</label>
@@ -28,7 +28,7 @@
         </p>
         <p>
             <label for="url">URL:</label>
-            <input type="url" id="url" th:field="*{url}" required>
+            <input type="url" id="url" th:field="*{url}">
         </p>
         <p>
             <label for="idNegotiation">ID Negociación:</label>
