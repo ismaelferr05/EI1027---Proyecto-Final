@@ -15,7 +15,10 @@
         <form th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
         <p>
             <label for="attendance">Asistencia:</label>
-            <input type="text" id="attendance" th:field="*{attendance}" required>
+            <select id="attendance" th:field="*{attendance}" required>
+                <option th:value="true">Sí</option>
+                <option th:value="false">No</option>
+            </select>
         </p>
         <p>
             <label for="attendanceUrl">URL de Asistencia:</label>

@@ -15,7 +15,7 @@
         <form th:action="@{/contracts/add}" th:object="${contract}" method="post">
         <p>
             <label for="wage">Salario:</label>
-            <input type="text" id="wage" th:field="*{wage}" required>
+            <input type="number" id="wage" th:field="*{wage}" step="0.01" required>
         </p>
         <p>
             <label for="startDate">Fecha Inicio:</label>
@@ -27,7 +27,7 @@
         </p>
         <p>
             <label for="url">URL:</label>
-            <input type="url" id="url" th:field="*{url}">
+            <input type="url" id="url" th:field="*{url}" required>
         </p>
         <p>
             <label for="idNegotiation">ID Negociación:</label>

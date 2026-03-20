@@ -10,7 +10,7 @@ public class ContractRowMapper implements RowMapper<Contract> {
     public Contract mapRow(ResultSet rs, int rowNum) throws SQLException {
         Contract contract = new Contract();
         contract.setIdContract(rs.getInt("contract_id"));
-        contract.setWage(rs.getString("wage"));
+        contract.setWage(rs.getBigDecimal("wage"));
         contract.setStartDate(rs.getDate("startDate").toLocalDate());
         contract.setEndDate(rs.getDate("endDate").toLocalDate());
         contract.setUrl(rs.getString("url"));
