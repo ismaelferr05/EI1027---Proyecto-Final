@@ -5,14 +5,10 @@
     <title>Agregar Mensaje - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Agregar Nuevo Mensaje</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/messages/add}" th:object="${message}" method="post">
+    <h1>Agregar Nuevo Mensaje</h1>
+    <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
+
+    <form th:action="@{/messages/add}" th:object="${message}" method="post">
         <p>
             <label for="messageDateTime">Fecha/Hora:</label>
             <input type="datetime-local" id="messageDateTime" th:field="*{messageDateTime}" required>
@@ -36,8 +32,7 @@
             <button type="submit">Guardar</button>
             <a href="/messages/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

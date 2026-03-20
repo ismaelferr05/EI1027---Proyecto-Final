@@ -5,14 +5,10 @@
     <title>Editar Solicitud - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Editar Solicitud</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/requests/list">Volver a Solicitudes</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/requests/edit}" th:object="${request}" method="post">
+    <h1>Editar Solicitud</h1>
+    <a href="/">Volver al inicio</a> | <a href="/requests/list">Volver a Solicitudes</a>
+
+    <form th:action="@{/requests/edit}" th:object="${request}" method="post">
         <input type="hidden" th:field="*{idRequest}">
         <p>
             <label for="description">Descripción:</label>
@@ -49,8 +45,7 @@
             <button type="submit">Actualizar</button>
             <a href="/requests/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

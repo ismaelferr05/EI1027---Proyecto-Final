@@ -5,14 +5,10 @@
     <title>Editar Contrato - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Editar Contrato</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/contracts/edit}" th:object="${contract}" method="post">
+    <h1>Editar Contrato</h1>
+    <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
+
+    <form th:action="@{/contracts/edit}" th:object="${contract}" method="post">
         <input type="hidden" th:field="*{idContract}">
         <p>
             <label for="wage">Salario:</label>
@@ -41,8 +37,7 @@
             <button type="submit">Actualizar</button>
             <a href="/contracts/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

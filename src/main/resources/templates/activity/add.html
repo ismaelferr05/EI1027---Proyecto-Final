@@ -5,14 +5,10 @@
     <title>Agregar Actividad - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Agregar Nueva Actividad</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/activities/list">Volver a Actividades</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/activities/add}" th:object="${activity}" method="post">
+    <h1>Agregar Nueva Actividad</h1>
+    <a href="/">Volver al inicio</a> | <a href="/activities/list">Volver a Actividades</a>
+
+    <form th:action="@{/activities/add}" th:object="${activity}" method="post">
         <p>
             <label for="name">Nombre:</label>
             <input type="text" id="name" th:field="*{name}" required>
@@ -48,8 +44,7 @@
             <button type="submit">Guardar</button>
             <a href="/activities/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

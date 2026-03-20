@@ -5,14 +5,10 @@
     <title>Editar Participante - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Editar Participante</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/participant-lists/edit}" th:object="${participantList}" method="post">
+    <h1>Editar Participante</h1>
+    <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
+
+    <form th:action="@{/participant-lists/edit}" th:object="${participantList}" method="post">
         <input type="hidden" th:field="*{idParticipantList}">
         <p>
             <label for="attendance">Asistencia:</label>
@@ -47,8 +43,7 @@
             <button type="submit">Actualizar</button>
             <a href="/participant-lists/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

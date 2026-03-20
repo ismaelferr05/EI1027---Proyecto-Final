@@ -5,14 +5,10 @@
     <title>Agregar Negociación - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Agregar Nueva Negociación</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/negotiations/list">Volver a Negociaciones</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/negotiations/add}" th:object="${negotiation}" method="post">
+    <h1>Agregar Nueva Negociación</h1>
+    <a href="/">Volver al inicio</a> | <a href="/negotiations/list">Volver a Negociaciones</a>
+
+    <form th:action="@{/negotiations/add}" th:object="${negotiation}" method="post">
         <p>
             <label for="stateOfApproval">Estado de Aprobación:</label>
             <input type="text" id="stateOfApproval" th:field="*{stateOfApproval}" required>
@@ -35,8 +31,7 @@
             <button type="submit">Guardar</button>
             <a href="/negotiations/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 

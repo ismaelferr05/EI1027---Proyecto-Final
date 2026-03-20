@@ -5,14 +5,10 @@
     <title>Agregar Contrato - SgOVI</title>
 </head>
 <body>
-    <header>
-        <h1>Agregar Nuevo Contrato</h1>
-        <nav aria-label="Navegación">
-            <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
-        </nav>
-    </header>
-    <main>
-        <form th:action="@{/contracts/add}" th:object="${contract}" method="post">
+    <h1>Agregar Nuevo Contrato</h1>
+    <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
+
+    <form th:action="@{/contracts/add}" th:object="${contract}" method="post">
         <p>
             <label for="wage">Salario:</label>
             <input type="text" id="wage" th:field="*{wage}" required>
@@ -40,8 +36,7 @@
             <button type="submit">Guardar</button>
             <a href="/contracts/list">Cancelar</a>
         </p>
-        </form>
-    </main>
+    </form>
 </body>
 </html>
 
