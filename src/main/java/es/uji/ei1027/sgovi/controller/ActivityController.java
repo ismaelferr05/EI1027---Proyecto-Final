@@ -6,6 +6,7 @@ import es.uji.ei1027.sgovi.model.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -32,7 +33,15 @@ public class ActivityController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Activity activity) {
+    public String add(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, Model model) {
+        ActivityValidator activityValidator = new ActivityValidator();
+        activityValidator.validate(activity, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("trainers", trainerDao.getAll());
+            return "activity/add";
+        }
+
         activityDao.add(activity);
         return "redirect:/activities/list";
     }
@@ -56,4 +65,3 @@ public class ActivityController {
         return "redirect:/activities/list";
     }
 }
-

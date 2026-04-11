@@ -9,29 +9,37 @@
     <a href="/">Volver al inicio</a> | <a href="/activities/list">Volver a Actividades</a>
 
     <form th:action="@{/activities/add}" th:object="${activity}" method="post">
+        <p th:if="${#fields.hasAnyErrors()}" style="color: red;">Revisa los campos marcados.</p>
+
         <p>
             <label for="name">Nombre:</label>
             <input type="text" id="name" th:field="*{name}" required maxlength="100" placeholder="Nombre de la actividad">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></span>
         </p>
         <p>
             <label for="date">Fecha:</label>
             <input type="date" id="date" th:field="*{date}" required>
+            <span th:if="${#fields.hasErrors('date')}" th:errors="*{date}" style="color: red;"></span>
         </p>
         <p>
             <label for="duration">Duración (horas):</label>
             <input type="number" id="duration" th:field="*{duration}" required min="1" step="1" placeholder="Ej. 2">
+            <span th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color: red;"></span>
         </p>
         <p>
             <label for="location">Localización:</label>
             <input type="text" id="location" th:field="*{location}" required maxlength="150" placeholder="Lugar donde se realiza">
+            <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" style="color: red;"></span>
         </p>
         <p>
             <label for="category">Categoría:</label>
             <input type="text" id="category" th:field="*{category}" required maxlength="50" placeholder="Ej. Deportes, Taller, Charla">
+            <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}" style="color: red;"></span>
         </p>
         <p>
             <label for="description">Descripción:</label>
             <textarea id="description" th:field="*{description}" maxlength="1000" placeholder="Descripción opcional de la actividad"></textarea>
+            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color: red;"></span>
         </p>
         <p>
             <label for="idTrainer">ID Formador:</label>
@@ -39,6 +47,7 @@
                 <option value="">Selecciona un formador</option>
                 <option th:each="trainer : ${trainers}" th:value="${trainer.idTrainer}" th:text="${trainer.name}"></option>
             </select>
+            <span th:if="${#fields.hasErrors('idTrainer')}" th:errors="*{idTrainer}" style="color: red;"></span>
         </p>
         <p>
             <button type="submit">Guardar</button>
