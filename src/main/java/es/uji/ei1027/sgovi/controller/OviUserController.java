@@ -5,6 +5,7 @@ import es.uji.ei1027.sgovi.model.OviUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -27,7 +28,14 @@ public class OviUserController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute OviUser oviUser) {
+    public String add(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult) {
+        OviUserValidator oviUserValidator = new OviUserValidator();
+        oviUserValidator.validate(oviUser, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "oviuser/add";
+        }
+
         oviUserDao.add(oviUser);
         return "redirect:/ovi-users/list";
     }
@@ -39,7 +47,14 @@ public class OviUserController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute OviUser oviUser) {
+    public String edit(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult) {
+        OviUserValidator oviUserValidator = new OviUserValidator();
+        oviUserValidator.validate(oviUser, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "oviuser/edit";
+        }
+
         oviUserDao.update(oviUser);
         return "redirect:/ovi-users/list";
     }
