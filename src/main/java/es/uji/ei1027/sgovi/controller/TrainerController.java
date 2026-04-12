@@ -5,6 +5,7 @@ import es.uji.ei1027.sgovi.model.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -27,7 +28,14 @@ public class TrainerController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Trainer trainer) {
+    public String add(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult) {
+        TrainerValidator trainerValidator = new TrainerValidator();
+        trainerValidator.validate(trainer, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "trainer/add";
+        }
+
         trainerDao.add(trainer);
         return "redirect:/trainers/list";
     }
@@ -39,7 +47,14 @@ public class TrainerController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Trainer trainer) {
+    public String edit(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult) {
+        TrainerValidator trainerValidator = new TrainerValidator();
+        trainerValidator.validate(trainer, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "trainer/edit";
+        }
+
         trainerDao.update(trainer);
         return "redirect:/trainers/list";
     }
