@@ -12,15 +12,17 @@ public class OviUserDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(OviUser oviUser) {
-        String sql = "INSERT INTO OviUser (name, phone, password, province, town, pc, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, oviUser.getName(), oviUser.getPhone(), oviUser.getPassword(),
-                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender());
+        String sql = "INSERT INTO OviUser (name, lastName, email, phone, password, province, town, pc, age, gender, status, lopdConsent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, oviUser.getName(), oviUser.getLastName(), oviUser.getEmail(), oviUser.getPhone(), oviUser.getPassword(),
+                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(),
+                oviUser.getStatus(), oviUser.isLopdConsent());
     }
 
     public void update(OviUser oviUser) {
-        String sql = "UPDATE OviUser SET name=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=? WHERE oviuser_id=?";
-        jdbcTemplate.update(sql, oviUser.getName(), oviUser.getPhone(), oviUser.getPassword(),
-                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(), oviUser.getIdOviUser());
+        String sql = "UPDATE OviUser SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, status=?, lopdConsent=? WHERE oviuser_id=?";
+        jdbcTemplate.update(sql, oviUser.getName(), oviUser.getLastName(), oviUser.getEmail(), oviUser.getPhone(), oviUser.getPassword(),
+                oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(),
+                oviUser.getStatus(), oviUser.isLopdConsent(), oviUser.getIdOviUser());
     }
 
     public void delete(int idOviUser) {

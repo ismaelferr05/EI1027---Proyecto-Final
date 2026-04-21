@@ -26,7 +26,9 @@ public class RequestController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("request", new Request());
+        Request request = new Request();
+        request.setStatus("IN_REVIEW");
+        model.addAttribute("request", request);
         model.addAttribute("oviUsers", oviUserDao.getAll());
         return "request/add";
     }

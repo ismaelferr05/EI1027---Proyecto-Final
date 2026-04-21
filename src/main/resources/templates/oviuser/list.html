@@ -13,12 +13,16 @@
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
                 <th>Teléfono</th>
                 <th>Provincia</th>
                 <th>Ciudad</th>
                 <th>Código Postal</th>
                 <th>Edad</th>
                 <th>Género</th>
+                <th>Estado</th>
+                <th>LOPD</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -26,12 +30,16 @@
             <tr th:each="oviUser : ${oviUsers}">
                 <td th:text="${oviUser.idOviUser}"></td>
                 <td th:text="${oviUser.name}"></td>
+                <td th:text="${oviUser.lastName}"></td>
+                <td th:text="${oviUser.email}"></td>
                 <td th:text="${oviUser.phone}"></td>
                 <td th:text="${oviUser.province}"></td>
                 <td th:text="${oviUser.town}"></td>
                 <td th:text="${oviUser.pc}"></td>
                 <td th:text="${oviUser.age}"></td>
                 <td th:text="${oviUser.gender}"></td>
+                <td th:text="${oviUser.status}"></td>
+                <td th:text="${oviUser.lopdConsent ? 'Sí' : 'No'}"></td>
                 <td>
                     <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.idOviUser})}">Editar</a>
                     <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>

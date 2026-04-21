@@ -15,7 +15,7 @@
         </p>
         <p>
             <label for="training">Formación:</label>
-            <input type="text" id="training" th:field="*{training}" required>
+            <input type="text" id="training" th:field="*{training}" maxlength="100">
         </p>
         <p>
             <label for="startDate">Fecha Inicio:</label>
@@ -27,11 +27,39 @@
         </p>
         <p>
             <label for="experience">Experiencia:</label>
-            <input type="text" id="experience" th:field="*{experience}">
+            <input type="number" id="experience" th:field="*{experience}" min="0" step="1">
         </p>
         <p>
-            <label for="experienceType">Tipo de Experiencia:</label>
-            <input type="text" id="experienceType" th:field="*{experienceType}">
+            <label for="experienceType">Tipo de experiencia:</label>
+            <input type="text" id="experienceType" th:field="*{experienceType}" maxlength="50">
+        </p>
+        <p>
+            <label for="preferredGender">Género preferido:</label>
+            <select id="preferredGender" th:field="*{preferredGender}">
+                <option value="">Sin preferencia</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+            </select>
+        </p>
+        <p>
+            <label for="preferredPc">Código postal preferido:</label>
+            <input type="text" id="preferredPc" th:field="*{preferredPc}" maxlength="10">
+        </p>
+        <p>
+            <label for="preferredAge">Edad preferida:</label>
+            <input type="number" id="preferredAge" th:field="*{preferredAge}" min="0" step="1">
+        </p>
+        <p>
+            <label for="status">Estado:</label>
+            <select id="status" th:field="*{status}" required>
+                <option value="">Selecciona un estado</option>
+                <option value="IN_REVIEW">IN_REVIEW</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="CONTRACT_ACTIVE">CONTRACT_ACTIVE</option>
+                <option value="CONTRACT_FINISHED">CONTRACT_FINISHED</option>
+            </select>
         </p>
         <p>
             <label for="idOviUser">ID Usuario OVI:</label>

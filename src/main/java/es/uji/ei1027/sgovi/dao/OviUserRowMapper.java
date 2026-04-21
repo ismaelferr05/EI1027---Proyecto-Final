@@ -11,13 +11,17 @@ public class OviUserRowMapper implements RowMapper<OviUser> {
         OviUser oviUser = new OviUser();
         oviUser.setIdOviUser(rs.getInt("oviuser_id"));
         oviUser.setName(rs.getString("name"));
+        oviUser.setLastName(rs.getString("lastName"));
+        oviUser.setEmail(rs.getString("email"));
         oviUser.setPhone(rs.getString("phone"));
         oviUser.setPassword(rs.getString("password"));
         oviUser.setProvince(rs.getString("province"));
         oviUser.setTown(rs.getString("town"));
         oviUser.setPc(rs.getString("pc"));
-        oviUser.setAge(rs.getInt("age"));
+        oviUser.setAge((Integer) rs.getObject("age"));
         oviUser.setGender(rs.getString("gender"));
+        oviUser.setStatus(rs.getString("status"));
+        oviUser.setLopdConsent(rs.getBoolean("lopdConsent"));
         return oviUser;
     }
 }

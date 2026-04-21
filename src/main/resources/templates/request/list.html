@@ -17,6 +17,11 @@
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th>Experiencia</th>
+                <th>Tipo Experiencia</th>
+                <th>Género Preferido</th>
+                <th>CP Preferido</th>
+                <th>Edad Preferida</th>
+                <th>Estado</th>
                 <th>ID Usuario OVI</th>
                 <th>Acciones</th>
             </tr>
@@ -29,6 +34,11 @@
                 <td th:text="${request.startDate}"></td>
                 <td th:text="${request.endDate}"></td>
                 <td th:text="${request.experience}"></td>
+                <td th:text="${request.experienceType}"></td>
+                <td th:text="${request.preferredGender}"></td>
+                <td th:text="${request.preferredPc}"></td>
+                <td th:text="${request.preferredAge}"></td>
+                <td th:text="${request.status}"></td>
                 <td th:text="${request.idOviUser}"></td>
                 <td>
                     <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}">Editar</a>

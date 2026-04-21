@@ -2,25 +2,25 @@ package es.uji.ei1027.sgovi.model;
 
 public class ParticipantList {
     private int idParticipantList;
-    private String attendance;
-    private String attendanceUrl;
+    private boolean attendance;
+    private String attendanceCertificateUrl;
     private Integer idActivity;
     private Integer idOviUser;
     private Integer idPapPati;
 
     public ParticipantList() {}
 
-    public ParticipantList(String attendance, String attendanceUrl) {
+    public ParticipantList(boolean attendance, String attendanceCertificateUrl) {
         this.attendance = attendance;
-        this.attendanceUrl = attendanceUrl;
+        this.attendanceCertificateUrl = attendanceCertificateUrl;
     }
 
     public int getIdParticipantList() { return idParticipantList; }
     public void setIdParticipantList(int idParticipantList) { this.idParticipantList = idParticipantList; }
-    public String getAttendance() { return attendance; }
-    public void setAttendance(String attendance) { this.attendance = attendance; }
-    public String getAttendanceUrl() { return attendanceUrl; }
-    public void setAttendanceUrl(String attendanceUrl) { this.attendanceUrl = attendanceUrl; }
+    public boolean isAttendance() { return attendance; }
+    public void setAttendance(boolean attendance) { this.attendance = attendance; }
+    public String getAttendanceCertificateUrl() { return attendanceCertificateUrl; }
+    public void setAttendanceCertificateUrl(String attendanceCertificateUrl) { this.attendanceCertificateUrl = attendanceCertificateUrl; }
 
     public Integer getIdActivity() {
         return idActivity;

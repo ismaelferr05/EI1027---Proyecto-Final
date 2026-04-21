@@ -2,6 +2,7 @@ package es.uji.ei1027.sgovi.dao;
 
 import es.uji.ei1027.sgovi.model.Contract;
 import org.springframework.jdbc.core.RowMapper;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,11 +11,13 @@ public class ContractRowMapper implements RowMapper<Contract> {
     public Contract mapRow(ResultSet rs, int rowNum) throws SQLException {
         Contract contract = new Contract();
         contract.setIdContract(rs.getInt("contract_id"));
-        contract.setWage(rs.getString("wage"));
+        BigDecimal wage = rs.getBigDecimal("wage");
+        contract.setWage(wage);
         contract.setStartDate(rs.getDate("startDate").toLocalDate());
         contract.setEndDate(rs.getDate("endDate").toLocalDate());
         contract.setUrl(rs.getString("url"));
-        contract.setIdNegotiation(rs.getInt("negotiation_id"));
+        Object negotiationId = rs.getObject("negotiation_id");
+        contract.setIdNegotiation(negotiationId != null ? rs.getInt("negotiation_id") : null);
         return contract;
     }
 }

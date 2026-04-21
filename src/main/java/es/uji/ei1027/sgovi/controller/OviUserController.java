@@ -23,7 +23,10 @@ public class OviUserController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("oviUser", new OviUser());
+        OviUser oviUser = new OviUser();
+        oviUser.setStatus("PENDING");
+        oviUser.setLopdConsent(false);
+        model.addAttribute("oviUser", oviUser);
         return "oviuser/add";
     }
 

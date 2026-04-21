@@ -8,19 +8,28 @@ public class Request {
     private String training;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String experience;
+    private Integer experience;
     private String experienceType;
+    private String preferredGender;
+    private String preferredPc;
+    private Integer preferredAge;
+    private String status;
     private Integer idOviUser;
 
     public Request() {}
 
-    public Request(String description, String training, LocalDate startDate, LocalDate endDate, String experience, String experienceType) {
+    public Request(String description, String training, LocalDate startDate, LocalDate endDate, Integer experience, String experienceType, String preferredGender, String preferredPc, Integer preferredAge, String status, Integer idOviUser) {
         this.description = description;
         this.training = training;
         this.startDate = startDate;
         this.endDate = endDate;
         this.experience = experience;
         this.experienceType = experienceType;
+        this.preferredGender = preferredGender;
+        this.preferredPc = preferredPc;
+        this.preferredAge = preferredAge;
+        this.status = status;
+        this.idOviUser = idOviUser;
     }
 
     public int getIdRequest() { return idRequest; }
@@ -33,10 +42,18 @@ public class Request {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-    public String getExperience() { return experience; }
-    public void setExperience(String experience) { this.experience = experience; }
+    public Integer getExperience() { return experience; }
+    public void setExperience(Integer experience) { this.experience = experience; }
     public String getExperienceType() { return experienceType; }
     public void setExperienceType(String experienceType) { this.experienceType = experienceType; }
+    public String getPreferredGender() { return preferredGender; }
+    public void setPreferredGender(String preferredGender) { this.preferredGender = preferredGender; }
+    public String getPreferredPc() { return preferredPc; }
+    public void setPreferredPc(String preferredPc) { this.preferredPc = preferredPc; }
+    public Integer getPreferredAge() { return preferredAge; }
+    public void setPreferredAge(Integer preferredAge) { this.preferredAge = preferredAge; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public Integer getIdOviUser() { return idOviUser; }
     public void setIdOviUser(Integer idOviUser) { this.idOviUser = idOviUser; }
 }

@@ -12,17 +12,17 @@ public class PapPatiDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(PapPati papPati) {
-        String sql = "INSERT INTO PapPati (phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
-                papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(),
-                papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType());
+        String sql = "INSERT INTO PapPati (name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, papPati.getName(), papPati.getLastName(), papPati.getEmail(), papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
+                papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(), papPati.getTraining(),
+                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus());
     }
 
     public void update(PapPati papPati) {
-        String sql = "UPDATE PapPati SET phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cvUrl=?, training=?, experience=?, experienceType=? WHERE pappati_id=?";
-        jdbcTemplate.update(sql, papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
-                papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(),
-                papPati.getTraining(), papPati.getExperience(), papPati.getExperienceType(), papPati.getIdPapPati());
+        String sql = "UPDATE PapPati SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cvUrl=?, training=?, experience=?, experienceType=?, status=? WHERE pappati_id=?";
+        jdbcTemplate.update(sql, papPati.getName(), papPati.getLastName(), papPati.getEmail(), papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
+                papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(), papPati.getTraining(),
+                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus(), papPati.getIdPapPati());
     }
 
     public void delete(int idPapPati) {

@@ -13,6 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Asistencia</th>
+                <th>Certificado</th>
                 <th>ID Actividad</th>
                 <th>ID Usuario OVI</th>
                 <th>ID PAP PATI</th>
@@ -22,7 +23,8 @@
         <tbody>
             <tr th:each="participantList : ${participantLists}">
                 <td th:text="${participantList.idParticipantList}"></td>
-                <td th:text="${participantList.attendance}"></td>
+                <td th:text="${participantList.attendance ? 'Sí' : 'No'}"></td>
+                <td th:text="${participantList.attendanceCertificateUrl}"></td>
                 <td th:text="${participantList.idActivity}"></td>
                 <td th:text="${participantList.idOviUser}"></td>
                 <td th:text="${participantList.idPapPati}"></td>

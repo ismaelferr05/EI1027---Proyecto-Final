@@ -13,15 +13,17 @@ public class RequestDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Request request) {
-        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOviUser());
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
+                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getIdOviUser());
     }
 
     public void update(Request request) {
-        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, oviuser_id=? WHERE request_id=?";
+        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, preferredGender=?, preferredPc=?, preferredAge=?, status=?, oviuser_id=? WHERE request_id=?";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getIdOviUser(), request.getIdRequest());
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
+                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getIdOviUser(), request.getIdRequest());
     }
 
     public void delete(int idRequest) {

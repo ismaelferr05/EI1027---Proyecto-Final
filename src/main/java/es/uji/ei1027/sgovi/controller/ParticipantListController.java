@@ -34,7 +34,9 @@ public class ParticipantListController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("participantList", new ParticipantList());
+        ParticipantList participantList = new ParticipantList();
+        participantList.setAttendance(false);
+        model.addAttribute("participantList", participantList);
         model.addAttribute("activities", activityDao.getAll());
         model.addAttribute("oviUsers", oviUserDao.getAll());
         model.addAttribute("papPatis", papPatiDao.getAll());

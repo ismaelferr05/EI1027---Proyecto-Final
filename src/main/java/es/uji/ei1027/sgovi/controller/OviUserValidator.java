@@ -27,38 +27,52 @@ public class OviUserValidator implements Validator {
             errors.rejectValue("phone", "maximo", "El telefono no puede superar 20 caracteres");
         }
 
+        if (isBlank(user.getLastName())) {
+            errors.rejectValue("lastName", "obligatorio", "Los apellidos son obligatorios");
+        } else if (user.getLastName().length() > 50) {
+            errors.rejectValue("lastName", "maximo", "Los apellidos no pueden superar 50 caracteres");
+        }
+
+        if (isBlank(user.getEmail())) {
+            errors.rejectValue("email", "obligatorio", "El email es obligatorio");
+        } else if (user.getEmail().length() > 100) {
+            errors.rejectValue("email", "maximo", "El email no puede superar 100 caracteres");
+        }
+
         if (isBlank(user.getPassword())) {
             errors.rejectValue("password", "obligatorio", "La contrasena es obligatoria");
         } else if (user.getPassword().length() > 255) {
             errors.rejectValue("password", "maximo", "La contrasena no puede superar 255 caracteres");
         }
 
-        if (isBlank(user.getProvince())) {
-            errors.rejectValue("province", "obligatorio", "La provincia es obligatoria");
-        } else if (user.getProvince().length() > 50) {
+        if (!isBlank(user.getProvince()) && user.getProvince().length() > 50) {
             errors.rejectValue("province", "maximo", "La provincia no puede superar 50 caracteres");
         }
 
-        if (isBlank(user.getTown())) {
-            errors.rejectValue("town", "obligatorio", "La ciudad es obligatoria");
-        } else if (user.getTown().length() > 50) {
+        if (!isBlank(user.getTown()) && user.getTown().length() > 50) {
             errors.rejectValue("town", "maximo", "La ciudad no puede superar 50 caracteres");
         }
 
-        if (isBlank(user.getPc())) {
-            errors.rejectValue("pc", "obligatorio", "El codigo postal es obligatorio");
-        } else if (user.getPc().length() > 10) {
+        if (!isBlank(user.getPc()) && user.getPc().length() > 10) {
             errors.rejectValue("pc", "maximo", "El codigo postal no puede superar 10 caracteres");
         }
 
-        if (user.getAge() < 0) {
+        if (user.getAge() != null && user.getAge() < 0) {
             errors.rejectValue("age", "minimo", "La edad no puede ser negativa");
         }
 
-        if (isBlank(user.getGender())) {
-            errors.rejectValue("gender", "obligatorio", "El genero es obligatorio");
-        } else if (user.getGender().length() > 10) {
+        if (!isBlank(user.getGender()) && user.getGender().length() > 10) {
             errors.rejectValue("gender", "maximo", "El genero no puede superar 10 caracteres");
+        }
+
+        if (isBlank(user.getStatus())) {
+            errors.rejectValue("status", "obligatorio", "El estado es obligatorio");
+        } else if (user.getStatus().length() > 20) {
+            errors.rejectValue("status", "maximo", "El estado no puede superar 20 caracteres");
+        }
+
+        if (!user.isLopdConsent()) {
+            errors.rejectValue("lopdConsent", "obligatorio", "Debes aceptar el consentimiento LOPD");
         }
     }
 

@@ -13,24 +13,24 @@ public class MessageDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Message message) {
-        String sql = "INSERT INTO Message (messageDateTime, sender, receiver, negotiation_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Message (messageDateTime, sender, receiver, text, negotiation_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, Timestamp.valueOf(message.getMessageDateTime()),
-                message.getSender(), message.getReceiver(), message.getIdNegotiation());
+                message.getSender(), message.getReceiver(), message.getText(), message.getIdNegotiation());
     }
 
     public void update(Message message) {
-        String sql = "UPDATE Message SET messageDateTime=?, sender=?, receiver=?, negotiation_id=? WHERE idMessage=?";
+        String sql = "UPDATE Message SET messageDateTime=?, sender=?, receiver=?, text=?, negotiation_id=? WHERE messageId=?";
         jdbcTemplate.update(sql, Timestamp.valueOf(message.getMessageDateTime()),
-                message.getSender(), message.getReceiver(), message.getIdNegotiation(), message.getIdMessage());
+                message.getSender(), message.getReceiver(), message.getText(), message.getIdNegotiation(), message.getIdMessage());
     }
 
     public void delete(int idMessage) {
-        String sql = "DELETE FROM Message WHERE idMessage=?";
+        String sql = "DELETE FROM Message WHERE messageId=?";
         jdbcTemplate.update(sql, idMessage);
     }
 
     public Message get(int idMessage) {
-        String sql = "SELECT * FROM Message WHERE idMessage=?";
+        String sql = "SELECT * FROM Message WHERE messageId=?";
         return jdbcTemplate.queryForObject(sql, new MessageRowMapper(), idMessage);
     }
 

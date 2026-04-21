@@ -22,7 +22,9 @@ public class PapPatiController {
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("papPati", new PapPati());
+        PapPati papPati = new PapPati();
+        papPati.setStatus("PENDING");
+        model.addAttribute("papPati", papPati);
         return "pappati/add";
     }
 

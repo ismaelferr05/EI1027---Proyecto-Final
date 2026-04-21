@@ -12,11 +12,11 @@
         <input type="hidden" th:field="*{idParticipantList}">
         <p>
             <label for="attendance">Asistencia:</label>
-            <input type="text" id="attendance" th:field="*{attendance}" required>
+            <input type="checkbox" id="attendance" th:field="*{attendance}">
         </p>
         <p>
-            <label for="attendanceUrl">URL de Asistencia:</label>
-            <input type="url" id="attendanceUrl" th:field="*{attendanceUrl}">
+            <label for="attendanceCertificateUrl">URL del certificado de asistencia:</label>
+            <input type="url" id="attendanceCertificateUrl" th:field="*{attendanceCertificateUrl}" maxlength="255">
         </p>
         <p>
             <label for="idActivity">ID Actividad:</label>
@@ -27,15 +27,15 @@
         </p>
         <p>
             <label for="idOviUser">ID Usuario OVI:</label>
-            <select id="idOviUser" th:field="*{idOviUser}">
-                <option value="">Selecciona un usuario OVI (opcional)</option>
+            <select id="idOviUser" th:field="*{idOviUser}" required>
+                <option value="">Selecciona un usuario OVI</option>
                 <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="${oviUser.name}"></option>
             </select>
         </p>
         <p>
             <label for="idPapPati">ID PAP PATI:</label>
-            <select id="idPapPati" th:field="*{idPapPati}">
-                <option value="">Selecciona un PAP PATI (opcional)</option>
+            <select id="idPapPati" th:field="*{idPapPati}" required>
+                <option value="">Selecciona un PAP PATI</option>
                 <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="${papPati.phone}"></option>
             </select>
         </p>

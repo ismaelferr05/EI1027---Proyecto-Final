@@ -12,7 +12,14 @@
         <input type="hidden" th:field="*{idNegotiation}">
         <p>
             <label for="stateOfApproval">Estado de Aprobación:</label>
-            <input type="text" id="stateOfApproval" th:field="*{stateOfApproval}" required>
+            <select id="stateOfApproval" th:field="*{stateOfApproval}" required>
+                <option value="">Selecciona un estado</option>
+                <option value="PENDING">PENDING</option>
+                <option value="ACCEPTED">ACCEPTED</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="CANCELLED">CANCELLED</option>
+            </select>
         </p>
         <p>
             <label for="idRequest">ID Solicitud:</label>

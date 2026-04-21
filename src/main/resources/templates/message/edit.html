@@ -23,6 +23,10 @@
             <input type="text" id="receiver" th:field="*{receiver}" required>
         </p>
         <p>
+            <label for="text">Texto:</label>
+            <textarea id="text" th:field="*{text}" required maxlength="300"></textarea>
+        </p>
+        <p>
             <label for="idNegotiation">ID Negociación:</label>
             <select id="idNegotiation" th:field="*{idNegotiation}" required>
                 <option value="">Selecciona una negociación</option>
