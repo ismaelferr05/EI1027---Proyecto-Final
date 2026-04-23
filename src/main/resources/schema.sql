@@ -76,8 +76,8 @@ CREATE TABLE IF NOT EXISTS ParticipantList (
     attendanceCertificateUrl VARCHAR(255),
 
     activity_id INT NOT NULL,
-    oviuser_id INT NOT NULL,
-    pappati_id INT NOT NULL,
+    oviuser_id INT,
+    pappati_id INT,
 
     FOREIGN KEY (activity_id)
     REFERENCES Activity(activity_id)
@@ -86,13 +86,15 @@ CREATE TABLE IF NOT EXISTS ParticipantList (
 
     FOREIGN KEY (oviuser_id)
     REFERENCES OviUser(oviuser_id)
-    ON DELETE CASCADE
+    ON DELETE SET NULL
     ON UPDATE CASCADE,
 
     FOREIGN KEY (pappati_id)
     REFERENCES PapPati(pappati_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+
+    CHECK (oviuser_id IS NOT NULL OR pappati_id IS NOT NULL)
 
 );
 

@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Listado de Contratos</h1>
-    <a href="/">Volver al inicio</a> | <a href="/contracts/add">Agregar Contrato</a>
+    <a href="/">Volver al inicio</a>
 
     <table border="1" cellpadding="10">
         <thead>
@@ -29,8 +29,7 @@
                 <td><a th:href="${contract.url}" target="_blank">Ver</a></td>
                 <td th:text="${contract.idNegotiation}"></td>
                 <td>
-                    <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}">Editar</a>
-                    <a th:href="@{/contracts/delete/{id}(id=${contract.idContract})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
+                    <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}">Ver</a>
                 </td>
             </tr>
         </tbody>
