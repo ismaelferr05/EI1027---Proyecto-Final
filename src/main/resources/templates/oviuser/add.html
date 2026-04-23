@@ -1,90 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agregar Usuario OVI - SgOVI</title>
+   <meta charset="UTF-8" />
+   <title>Crear nuevo usuario OVI</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Agregar Nuevo Usuario OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
+<main class="container">
+   <h1>Nuevo usuario OVI</h1>
+   <form class="form-horizontal" th:action="@{/ovi-users/add}" th:object="${oviUser}" method="post">
+       <div class="form-group row">
+           <label for="name" class="control-label col-sm-2">Nombre:</label>
+           <input id="name" type="text" th:field="*{name}" class="form-control col-sm-4" maxlength="50">
+       </div>
 
-    <form th:action="@{/ovi-users/add}" th:object="${oviUser}" method="post">
-        <p th:if="${#fields.hasAnyErrors()}" style="color: red;">Revisa los campos marcados.</p>
+       <div class="form-group row">
+           <label for="lastName" class="control-label col-sm-2">Apellidos:</label>
+           <input id="lastName" type="text" th:field="*{lastName}" class="form-control col-sm-4" maxlength="50">
+       </div>
 
-        <p>
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" th:field="*{name}" required maxlength="50" placeholder="Nombre">
-            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="lastName">Apellidos:</label>
-            <input type="text" id="lastName" th:field="*{lastName}" required maxlength="50" placeholder="Apellidos">
-            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" required maxlength="100" placeholder="correo@ejemplo.com">
-            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="phone">Teléfono:</label>
-            <input type="tel" id="phone" th:field="*{phone}" required maxlength="20" placeholder="Ej. 600123456">
-            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" th:field="*{password}" required maxlength="255" placeholder="Contraseña">
-            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="province">Provincia:</label>
-            <input type="text" id="province" th:field="*{province}" maxlength="50">
-            <span th:if="${#fields.hasErrors('province')}" th:errors="*{province}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="town">Ciudad:</label>
-            <input type="text" id="town" th:field="*{town}" maxlength="50">
-            <span th:if="${#fields.hasErrors('town')}" th:errors="*{town}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="pc">Código postal:</label>
-            <input type="text" id="pc" th:field="*{pc}" maxlength="10" placeholder="Ej. 12006">
-            <span th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="age">Edad:</label>
-            <input type="number" id="age" th:field="*{age}" min="0" max="150" step="1" placeholder="Ej. 25">
-            <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="gender">Género:</label>
-            <select id="gender" th:field="*{gender}">
-                <option value="">Selecciona un género</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-                <option value="Otro">Otro</option>
-            </select>
-            <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="status">Estado:</label>
-            <select id="status" th:field="*{status}" required>
-                <option value="">Selecciona un estado</option>
-                <option value="PENDING">PENDING</option>
-                <option value="ACCEPTED">ACCEPTED</option>
-                <option value="REJECTED">REJECTED</option>
-            </select>
-            <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="lopdConsent">Consentimiento LOPD:</label>
-            <input type="checkbox" id="lopdConsent" th:field="*{lopdConsent}" required>
-            <span th:if="${#fields.hasErrors('lopdConsent')}" th:errors="*{lopdConsent}" style="color: red;"></span>
-        </p>
-        <p>
-            <button type="submit">Guardar</button>
-            <a href="/ovi-users/list">Cancelar</a>
-        </p>
-    </form>
+       <div class="form-group row">
+           <label for="email" class="control-label col-sm-2">Email:</label>
+           <input id="email" type="email" th:field="*{email}" class="form-control col-sm-4" maxlength="100">
+       </div>
+
+       <div class="form-group row">
+           <label for="phone" class="control-label col-sm-2">Teléfono:</label>
+           <input id="phone" type="text" th:field="*{phone}" class="form-control col-sm-4" maxlength="20">
+       </div>
+
+       <div class="form-group row">
+           <label for="password" class="control-label col-sm-2">Contraseña:</label>
+           <input id="password" type="password" th:field="*{password}" class="form-control col-sm-4" maxlength="255">
+       </div>
+
+       <div class="form-group row">
+           <label for="province" class="control-label col-sm-2">Provincia:</label>
+           <input id="province" type="text" th:field="*{province}" class="form-control col-sm-4" maxlength="50">
+       </div>
+
+       <div class="form-group row">
+           <label for="town" class="control-label col-sm-2">Población:</label>
+           <input id="town" type="text" th:field="*{town}" class="form-control col-sm-4" maxlength="50">
+       </div>
+
+       <div class="form-group row">
+           <label for="pc" class="control-label col-sm-2">Código postal:</label>
+           <input id="pc" type="text" th:field="*{pc}" class="form-control col-sm-4" maxlength="10">
+       </div>
+
+       <div class="form-group row">
+           <label for="age" class="control-label col-sm-2">Edad:</label>
+           <input id="age" type="number" th:field="*{age}" class="form-control col-sm-4" min="0" step="1">
+       </div>
+
+       <div class="form-group row">
+           <label for="gender" class="control-label col-sm-2">Género:</label>
+           <select id="gender" th:field="*{gender}" class="form-control col-sm-4">
+               <option value="">Selecciona un género</option>
+               <option value="Masculino">Masculino</option>
+               <option value="Femenino">Femenino</option>
+               <option value="Otro">Otro</option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="status" class="control-label col-sm-2">Estado:</label>
+           <select id="status" th:field="*{status}" class="form-control col-sm-4">
+               <option value="">Selecciona un estado</option>
+               <option value="PENDING">PENDING</option>
+               <option value="ACCEPTED">ACCEPTED</option>
+               <option value="REJECTED">REJECTED</option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="lopdConsent" class="control-label col-sm-2">Consentimiento LOPD:</label>
+           <input id="lopdConsent" type="checkbox" th:field="*{lopdConsent}" class="form-check-input">
+       </div>
+
+       <button type="submit" class="btn btn-primary">Afegeix usuari</button>
+   </form>
+</main>
 </body>
 </html>

@@ -1,59 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agregar Actividad - SgOVI</title>
+   <meta charset="UTF-8" />
+   <title>Crear nueva actividad</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Agregar Nueva Actividad</h1>
-    <a href="/">Volver al inicio</a> | <a href="/activities/list">Volver a Actividades</a>
+<main class="container">
+   <h1>Nueva actividad</h1>
+   <form class="form-horizontal" th:action="@{/activities/add}" th:object="${activity}" method="post">
+       <div class="form-group row">
+           <label for="name" class="control-label col-sm-2">Nombre:</label>
+           <input id="name" type="text" th:field="*{name}" class="form-control col-sm-4" maxlength="100">
+       </div>
 
-    <form th:action="@{/activities/add}" th:object="${activity}" method="post">
-        <p th:if="${#fields.hasAnyErrors()}" style="color: red;">Revisa los campos marcados.</p>
+       <div class="form-group row">
+           <label for="date" class="control-label col-sm-2">Fecha:</label>
+           <input id="date" type="date" th:field="*{date}" class="form-control col-sm-4">
+       </div>
 
-        <p>
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" th:field="*{name}" required maxlength="100" placeholder="Nombre de la actividad">
-            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="date">Fecha:</label>
-            <input type="date" id="date" th:field="*{date}" required>
-            <span th:if="${#fields.hasErrors('date')}" th:errors="*{date}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="duration">Duración (horas):</label>
-            <input type="number" id="duration" th:field="*{duration}" required min="1" step="1" placeholder="Ej. 2">
-            <span th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="location">Localización:</label>
-            <input type="text" id="location" th:field="*{location}" required maxlength="150" placeholder="Lugar donde se realiza">
-            <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="category">Categoría:</label>
-            <input type="text" id="category" th:field="*{category}" required maxlength="50" placeholder="Ej. Deportes, Taller, Charla">
-            <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="description">Descripción:</label>
-            <textarea id="description" th:field="*{description}" maxlength="1000" placeholder="Descripción opcional de la actividad"></textarea>
-            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="idTrainer">ID Formador:</label>
-            <select id="idTrainer" th:field="*{idTrainer}" required>
-                <option value="">Selecciona un formador</option>
-                <option th:each="trainer : ${trainers}" th:value="${trainer.idTrainer}" th:text="${trainer.name}"></option>
-            </select>
-            <span th:if="${#fields.hasErrors('idTrainer')}" th:errors="*{idTrainer}" style="color: red;"></span>
-        </p>
-        <p>
-            <button type="submit">Guardar</button>
-            <a href="/activities/list">Cancelar</a>
-        </p>
-    </form>
+       <div class="form-group row">
+           <label for="duration" class="control-label col-sm-2">Duración:</label>
+           <input id="duration" type="number" th:field="*{duration}" class="form-control col-sm-4" min="1" step="1">
+       </div>
+
+       <div class="form-group row">
+           <label for="location" class="control-label col-sm-2">Localización:</label>
+           <input id="location" type="text" th:field="*{location}" class="form-control col-sm-4" maxlength="150">
+       </div>
+
+       <div class="form-group row">
+           <label for="category" class="control-label col-sm-2">Categoría:</label>
+           <input id="category" type="text" th:field="*{category}" class="form-control col-sm-4" maxlength="50">
+       </div>
+
+       <div class="form-group row">
+           <label for="description" class="control-label col-sm-2">Descripción:</label>
+           <textarea id="description" th:field="*{description}" class="form-control col-sm-4" maxlength="1000"></textarea>
+       </div>
+
+       <div class="form-group row">
+           <label for="idTrainer" class="control-label col-sm-2">Formador:</label>
+           <select id="idTrainer" th:field="*{idTrainer}" class="form-control col-sm-4">
+               <option value="">Selecciona un formador</option>
+               <option th:each="trainer : ${trainers}" th:value="${trainer.idTrainer}" th:text="|${trainer.name} ${trainer.lastName}|"></option>
+           </select>
+       </div>
+
+       <button type="submit" class="btn btn-primary">Afegeix activitat</button>
+   </form>
+</main>
 </body>
 </html>
 

@@ -1,92 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Editar Usuario OVI - SgOVI</title>
+    <meta charset="UTF-8" />
+    <title>Editar usuario OVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Editar Usuario OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovi-users/list">Volver a Usuarios OVI</a>
-
+<main class="container">
+    <h1>Edita usuario OVI</h1>
     <form th:action="@{/ovi-users/edit}" th:object="${oviUser}" method="post">
-        <input type="hidden" th:field="*{idOviUser}">
+        <input type="hidden" th:field="*{idOviUser}" />
 
-        <p th:if="${#fields.hasAnyErrors()}" style="color: red;">Revisa los campos marcados.</p>
+        <div class="mb-3 col-md-4">
+            <label for="name" class="form-label">Nombre:</label>
+            <input id="name" type="text" th:field="*{name}" class="form-control" maxlength="50" />
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+        </div>
 
-        <p>
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" th:field="*{name}" required maxlength="50">
-            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="lastName">Apellidos:</label>
-            <input type="text" id="lastName" th:field="*{lastName}" required maxlength="50">
-            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" required maxlength="100">
-            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="phone">Teléfono:</label>
-            <input type="tel" id="phone" th:field="*{phone}" required maxlength="20">
-            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" th:field="*{password}" required maxlength="255">
-            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="province">Provincia:</label>
-            <input type="text" id="province" th:field="*{province}" maxlength="50">
-            <span th:if="${#fields.hasErrors('province')}" th:errors="*{province}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="town">Ciudad:</label>
-            <input type="text" id="town" th:field="*{town}" maxlength="50">
-            <span th:if="${#fields.hasErrors('town')}" th:errors="*{town}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="pc">Código postal:</label>
-            <input type="text" id="pc" th:field="*{pc}" maxlength="10">
-            <span th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="age">Edad:</label>
-            <input type="number" id="age" th:field="*{age}" min="0" max="150" step="1">
-            <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="gender">Género:</label>
-            <select id="gender" th:field="*{gender}">
+        <div class="mb-3 col-md-4">
+            <label for="lastName" class="form-label">Apellidos:</label>
+            <input id="lastName" type="text" th:field="*{lastName}" class="form-control" maxlength="50" />
+            <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="email" class="form-label">Email:</label>
+            <input id="email" type="email" th:field="*{email}" class="form-control" maxlength="100" />
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="phone" class="form-label">Teléfono:</label>
+            <input id="phone" type="text" th:field="*{phone}" class="form-control" maxlength="20" />
+            <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input id="password" type="password" th:field="*{password}" class="form-control" maxlength="255" />
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="province" class="form-label">Provincia:</label>
+            <input id="province" type="text" th:field="*{province}" class="form-control" maxlength="50" />
+            <div th:if="${#fields.hasErrors('province')}" th:errors="*{province}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="town" class="form-label">Población:</label>
+            <input id="town" type="text" th:field="*{town}" class="form-control" maxlength="50" />
+            <div th:if="${#fields.hasErrors('town')}" th:errors="*{town}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="pc" class="form-label">Código postal:</label>
+            <input id="pc" type="text" th:field="*{pc}" class="form-control" maxlength="10" />
+            <div th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="age" class="form-label">Edad:</label>
+            <input id="age" type="number" th:field="*{age}" class="form-control" min="0" step="1" />
+            <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="gender" class="form-label">Género:</label>
+            <select id="gender" th:field="*{gender}" class="form-control">
                 <option value="">Selecciona un género</option>
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
                 <option value="Otro">Otro</option>
             </select>
-            <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="status">Estado:</label>
-            <select id="status" th:field="*{status}" required>
+            <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="status" class="form-label">Estado:</label>
+            <select id="status" th:field="*{status}" class="form-control">
                 <option value="">Selecciona un estado</option>
                 <option value="PENDING">PENDING</option>
                 <option value="ACCEPTED">ACCEPTED</option>
                 <option value="REJECTED">REJECTED</option>
             </select>
-            <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color: red;"></span>
-        </p>
-        <p>
-            <label for="lopdConsent">Consentimiento LOPD:</label>
-            <input type="checkbox" id="lopdConsent" th:field="*{lopdConsent}" required>
-            <span th:if="${#fields.hasErrors('lopdConsent')}" th:errors="*{lopdConsent}" style="color: red;"></span>
-        </p>
-        <p>
-            <button type="submit">Actualizar</button>
-            <a href="/ovi-users/list">Cancelar</a>
-        </p>
+            <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="lopdConsent" class="form-label">Consentimiento LOPD:</label>
+            <input id="lopdConsent" type="checkbox" th:field="*{lopdConsent}" class="form-check-input" />
+            <div th:if="${#fields.hasErrors('lopdConsent')}" th:errors="*{lopdConsent}" class="text-danger"></div>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Actualiza usuario</button>
     </form>
+</main>
 </body>
 </html>

@@ -86,12 +86,12 @@ CREATE TABLE IF NOT EXISTS ParticipantList (
 
     FOREIGN KEY (oviuser_id)
     REFERENCES OviUser(oviuser_id)
-    ON DELETE SET NULL
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
 
     FOREIGN KEY (pappati_id)
     REFERENCES PapPati(pappati_id)
-    ON DELETE SET NULL
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 
 );

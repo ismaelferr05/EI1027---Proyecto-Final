@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agregar Contrato - SgOVI</title>
+   <meta charset="UTF-8" />
+   <title>Crear contrato</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Agregar Nuevo Contrato</h1>
-    <a href="/">Volver al inicio</a> | <a href="/contracts/list">Volver a Contratos</a>
 
-    <form th:action="@{/contracts/add}" th:object="${contract}" method="post">
-        <p>
-            <label for="wage">Salario:</label>
-            <input type="number" id="wage" th:field="*{wage}" required min="0.01" step="0.01">
-        </p>
-        <p>
-            <label for="startDate">Fecha Inicio:</label>
-            <input type="date" id="startDate" th:field="*{startDate}" required>
-        </p>
-        <p>
-            <label for="endDate">Fecha Fin:</label>
-            <input type="date" id="endDate" th:field="*{endDate}" required>
-        </p>
-        <p>
-            <label for="url">URL:</label>
-            <input type="url" id="url" th:field="*{url}" required maxlength="255">
-        </p>
-        <p>
-            <label for="idNegotiation">ID Negociación:</label>
-            <select id="idNegotiation" th:field="*{idNegotiation}">
-                <option value="">Sin negociación</option>
-                <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
-            </select>
-        </p>
-        <p>
-            <button type="submit">Guardar</button>
-            <a href="/contracts/list">Cancelar</a>
-        </p>
-    </form>
+<body>
+<main class="container">
+   <h1>Nuevo contrato</h1>
+
+   <form class="form-horizontal" th:action="@{/contracts/add}" th:object="${contract}" method="post">
+       <div class="form-group row">
+           <label for="wage" class="control-label col-sm-2">Salario:</label>
+           <input id="wage" type="number" th:field="*{wage}" class="form-control col-sm-4" min="0.01" step="0.01">
+       </div>
+
+       <div class="form-group row">
+           <label for="startDate" class="control-label col-sm-2">Fecha inicio:</label>
+           <input id="startDate" type="date" th:field="*{startDate}" class="form-control col-sm-4">
+       </div>
+
+       <div class="form-group row">
+           <label for="endDate" class="control-label col-sm-2">Fecha fin:</label>
+           <input id="endDate" type="date" th:field="*{endDate}" class="form-control col-sm-4">
+       </div>
+
+       <div class="form-group row">
+           <label for="url" class="control-label col-sm-2">URL:</label>
+           <input id="url" type="text" th:field="*{url}" class="form-control col-sm-4" maxlength="255">
+       </div>
+
+       <div class="form-group row">
+           <label for="idNegotiation" class="control-label col-sm-2">Negociación:</label>
+           <select id="idNegotiation" th:field="*{idNegotiation}" class="form-control col-sm-4">
+               <option value="">Sin negociación</option>
+               <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
+           </select>
+       </div>
+
+       <button type="submit" class="btn btn-primary">Afegeix contracte</button>
+   </form>
+</main>
 </body>
 </html>
 

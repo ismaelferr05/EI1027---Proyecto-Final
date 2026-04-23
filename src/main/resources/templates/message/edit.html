@@ -1,43 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Editar Mensaje - SgOVI</title>
+    <meta charset="UTF-8" />
+    <title>Editar mensaje</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Editar Mensaje</h1>
-    <a href="/">Volver al inicio</a> | <a href="/messages/list">Volver a Mensajes</a>
 
+<body>
+<main class="container">
+    <h1>Edita mensaje</h1>
     <form th:action="@{/messages/edit}" th:object="${message}" method="post">
-        <input type="hidden" th:field="*{idMessage}">
-        <p>
-            <label for="messageDateTime">Fecha/Hora:</label>
-            <input type="datetime-local" id="messageDateTime" th:field="*{messageDateTime}" required>
-        </p>
-        <p>
-            <label for="sender">Remitente:</label>
-            <input type="text" id="sender" th:field="*{sender}" required>
-        </p>
-        <p>
-            <label for="receiver">Destinatario:</label>
-            <input type="text" id="receiver" th:field="*{receiver}" required>
-        </p>
-        <p>
-            <label for="text">Texto:</label>
-            <textarea id="text" th:field="*{text}" required maxlength="300"></textarea>
-        </p>
-        <p>
-            <label for="idNegotiation">ID Negociación:</label>
-            <select id="idNegotiation" th:field="*{idNegotiation}" required>
+        <input type="hidden" th:field="*{idMessage}" />
+
+        <div class="mb-3 col-md-4">
+            <label for="messageDateTime" class="form-label">Fecha y hora:</label>
+            <input id="messageDateTime" type="datetime-local" th:field="*{messageDateTime}" class="form-control" />
+            <div th:if="${#fields.hasErrors('messageDateTime')}" th:errors="*{messageDateTime}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="sender" class="form-label">Remitente:</label>
+            <input id="sender" type="text" th:field="*{sender}" class="form-control" maxlength="20" />
+            <div th:if="${#fields.hasErrors('sender')}" th:errors="*{sender}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="receiver" class="form-label">Destinatario:</label>
+            <input id="receiver" type="text" th:field="*{receiver}" class="form-control" maxlength="20" />
+            <div th:if="${#fields.hasErrors('receiver')}" th:errors="*{receiver}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="text" class="form-label">Texto:</label>
+            <textarea id="text" th:field="*{text}" class="form-control" maxlength="300"></textarea>
+            <div th:if="${#fields.hasErrors('text')}" th:errors="*{text}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label for="idNegotiation" class="form-label">Negociación:</label>
+            <select id="idNegotiation" th:field="*{idNegotiation}" class="form-control">
                 <option value="">Selecciona una negociación</option>
                 <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
             </select>
-        </p>
-        <p>
-            <button type="submit">Actualizar</button>
-            <a href="/messages/list">Cancelar</a>
-        </p>
+            <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger"></div>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Actualiza mensaje</button>
     </form>
+</main>
 </body>
 </html>
 

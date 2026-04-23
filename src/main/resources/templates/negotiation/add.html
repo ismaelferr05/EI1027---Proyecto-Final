@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agregar Negociación - SgOVI</title>
+   <meta charset="UTF-8" />
+   <title>Crear negociación</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Agregar Nueva Negociación</h1>
-    <a href="/">Volver al inicio</a> | <a href="/negotiations/list">Volver a Negociaciones</a>
 
-    <form th:action="@{/negotiations/add}" th:object="${negotiation}" method="post">
-        <p>
-            <label for="stateOfApproval">Estado de Aprobación:</label>
-            <select id="stateOfApproval" th:field="*{stateOfApproval}" required>
-                <option value="">Selecciona un estado</option>
-                <option value="PENDING">PENDING</option>
-                <option value="ACCEPTED">ACCEPTED</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="REJECTED">REJECTED</option>
-                <option value="CANCELLED">CANCELLED</option>
-            </select>
-        </p>
-        <p>
-            <label for="idRequest">ID Solicitud:</label>
-            <select id="idRequest" th:field="*{idRequest}" required>
-                <option value="">Selecciona una solicitud</option>
-                <option th:each="request : ${requests}" th:value="${request.idRequest}" th:text="${request.training}"></option>
-            </select>
-        </p>
-        <p>
-            <label for="idPapPati">ID PAP PATI:</label>
-            <select id="idPapPati" th:field="*{idPapPati}" required>
-                <option value="">Selecciona un PAP PATI</option>
-                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="${papPati.phone}"></option>
-            </select>
-        </p>
-        <p>
-            <button type="submit">Guardar</button>
-            <a href="/negotiations/list">Cancelar</a>
-        </p>
-    </form>
+<body>
+<main class="container">
+   <h1>Nueva negociación</h1>
+
+   <form class="form-horizontal" th:action="@{/negotiations/add}" th:object="${negotiation}" method="post">
+       <div class="form-group row">
+           <label for="stateOfApproval" class="control-label col-sm-2">Estado:</label>
+           <select id="stateOfApproval" th:field="*{stateOfApproval}" class="form-control col-sm-4">
+               <option value="">Selecciona un estado</option>
+               <option value="PENDING">PENDING</option>
+               <option value="ACCEPTED">ACCEPTED</option>
+               <option value="IN_PROGRESS">IN_PROGRESS</option>
+               <option value="REJECTED">REJECTED</option>
+               <option value="CANCELLED">CANCELLED</option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="idRequest" class="control-label col-sm-2">Solicitud:</label>
+           <select id="idRequest" th:field="*{idRequest}" class="form-control col-sm-4">
+               <option value="">Selecciona una solicitud</option>
+               <option th:each="request : ${requests}" th:value="${request.idRequest}" th:text="|${request.idRequest} - ${request.training}|"></option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="idPapPati" class="control-label col-sm-2">PAP PATI:</label>
+           <select id="idPapPati" th:field="*{idPapPati}" class="form-control col-sm-4">
+               <option value="">Selecciona un PAP PATI</option>
+               <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
+           </select>
+       </div>
+
+       <button type="submit" class="btn btn-primary">Afegeix negociació</button>
+   </form>
+</main>
 </body>
 </html>
 

@@ -1,48 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agregar Participante - SgOVI</title>
+   <meta charset="UTF-8" />
+   <title>Crear lista de participantes</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Agregar Nuevo Participante</h1>
-    <a href="/">Volver al inicio</a> | <a href="/participant-lists/list">Volver a Participantes</a>
 
-    <form th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
-        <p>
-            <label for="attendance">Asistencia:</label>
-            <input type="checkbox" id="attendance" th:field="*{attendance}">
-        </p>
-        <p>
-            <label for="attendanceCertificateUrl">URL del certificado de asistencia:</label>
-            <input type="url" id="attendanceCertificateUrl" th:field="*{attendanceCertificateUrl}" maxlength="255">
-        </p>
-        <p>
-            <label for="idActivity">ID Actividad:</label>
-            <select id="idActivity" th:field="*{idActivity}" required>
-                <option value="">Selecciona una actividad</option>
-                <option th:each="activity : ${activities}" th:value="${activity.idActivity}" th:text="${activity.name}"></option>
-            </select>
-        </p>
-        <p>
-            <label for="idOviUser">ID Usuario OVI:</label>
-            <select id="idOviUser" th:field="*{idOviUser}" required>
-                <option value="">Selecciona un usuario OVI</option>
-                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="${oviUser.name}"></option>
-            </select>
-        </p>
-        <p>
-            <label for="idPapPati">ID PAP PATI:</label>
-            <select id="idPapPati" th:field="*{idPapPati}" required>
-                <option value="">Selecciona un PAP PATI</option>
-                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="${papPati.phone}"></option>
-            </select>
-        </p>
-        <p>
-            <button type="submit">Guardar</button>
-            <a href="/participant-lists/list">Cancelar</a>
-        </p>
-    </form>
+<body>
+<main class="container">
+   <h1>Nueva lista de participantes</h1>
+
+   <form class="form-horizontal" th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
+       <div class="form-group row">
+           <label for="attendance" class="control-label col-sm-2">Asistencia:</label>
+           <input id="attendance" type="checkbox" th:field="*{attendance}" class="form-check-input">
+       </div>
+
+       <div class="form-group row">
+           <label for="attendanceCertificateUrl" class="control-label col-sm-2">Certificado asistencia:</label>
+           <input id="attendanceCertificateUrl" type="url" th:field="*{attendanceCertificateUrl}" class="form-control col-sm-4" maxlength="255">
+       </div>
+
+       <div class="form-group row">
+           <label for="idActivity" class="control-label col-sm-2">Actividad:</label>
+           <select id="idActivity" th:field="*{idActivity}" class="form-control col-sm-4">
+               <option value="">Selecciona una actividad</option>
+               <option th:each="activity : ${activities}" th:value="${activity.idActivity}" th:text="${activity.name}"></option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="idOviUser" class="control-label col-sm-2">Usuario OVI:</label>
+           <select id="idOviUser" th:field="*{idOviUser}" class="form-control col-sm-4">
+               <option value="">Selecciona un usuario OVI</option>
+               <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
+           </select>
+       </div>
+
+       <div class="form-group row">
+           <label for="idPapPati" class="control-label col-sm-2">PAP PATI:</label>
+           <select id="idPapPati" th:field="*{idPapPati}" class="form-control col-sm-4">
+               <option value="">Selecciona un PAP PATI</option>
+               <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
+           </select>
+       </div>
+
+       <button type="submit" class="btn btn-primary">Afegeix participant</button>
+   </form>
+</main>
 </body>
 </html>
 
