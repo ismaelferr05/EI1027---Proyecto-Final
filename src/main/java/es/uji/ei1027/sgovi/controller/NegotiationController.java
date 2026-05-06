@@ -7,6 +7,7 @@ import es.uji.ei1027.sgovi.model.Negotiation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -37,7 +38,16 @@ public class NegotiationController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Negotiation negotiation) {
+    public String add(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model) {
+        NegotiationValidator negotiationValidator = new NegotiationValidator();
+        negotiationValidator.validate(negotiation, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("requests", requestDao.getAll());
+            model.addAttribute("papPatis", papPatiDao.getAll());
+            return "negotiation/add";
+        }
+
         negotiationDao.add(negotiation);
         return "redirect:/negotiations/list";
     }
@@ -51,7 +61,16 @@ public class NegotiationController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Negotiation negotiation) {
+    public String edit(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model) {
+        NegotiationValidator negotiationValidator = new NegotiationValidator();
+        negotiationValidator.validate(negotiation, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("requests", requestDao.getAll());
+            model.addAttribute("papPatis", papPatiDao.getAll());
+            return "negotiation/edit";
+        }
+
         negotiationDao.update(negotiation);
         return "redirect:/negotiations/list";
     }

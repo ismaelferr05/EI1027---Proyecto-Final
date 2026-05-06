@@ -11,7 +11,7 @@
    <h1>Nueva negociación</h1>
 
    <form class="form-horizontal" th:action="@{/negotiations/add}" th:object="${negotiation}" method="post">
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="stateOfApproval" class="control-label col-sm-2">Estado:</label>
            <select id="stateOfApproval" th:field="*{stateOfApproval}" class="form-control col-sm-4">
                <option value="">Selecciona un estado</option>
@@ -21,22 +21,25 @@
                <option value="REJECTED">REJECTED</option>
                <option value="CANCELLED">CANCELLED</option>
            </select>
+           <div th:if="${#fields.hasErrors('stateOfApproval')}" th:errors="*{stateOfApproval}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idRequest" class="control-label col-sm-2">Solicitud:</label>
            <select id="idRequest" th:field="*{idRequest}" class="form-control col-sm-4">
                <option value="">Selecciona una solicitud</option>
                <option th:each="request : ${requests}" th:value="${request.idRequest}" th:text="|${request.idRequest} - ${request.training}|"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idRequest')}" th:errors="*{idRequest}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idPapPati" class="control-label col-sm-2">PAP PATI:</label>
            <select id="idPapPati" th:field="*{idPapPati}" class="form-control col-sm-4">
                <option value="">Selecciona un PAP PATI</option>
                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idPapPati')}" th:errors="*{idPapPati}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix negociació</button>

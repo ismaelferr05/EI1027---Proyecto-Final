@@ -54,7 +54,15 @@ public class ActivityController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Activity activity) {
+    public String edit(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, Model model) {
+        ActivityValidator activityValidator = new ActivityValidator();
+        activityValidator.validate(activity, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("trainers", trainerDao.getAll());
+            return "activity/edit";
+        }
+
         activityDao.update(activity);
         return "redirect:/activities/list";
     }

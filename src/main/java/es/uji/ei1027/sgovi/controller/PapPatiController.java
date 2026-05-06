@@ -5,6 +5,7 @@ import es.uji.ei1027.sgovi.model.PapPati;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -29,7 +30,14 @@ public class PapPatiController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute PapPati papPati) {
+    public String add(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult) {
+        PapPatiValidator papPatiValidator = new PapPatiValidator();
+        papPatiValidator.validate(papPati, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "pappati/add";
+        }
+
         papPatiDao.add(papPati);
         return "redirect:/pap-patis/list";
     }
@@ -41,7 +49,14 @@ public class PapPatiController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute PapPati papPati) {
+    public String edit(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult) {
+        PapPatiValidator papPatiValidator = new PapPatiValidator();
+        papPatiValidator.validate(papPati, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "pappati/edit";
+        }
+
         papPatiDao.update(papPati);
         return "redirect:/pap-patis/list";
     }

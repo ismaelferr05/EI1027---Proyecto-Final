@@ -6,6 +6,7 @@ import es.uji.ei1027.sgovi.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -32,7 +33,15 @@ public class MessageController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Message message) {
+    public String add(@ModelAttribute("message") Message message, BindingResult bindingResult, Model model) {
+        MessageValidator messageValidator = new MessageValidator();
+        messageValidator.validate(message, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("negotiations", negotiationDao.getAll());
+            return "message/add";
+        }
+
         messageDao.add(message);
         return "redirect:/messages/list";
     }
@@ -45,7 +54,15 @@ public class MessageController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Message message) {
+    public String edit(@ModelAttribute("message") Message message, BindingResult bindingResult, Model model) {
+        MessageValidator messageValidator = new MessageValidator();
+        messageValidator.validate(message, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("negotiations", negotiationDao.getAll());
+            return "message/edit";
+        }
+
         messageDao.update(message);
         return "redirect:/messages/list";
     }

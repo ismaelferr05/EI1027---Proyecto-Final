@@ -10,34 +10,40 @@
 <main class="container">
    <h1>Nuevo formador</h1>
    <form class="form-horizontal" th:action="@{/trainers/add}" th:object="${trainer}" method="post">
-       <div class="form-group row">
-           <label for="name" class="control-label col-sm-2">Nombre:</label>
-           <input id="name" type="text" th:field="*{name}" class="form-control col-sm-4" maxlength="50">
+       <div class="mb-3 col-md-4">
+           <label for="name" class="form-label">Nombre:</label>
+           <input id="name" type="text" th:field="*{name}" class="form-control" maxlength="50">
+           <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
-           <label for="lastName" class="control-label col-sm-2">Apellidos:</label>
-           <input id="lastName" type="text" th:field="*{lastName}" class="form-control col-sm-4" maxlength="50">
+       <div class="mb-3 col-md-4">
+           <label for="lastName" class="form-label">Apellidos:</label>
+           <input id="lastName" type="text" th:field="*{lastName}" class="form-control" maxlength="50">
+           <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
-           <label for="occupation" class="control-label col-sm-2">Ocupación:</label>
-           <input id="occupation" type="text" th:field="*{occupation}" class="form-control col-sm-4" maxlength="100">
+       <div class="mb-3 col-md-4">
+           <label for="occupation" class="form-label">Ocupación:</label>
+           <input id="occupation" type="text" th:field="*{occupation}" class="form-control" maxlength="100">
+           <div th:if="${#fields.hasErrors('occupation')}" th:errors="*{occupation}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
-           <label for="email" class="control-label col-sm-2">Email:</label>
-           <input id="email" type="email" th:field="*{email}" class="form-control col-sm-4" maxlength="100">
+       <div class="mb-3 col-md-4">
+           <label for="email" class="form-label">Email:</label>
+           <input id="email" type="email" th:field="*{email}" class="form-control" maxlength="100">
+           <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
-           <label for="phone" class="control-label col-sm-2">Teléfono:</label>
-           <input id="phone" type="text" th:field="*{phone}" class="form-control col-sm-4" maxlength="20">
+       <div class="mb-3 col-md-4">
+           <label for="phone" class="form-label">Teléfono:</label>
+           <input id="phone" type="text" th:field="*{phone}" class="form-control" maxlength="20">
+           <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
-           <label for="address" class="control-label col-sm-2">Dirección:</label>
-           <input id="address" type="text" th:field="*{address}" class="form-control col-sm-4" maxlength="150">
+       <div class="mb-3 col-md-4">
+           <label for="address" class="form-label">Dirección:</label>
+           <input id="address" type="text" th:field="*{address}" class="form-control" maxlength="150">
+           <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix formador</button>

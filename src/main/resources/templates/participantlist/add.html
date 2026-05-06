@@ -11,38 +11,42 @@
    <h1>Nueva lista de participantes</h1>
 
    <form class="form-horizontal" th:action="@{/participant-lists/add}" th:object="${participantList}" method="post">
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="attendance" class="control-label col-sm-2">Asistencia:</label>
            <input id="attendance" type="checkbox" th:field="*{attendance}" class="form-check-input">
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="attendanceCertificateUrl" class="control-label col-sm-2">Certificado asistencia:</label>
            <input id="attendanceCertificateUrl" type="url" th:field="*{attendanceCertificateUrl}" class="form-control col-sm-4" maxlength="255">
+           <div th:if="${#fields.hasErrors('attendanceCertificateUrl')}" th:errors="*{attendanceCertificateUrl}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idActivity" class="control-label col-sm-2">Actividad:</label>
            <select id="idActivity" th:field="*{idActivity}" class="form-control col-sm-4">
                <option value="">Selecciona una actividad</option>
                <option th:each="activity : ${activities}" th:value="${activity.idActivity}" th:text="${activity.name}"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idActivity')}" th:errors="*{idActivity}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idOviUser" class="control-label col-sm-2">Usuario OVI:</label>
            <select id="idOviUser" th:field="*{idOviUser}" class="form-control col-sm-4">
                <option value="">Selecciona un usuario OVI</option>
                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idOviUser')}" th:errors="*{idOviUser}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idPapPati" class="control-label col-sm-2">PAP PATI:</label>
            <select id="idPapPati" th:field="*{idPapPati}" class="form-control col-sm-4">
                <option value="">Selecciona un PAP PATI</option>
                <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idPapPati')}" th:errors="*{idPapPati}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix participant</button>

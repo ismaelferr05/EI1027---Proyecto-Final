@@ -11,37 +11,43 @@
    <h1>Nueva solicitud</h1>
 
    <form class="form-horizontal" th:action="@{/requests/add}" th:object="${request}" method="post">
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="description" class="control-label col-sm-2">Descripción:</label>
            <textarea id="description" th:field="*{description}" class="form-control col-sm-4"></textarea>
+           <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="training" class="control-label col-sm-2">Formación:</label>
            <input id="training" type="text" th:field="*{training}" class="form-control col-sm-4" maxlength="100">
+           <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="startDate" class="control-label col-sm-2">Fecha inicio:</label>
            <input id="startDate" type="date" th:field="*{startDate}" class="form-control col-sm-4">
+           <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="endDate" class="control-label col-sm-2">Fecha fin:</label>
            <input id="endDate" type="date" th:field="*{endDate}" class="form-control col-sm-4">
+           <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="experience" class="control-label col-sm-2">Experiencia:</label>
            <input id="experience" type="number" th:field="*{experience}" class="form-control col-sm-4" min="0" step="1">
+           <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="experienceType" class="control-label col-sm-2">Tipo experiencia:</label>
            <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="preferredGender" class="control-label col-sm-2">Género preferido:</label>
            <select id="preferredGender" th:field="*{preferredGender}" class="form-control col-sm-4">
                <option value="">Sin preferencia</option>
@@ -49,19 +55,22 @@
                <option value="Femenino">Femenino</option>
                <option value="Otro">Otro</option>
            </select>
+           <div th:if="${#fields.hasErrors('preferredGender')}" th:errors="*{preferredGender}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="preferredPc" class="control-label col-sm-2">CP preferido:</label>
            <input id="preferredPc" type="text" th:field="*{preferredPc}" class="form-control col-sm-4" maxlength="10">
+           <div th:if="${#fields.hasErrors('preferredPc')}" th:errors="*{preferredPc}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="preferredAge" class="control-label col-sm-2">Edad preferida:</label>
            <input id="preferredAge" type="number" th:field="*{preferredAge}" class="form-control col-sm-4" min="0" step="1">
+           <div th:if="${#fields.hasErrors('preferredAge')}" th:errors="*{preferredAge}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="status" class="control-label col-sm-2">Estado:</label>
            <select id="status" th:field="*{status}" class="form-control col-sm-4">
                <option value="">Selecciona un estado</option>
@@ -71,14 +80,16 @@
                <option value="CONTRACT_ACTIVE">CONTRACT_ACTIVE</option>
                <option value="CONTRACT_FINISHED">CONTRACT_FINISHED</option>
            </select>
+           <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idOviUser" class="control-label col-sm-2">Usuario OVI:</label>
            <select id="idOviUser" th:field="*{idOviUser}" class="form-control col-sm-4">
                <option value="">Selecciona un usuario OVI</option>
                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idOviUser')}" th:errors="*{idOviUser}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix sol·licitud</button>

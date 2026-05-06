@@ -11,32 +11,37 @@
    <h1>Nuevo mensaje</h1>
 
    <form class="form-horizontal" th:action="@{/messages/add}" th:object="${message}" method="post">
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="messageDateTime" class="control-label col-sm-2">Fecha y hora:</label>
            <input id="messageDateTime" type="datetime-local" th:field="*{messageDateTime}" class="form-control col-sm-4">
+           <div th:if="${#fields.hasErrors('messageDateTime')}" th:errors="*{messageDateTime}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="sender" class="control-label col-sm-2">Remitente:</label>
            <input id="sender" type="text" th:field="*{sender}" class="form-control col-sm-4" maxlength="20">
+           <div th:if="${#fields.hasErrors('sender')}" th:errors="*{sender}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="receiver" class="control-label col-sm-2">Destinatario:</label>
            <input id="receiver" type="text" th:field="*{receiver}" class="form-control col-sm-4" maxlength="20">
+           <div th:if="${#fields.hasErrors('receiver')}" th:errors="*{receiver}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="text" class="control-label col-sm-2">Texto:</label>
            <textarea id="text" th:field="*{text}" class="form-control col-sm-4" maxlength="300"></textarea>
+           <div th:if="${#fields.hasErrors('text')}" th:errors="*{text}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="idNegotiation" class="control-label col-sm-2">Negociación:</label>
            <select id="idNegotiation" th:field="*{idNegotiation}" class="form-control col-sm-4">
                <option value="">Selecciona una negociación</option>
                <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
            </select>
+           <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix missatge</button>

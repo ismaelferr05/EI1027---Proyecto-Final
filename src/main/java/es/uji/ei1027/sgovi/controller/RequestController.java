@@ -6,6 +6,7 @@ import es.uji.ei1027.sgovi.model.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -34,7 +35,15 @@ public class RequestController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Request request) {
+    public String add(@ModelAttribute("request") Request request, BindingResult bindingResult, Model model) {
+        RequestValidator requestValidator = new RequestValidator();
+        requestValidator.validate(request, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("oviUsers", oviUserDao.getAll());
+            return "request/add";
+        }
+
         requestDao.add(request);
         return "redirect:/requests/list";
     }
@@ -47,7 +56,15 @@ public class RequestController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Request request) {
+    public String edit(@ModelAttribute("request") Request request, BindingResult bindingResult, Model model) {
+        RequestValidator requestValidator = new RequestValidator();
+        requestValidator.validate(request, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("oviUsers", oviUserDao.getAll());
+            return "request/edit";
+        }
+
         requestDao.update(request);
         return "redirect:/requests/list";
     }

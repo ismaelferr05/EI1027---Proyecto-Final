@@ -8,6 +8,7 @@ import es.uji.ei1027.sgovi.model.ParticipantList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -44,7 +45,17 @@ public class ParticipantListController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute ParticipantList participantList) {
+    public String add(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model) {
+        ParticipantListValidator participantListValidator = new ParticipantListValidator();
+        participantListValidator.validate(participantList, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("activities", activityDao.getAll());
+            model.addAttribute("oviUsers", oviUserDao.getAll());
+            model.addAttribute("papPatis", papPatiDao.getAll());
+            return "participantlist/add";
+        }
+
         participantListDao.add(participantList);
         return "redirect:/participant-lists/list";
     }
@@ -59,7 +70,17 @@ public class ParticipantListController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute ParticipantList participantList) {
+    public String edit(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model) {
+        ParticipantListValidator participantListValidator = new ParticipantListValidator();
+        participantListValidator.validate(participantList, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("activities", activityDao.getAll());
+            model.addAttribute("oviUsers", oviUserDao.getAll());
+            model.addAttribute("papPatis", papPatiDao.getAll());
+            return "participantlist/edit";
+        }
+
         participantListDao.update(participantList);
         return "redirect:/participant-lists/list";
     }

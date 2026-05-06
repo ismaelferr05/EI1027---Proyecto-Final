@@ -10,52 +10,61 @@
 <main class="container">
    <h1>Nuevo PAP PATI</h1>
    <form class="form-horizontal" th:action="@{/pap-patis/add}" th:object="${papPati}" method="post">
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="name" class="control-label col-sm-2">Nombre:</label>
            <input id="name" type="text" th:field="*{name}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="lastName" class="control-label col-sm-2">Apellidos:</label>
            <input id="lastName" type="text" th:field="*{lastName}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="email" class="control-label col-sm-2">Email:</label>
            <input id="email" type="email" th:field="*{email}" class="form-control col-sm-4" maxlength="100">
+           <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="phone" class="control-label col-sm-2">Teléfono:</label>
            <input id="phone" type="text" th:field="*{phone}" class="form-control col-sm-4" maxlength="20">
+           <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="password" class="control-label col-sm-2">Contraseña:</label>
            <input id="password" type="password" th:field="*{password}" class="form-control col-sm-4" maxlength="255">
+           <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="province" class="control-label col-sm-2">Provincia:</label>
            <input id="province" type="text" th:field="*{province}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('province')}" th:errors="*{province}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="town" class="control-label col-sm-2">Población:</label>
            <input id="town" type="text" th:field="*{town}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('town')}" th:errors="*{town}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="pc" class="control-label col-sm-2">Código postal:</label>
            <input id="pc" type="text" th:field="*{pc}" class="form-control col-sm-4" maxlength="10">
+           <div th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="age" class="control-label col-sm-2">Edad:</label>
            <input id="age" type="number" th:field="*{age}" class="form-control col-sm-4" min="0" step="1">
+           <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="gender" class="control-label col-sm-2">Género:</label>
            <select id="gender" th:field="*{gender}" class="form-control col-sm-4">
                <option value="">Selecciona un género</option>
@@ -63,29 +72,34 @@
                <option value="Femenino">Femenino</option>
                <option value="Otro">Otro</option>
            </select>
+           <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="cvUrl" class="control-label col-sm-2">URL CV:</label>
            <input id="cvUrl" type="url" th:field="*{cvUrl}" class="form-control col-sm-4" maxlength="255">
+           <div th:if="${#fields.hasErrors('cvUrl')}" th:errors="*{cvUrl}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="training" class="control-label col-sm-2">Formación:</label>
            <input id="training" type="text" th:field="*{training}" class="form-control col-sm-4" maxlength="100">
+           <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="experience" class="control-label col-sm-2">Experiencia:</label>
            <input id="experience" type="text" th:field="*{experience}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="experienceType" class="control-label col-sm-2">Tipo experiencia:</label>
            <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control col-sm-4" maxlength="50">
+           <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger"></div>
        </div>
 
-       <div class="form-group row">
+       <div class="mb-3 col-md-4">
            <label for="status" class="control-label col-sm-2">Estado:</label>
            <select id="status" th:field="*{status}" class="form-control col-sm-4">
                <option value="">Selecciona un estado</option>
@@ -93,6 +107,7 @@
                <option value="ACCEPTED">ACCEPTED</option>
                <option value="REJECTED">REJECTED</option>
            </select>
+           <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
        </div>
 
        <button type="submit" class="btn btn-primary">Afegeix PAP PATI</button>
