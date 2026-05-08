@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -38,6 +39,26 @@ public class ContractDao {
     public List<Contract> getAll() {
         String sql = "SELECT * FROM Contract";
         return jdbcTemplate.query(sql, new ContractRowMapper());
+    }
+
+    public boolean hasOverlappingContractForPapPati(int idPapPati, LocalDate startDate, LocalDate endDate) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM Contract c
+                JOIN Negotiation n ON c.negotiation_id = n.negotiation_id
+                WHERE n.pappati_id = ?
+                  AND c.startDate <= ?
+                  AND c.endDate >= ?
+                """;
+
+        Integer count = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                idPapPati,
+                Date.valueOf(endDate),
+                Date.valueOf(startDate)
+        );
+        return count != null && count > 0;
     }
 }
 

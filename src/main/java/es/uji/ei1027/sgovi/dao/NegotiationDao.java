@@ -47,5 +47,11 @@ public class NegotiationDao {
         String sql = "SELECT * FROM Negotiation WHERE pappati_id=?";
         return jdbcTemplate.query(sql, new NegotiationRowMapper(), idPapPati);
     }
+
+    public boolean existsByRequestAndPapPati(int idRequest, int idPapPati) {
+        String sql = "SELECT COUNT(*) FROM Negotiation WHERE request_id=? AND pappati_id=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idRequest, idPapPati);
+        return count != null && count > 0;
+    }
 }
 

@@ -45,5 +45,15 @@ public class RequestDao {
         String sql = "SELECT * FROM Request WHERE oviuser_id=?";
         return jdbcTemplate.query(sql, new RequestRowMapper(), idOviUser);
     }
+
+    public List<Request> getByStatus(String status) {
+        String sql = "SELECT * FROM Request WHERE status=? ORDER BY startDate";
+        return jdbcTemplate.query(sql, new RequestRowMapper(), status);
+    }
+
+    public void updateStatus(int idRequest, String status) {
+        String sql = "UPDATE Request SET status=? WHERE request_id=?";
+        jdbcTemplate.update(sql, status, idRequest);
+    }
 }
 

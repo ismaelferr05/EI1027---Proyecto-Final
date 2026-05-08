@@ -39,5 +39,10 @@ public class PapPatiDao {
         String sql = "SELECT * FROM PapPati";
         return jdbcTemplate.query(sql, new PapPatiRowMapper());
     }
+
+    public List<PapPati> getByStatus(String status) {
+        String sql = "SELECT * FROM PapPati WHERE status=?";
+        return jdbcTemplate.query(sql, new PapPatiRowMapper(), status);
+    }
 }
 

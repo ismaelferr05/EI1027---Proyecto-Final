@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Front-office - Nueva solicitud</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+</head>
+<body>
+<main class="container py-4">
+    <h1 class="mb-3">Registrar solicitud de asistencia personal</h1>
+    <p class="text-muted">Completa el formulario. El estado inicial siempre sera <strong>IN_REVIEW</strong>.</p>
+
+    <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post" class="row g-3">
+        <input type="hidden" th:field="*{status}" />
+
+        <div class="col-md-6">
+            <label for="idOviUser" class="form-label">Persona usuaria *</label>
+            <select id="idOviUser" th:field="*{idOviUser}" class="form-select" required>
+                <option value="">Selecciona una persona</option>
+                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('idOviUser')}" th:errors="*{idOviUser}" class="text-danger"></div>
+        </div>
+
+        <div class="col-12">
+            <label for="description" class="form-label">Descripcion de necesidades *</label>
+            <textarea id="description" th:field="*{description}" class="form-control" rows="4" required></textarea>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="startDate" class="form-label">Fecha inicio *</label>
+            <input id="startDate" type="date" th:field="*{startDate}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="endDate" class="form-label">Fecha fin *</label>
+            <input id="endDate" type="date" th:field="*{endDate}" class="form-control" required>
+            <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="preferredPc" class="form-label">Codigo postal preferido</label>
+            <input id="preferredPc" type="text" th:field="*{preferredPc}" class="form-control" maxlength="10">
+            <div th:if="${#fields.hasErrors('preferredPc')}" th:errors="*{preferredPc}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="training" class="form-label">Formacion deseada</label>
+            <input id="training" type="text" th:field="*{training}" class="form-control" maxlength="100">
+            <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-3">
+            <label for="experience" class="form-label">Experiencia minima (anios)</label>
+            <input id="experience" type="number" th:field="*{experience}" class="form-control" min="0" step="1">
+            <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-3">
+            <label for="experienceType" class="form-label">Tipo de experiencia</label>
+            <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50">
+            <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="preferredGender" class="form-label">Genero preferido</label>
+            <select id="preferredGender" th:field="*{preferredGender}" class="form-select">
+                <option value="">Sin preferencia</option>
+                <option value="F">F</option>
+                <option value="M">M</option>
+                <option value="O">Otro</option>
+            </select>
+            <div th:if="${#fields.hasErrors('preferredGender')}" th:errors="*{preferredGender}" class="text-danger"></div>
+        </div>
+
+        <div class="col-md-4">
+            <label for="preferredAge" class="form-label">Edad preferida</label>
+            <input id="preferredAge" type="number" th:field="*{preferredAge}" class="form-control" min="0" step="1">
+            <div th:if="${#fields.hasErrors('preferredAge')}" th:errors="*{preferredAge}" class="text-danger"></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+            <a href="/requests/frontoffice/track" class="btn btn-outline-secondary">Ver seguimiento</a>
+            <a href="/" class="btn btn-link">Inicio</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
+
