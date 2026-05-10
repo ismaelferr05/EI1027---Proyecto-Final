@@ -19,10 +19,18 @@ public class LoginController {
     @Autowired
     private UserDao userDao;
 
+    @GetMapping("/")
+    public String home(HttpSession session) {
+        return session.getAttribute("user") != null ? "redirect:/dashboard" : "redirect:/login";
+    }
+
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(HttpSession session, Model model) {
+        if (session.getAttribute("user") != null) {
+            return "redirect:/dashboard";
+        }
         model.addAttribute("user", new UserDetails());
-        return "login"; // Devuelve el nombre de la vista para el formulario de inicio de sesión
+        return "login";
     }
 
     @PostMapping("/login")
@@ -35,20 +43,29 @@ public class LoginController {
         UserDetails userDetails = userDao.getUserByEmail(user.getEmail());
         if (userDetails == null || !userDetails.getPassword().equals(user.getPassword())) {
             bindingResult.rejectValue("email", "error.user", "Invalid email or password");
-            return "login"; // Si el usuario no existe o la contraseña es incorrecta, vuelve a mostrar el formulario de inicio de sesión con un mensaje de error
+            return "login";
         }
-        session.setAttribute("user", userDetails); // Guarda los detalles del usuario en la sesión
+        session.setAttribute("user", userDetails);
         return "redirect:/dashboard";
     }
 
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+        UserDetails user = (UserDetails) session.getAttribute("user");
+        model.addAttribute("currentUser", user);
+        model.addAttribute("currentRole", user.getRole());
+        model.addAttribute("isTechnician", "TECNICO".equals(user.getRole()));
+        model.addAttribute("isOviUser", "OVIUSER".equals(user.getRole()));
+        model.addAttribute("isPapPati", "PAPPATI".equals(user.getRole()));
         return "dashboard";
     }
 
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // Invalida la sesión para cerrar la sesión del usuario
+        session.invalidate();
         return "redirect:/login";
     }
 }

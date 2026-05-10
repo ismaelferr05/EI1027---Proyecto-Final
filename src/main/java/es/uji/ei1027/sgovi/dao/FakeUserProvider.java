@@ -1,41 +1,67 @@
 package es.uji.ei1027.sgovi.dao;
 
 import es.uji.ei1027.sgovi.model.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.List;
+import java.util.ArrayList;
 
 @Repository
 public class FakeUserProvider implements UserDao {
-    final Map<String, UserDetails> knownUsers = new HashMap<String, UserDetails>();
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    public FakeUserProvider() {
-        UserDetails tecnico1 = new UserDetails();
-        tecnico1.setEmail("tecnico1@gmail.com");
-        tecnico1.setPassword("1tecnico123");
-        tecnico1.setRole("TECNICO");
-        knownUsers.put(tecnico1.getEmail(), tecnico1);
-
-        UserDetails oviuser1 = new UserDetails();
-        oviuser1.setEmail("oviuser@gmail.com");
-        oviuser1.setPassword("1oviuser123");
-        oviuser1.setRole("OVIUSER");
-        knownUsers.put(oviuser1.getEmail(), oviuser1);
-    }
     @Override
     public UserDetails getUserByEmail(String email) {
-        UserDetails user = knownUsers.get(email.trim());
-        if (user == null){
+        if (email == null || email.trim().isEmpty()) {
             return null;
         }
-        return user;
+
+        String normalizedEmail = email.trim();
+
+        UserDetails user = querySingle("SELECT email, password FROM OviUser WHERE LOWER(email)=LOWER(?)", normalizedEmail, "OVIUSER");
+        if (user != null) {
+            return user;
+        }
+
+        user = querySingle("SELECT email, password FROM PapPati WHERE LOWER(email)=LOWER(?)", normalizedEmail, "PAPPATI");
+        if (user != null) {
+            return user;
+        }
+
+        return querySingle("SELECT email, password FROM Technician WHERE LOWER(email)=LOWER(?)", normalizedEmail, "TECNICO");
     }
 
     @Override
     public Collection<UserDetails> getAllUsers() {
-        return knownUsers.values();
+        List<UserDetails> users = new ArrayList<>();
+        users.addAll(queryUsers("SELECT email, password FROM OviUser", "OVIUSER"));
+        users.addAll(queryUsers("SELECT email, password FROM PapPati", "PAPPATI"));
+        users.addAll(queryUsers("SELECT email, password FROM Technician", "TECNICO"));
+        return users;
+    }
+
+    private UserDetails querySingle(String sql, String email, String role) {
+        List<UserDetails> users = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDetails user = new UserDetails();
+            user.setEmail(rs.getString("email"));
+            user.setPassword(rs.getString("password"));
+            user.setRole(role);
+            return user;
+        }, email);
+        return users.isEmpty() ? null : users.get(0);
+    }
+
+    private Collection<UserDetails> queryUsers(String sql, String role) {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            UserDetails user = new UserDetails();
+            user.setEmail(rs.getString("email"));
+            user.setPassword(rs.getString("password"));
+            user.setRole(role);
+            return user;
+        });
     }
 }

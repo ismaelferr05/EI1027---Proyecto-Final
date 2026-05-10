@@ -43,5 +43,28 @@ public class MessageDao {
         String sql = "SELECT * FROM Message WHERE negotiation_id=?";
         return jdbcTemplate.query(sql, new MessageRowMapper(), idNegotiation);
     }
+
+    public List<Message> getByOviUser(int idOviUser) {
+        String sql = """
+                SELECT m.*
+                FROM Message m
+                JOIN Negotiation n ON m.negotiation_id = n.negotiation_id
+                JOIN Request r ON n.request_id = r.request_id
+                WHERE r.oviuser_id = ?
+                ORDER BY m.messageDateTime
+                """;
+        return jdbcTemplate.query(sql, new MessageRowMapper(), idOviUser);
+    }
+
+    public List<Message> getByPapPati(int idPapPati) {
+        String sql = """
+                SELECT m.*
+                FROM Message m
+                JOIN Negotiation n ON m.negotiation_id = n.negotiation_id
+                WHERE n.pappati_id = ?
+                ORDER BY m.messageDateTime
+                """;
+        return jdbcTemplate.query(sql, new MessageRowMapper(), idPapPati);
+    }
 }
 

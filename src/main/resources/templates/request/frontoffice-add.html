@@ -1,92 +1,233 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/base}">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva Solicitud de Asistencia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .page-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+        .form-section h3 {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-section h3 i {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control, .form-select {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 12px;
+            font-size: 0.95rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .required-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f4ff;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+        .btn-group-custom {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background-color: #667eea;
+            border-color: #667eea;
+            padding: 10px 30px;
+            font-weight: 600;
+            border-radius: 5px;
+        }
+        .btn-primary:hover {
+            background-color: #5568d3;
+            border-color: #5568d3;
+        }
+        .btn-outline-secondary {
+            border-color: #ddd;
+            color: #333;
+            padding: 10px 20px;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #f0f0f0;
+            border-color: #999;
+        }
+        .user-info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .user-info-card strong {
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-<section layout:fragment="content">
-    <h2 class="mb-3">Registrar solicitud de asistencia personal</h2>
-    <p class="text-muted">Completa el formulario. El estado inicial siempre será <strong>EN REVISIÓN</strong>.</p>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-file-text"></i> Nueva Solicitud de Asistencia Personal</h1>
+        <p>Completa el formulario para solicitar asistencia personal. El estado inicial será <strong>EN REVISIÓN</strong>.</p>
+    </div>
+</div>
 
-    <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post" class="row g-3">
+<main class="container">
+    <div class="user-info-card" th:if="${currentOviUser != null}">
+        <i class="bi bi-person-circle"></i> Solicitud de <strong th:text="|${currentOviUser.name} ${currentOviUser.lastName}|"></strong>
+        <br>
+        <small th:text="|Email: ${currentOviUser.email}|"></small>
+    </div>
+
+    <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post">
         <input type="hidden" th:field="*{status}" />
+        <input type="hidden" th:field="*{idOviUser}" />
 
-        <div class="col-md-6">
-            <label for="idOviUser" class="form-label">Persona usuaria *</label>
-            <select id="idOviUser" th:field="*{idOviUser}" class="form-select" required>
-                <option value="">Selecciona una persona</option>
-                <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
-            </select>
-            <div th:if="${#fields.hasErrors('idOviUser')}" th:errors="*{idOviUser}" class="text-danger"></div>
+        <!-- Sección: Información Principal -->
+        <div class="form-section">
+            <h3><i class="bi bi-info-circle"></i> Información Principal *</h3>
+            <div class="mb-3">
+                <label for="description" class="form-label">Descripción de necesidades</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="5" placeholder="Describe las necesidades de asistencia que requieres..." required></textarea>
+                <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger small mt-2"></div>
+            </div>
         </div>
 
-        <div class="col-12">
-            <label for="description" class="form-label">Descripcion de necesidades *</label>
-            <textarea id="description" th:field="*{description}" class="form-control" rows="4" required></textarea>
-            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+        <!-- Sección: Fechas -->
+        <div class="form-section">
+            <h3><i class="bi bi-calendar-event"></i> Período de Asistencia *</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="startDate" class="form-label">Fecha de inicio</label>
+                    <input id="startDate" type="date" th:field="*{startDate}" class="form-control" required>
+                    <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6">
+                    <label for="endDate" class="form-label">Fecha de fin</label>
+                    <input id="endDate" type="date" th:field="*{endDate}" class="form-control" required>
+                    <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <label for="startDate" class="form-label">Fecha inicio *</label>
-            <input id="startDate" type="date" th:field="*{startDate}" class="form-control" required>
-            <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger"></div>
+        <!-- Sección: Ubicación -->
+        <div class="form-section">
+            <h3><i class="bi bi-geo-alt"></i> Preferencia de Ubicación</h3>
+            <div class="mb-3">
+                <label for="preferredPc" class="form-label">Código postal preferido</label>
+                <input id="preferredPc" type="text" th:field="*{preferredPc}" class="form-control" maxlength="10" placeholder="ej: 46001">
+                <div th:if="${#fields.hasErrors('preferredPc')}" th:errors="*{preferredPc}" class="text-danger small mt-2"></div>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <label for="endDate" class="form-label">Fecha fin *</label>
-            <input id="endDate" type="date" th:field="*{endDate}" class="form-control" required>
-            <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger"></div>
+        <!-- Sección: Formación y Experiencia -->
+        <div class="form-section">
+            <h3><i class="bi bi-book"></i> Requerimientos de Formación y Experiencia</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="training" class="form-label">Formación deseada</label>
+                    <input id="training" type="text" th:field="*{training}" class="form-control" maxlength="100" placeholder="ej: Auxiliar de Enfermería">
+                    <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-3">
+                    <label for="experience" class="form-label">Experiencia mínima (años)</label>
+                    <input id="experience" type="number" th:field="*{experience}" class="form-control" min="0" step="1" placeholder="0">
+                    <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-3">
+                    <label for="experienceType" class="form-label">Tipo de experiencia</label>
+                    <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50" placeholder="ej: Formal">
+                    <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <label for="preferredPc" class="form-label">Codigo postal preferido</label>
-            <input id="preferredPc" type="text" th:field="*{preferredPc}" class="form-control" maxlength="10">
-            <div th:if="${#fields.hasErrors('preferredPc')}" th:errors="*{preferredPc}" class="text-danger"></div>
+        <!-- Sección: Preferencias Personales -->
+        <div class="form-section">
+            <h3><i class="bi bi-heart"></i> Preferencias Personales</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="preferredGender" class="form-label">Género preferido del asistente</label>
+                    <select id="preferredGender" th:field="*{preferredGender}" class="form-select">
+                        <option value="">Sin preferencia</option>
+                        <option value="F">Femenino</option>
+                        <option value="M">Masculino</option>
+                        <option value="O">Otro</option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('preferredGender')}" th:errors="*{preferredGender}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6">
+                    <label for="preferredAge" class="form-label">Edad preferida del asistente</label>
+                    <input id="preferredAge" type="number" th:field="*{preferredAge}" class="form-control" min="0" step="1" placeholder="ej: 30">
+                    <div th:if="${#fields.hasErrors('preferredAge')}" th:errors="*{preferredAge}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <label for="training" class="form-label">Formacion deseada</label>
-            <input id="training" type="text" th:field="*{training}" class="form-control" maxlength="100">
-            <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger"></div>
+        <div class="required-note">
+            <strong><i class="bi bi-asterisk"></i> Campos obligatorios:</strong> Descripción de necesidades, Fecha de inicio y Fecha de fin.
         </div>
 
-        <div class="col-md-3">
-            <label for="experience" class="form-label">Experiencia minima (anios)</label>
-            <input id="experience" type="number" th:field="*{experience}" class="form-control" min="0" step="1">
-            <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
-        </div>
-
-        <div class="col-md-3">
-            <label for="experienceType" class="form-label">Tipo de experiencia</label>
-            <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50">
-            <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger"></div>
-        </div>
-
-        <div class="col-md-4">
-            <label for="preferredGender" class="form-label">Genero preferido</label>
-            <select id="preferredGender" th:field="*{preferredGender}" class="form-select">
-                <option value="">Sin preferencia</option>
-                <option value="F">F</option>
-                <option value="M">M</option>
-                <option value="O">Otro</option>
-            </select>
-            <div th:if="${#fields.hasErrors('preferredGender')}" th:errors="*{preferredGender}" class="text-danger"></div>
-        </div>
-
-        <div class="col-md-4">
-            <label for="preferredAge" class="form-label">Edad preferida</label>
-            <input id="preferredAge" type="number" th:field="*{preferredAge}" class="form-control" min="0" step="1">
-            <div th:if="${#fields.hasErrors('preferredAge')}" th:errors="*{preferredAge}" class="text-danger"></div>
-        </div>
-
-        <div class="col-12 d-flex gap-2 mt-2">
-            <button type="submit" class="btn btn-primary">Enviar solicitud</button>
-            <a href="/requests/frontoffice/track" class="btn btn-outline-secondary">Ver seguimiento</a>
-            <a href="/" class="btn btn-link">Inicio</a>
+        <div class="btn-group-custom">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Enviar solicitud
+            </button>
+            <a href="/requests/frontoffice/track" class="btn btn-outline-secondary">
+                <i class="bi bi-search"></i> Ver seguimiento
+            </a>
+            <a href="/dashboard" class="btn btn-outline-secondary">
+                <i class="bi bi-house"></i> Volver al dashboard
+            </a>
         </div>
     </form>
-</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

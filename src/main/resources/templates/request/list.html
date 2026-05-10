@@ -2,53 +2,96 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitudes - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-header h1 { margin: 0; font-weight: 600; }
+        .action-bar { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-bar a { padding: 8px 16px; border-radius: 5px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
+        .btn-primary-custom { background-color: #667eea; color: white; }
+        .btn-primary-custom:hover { background-color: #5568d3; color: white; }
+        .btn-outline-custom { background-color: white; color: #333; border: 1px solid #ddd; }
+        .btn-outline-custom:hover { background-color: #f0f0f0; }
+        table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 0.9rem; }
+        thead { background-color: #667eea; color: white; }
+        thead th { font-weight: 600; padding: 12px; border: none; }
+        tbody td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        tbody tr:hover { background-color: #f8f9fa; }
+        .action-btn { padding: 4px 8px; margin: 0 2px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: 500; display: inline-block; }
+        .btn-edit { background-color: #3498db; color: white; }
+        .btn-edit:hover { background-color: #2980b9; color: white; }
+        .btn-delete { background-color: #e74c3c; color: white; }
+        .btn-delete:hover { background-color: #c0392b; color: white; }
+        .btn-view { background-color: #27ae60; color: white; }
+        .btn-view:hover { background-color: #229954; color: white; }
+        .status-badge { padding: 3px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: 600; }
+        .status-pending { background-color: #f39c12; color: white; }
+        .status-approved { background-color: #27ae60; color: white; }
+        .status-rejected { background-color: #e74c3c; color: white; }
+    </style>
 </head>
 <body>
-    <h1>Listado de Solicitudes</h1>
-    <a href="/">Volver al inicio</a> |
-    <a href="/requests/add">Agregar Solicitud</a> |
-    <a href="/requests/frontoffice/add">Front-office</a> |
-    <a href="/requests/backoffice/list">Back-office</a>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-file-text"></i> Listado de Solicitudes</h1>
+    </div>
+</div>
 
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Descripción</th>
-                <th>Formación</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
-                <th>Experiencia</th>
-                <th>Tipo Experiencia</th>
-                <th>Género Preferido</th>
-                <th>CP Preferido</th>
-                <th>Edad Preferida</th>
-                <th>Estado</th>
-                <th>ID Usuario OVI</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="request : ${requests}">
-                <td th:text="${request.idRequest}"></td>
-                <td th:text="${request.description}"></td>
-                <td th:text="${request.training}"></td>
-                <td th:text="${request.startDate}"></td>
-                <td th:text="${request.endDate}"></td>
-                <td th:text="${request.experience}"></td>
-                <td th:text="${request.experienceType}"></td>
-                <td th:text="${request.preferredGender}"></td>
-                <td th:text="${request.preferredPc}"></td>
-                <td th:text="${request.preferredAge}"></td>
-                <td th:text="${request.status}"></td>
-                <td th:text="${request.idOviUser}"></td>
-                <td>
-                    <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}">Editar</a>
-                    <a th:href="@{/requests/delete/{id}(id=${request.idRequest})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container mb-5">
+    <div class="action-bar">
+        <a href="/dashboard" class="action-bar a btn-outline-custom"><i class="bi bi-house"></i> Dashboard</a>
+        <span th:if="${isTechnician}">
+            <a href="/requests/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar Solicitud</a>
+            <a href="/requests/backoffice/list" class="action-bar a btn-primary-custom"><i class="bi bi-check2-all"></i> Back-office</a>
+        </span>
+        <span th:if="${isOviUser}">
+            <a href="/requests/frontoffice/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Crear solicitud</a>
+            <a href="/requests/frontoffice/track" class="action-bar a btn-outline-custom"><i class="bi bi-search"></i> Mis solicitudes</a>
+        </span>
+        <span th:if="${isPapPati}">
+            <span class="action-bar a btn-outline-custom"><i class="bi bi-eye"></i> Vista de solo lectura</span>
+        </span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-blockquote"></i> Descripción</th>
+                    <th><i class="bi bi-book"></i> Formación</th>
+                    <th><i class="bi bi-calendar"></i> Inicio</th>
+                    <th><i class="bi bi-calendar"></i> Fin</th>
+                    <th><i class="bi bi-briefcase"></i> Estado</th>
+                    <th th:if="${isTechnician}"><i class="bi bi-tools"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="request : ${requests}">
+                    <td th:text="${request.idRequest}"></td>
+                    <td th:text="${request.description}"></td>
+                    <td th:text="${request.training}"></td>
+                    <td th:text="${request.startDate}"></td>
+                    <td th:text="${request.endDate}"></td>
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${request.status == 'IN_REVIEW' ? 'status-pending' : (request.status == 'APPROVED' ? 'status-approved' : 'status-rejected')}"
+                              th:text="${request.status}"></span>
+                    </td>
+                    <td th:if="${isTechnician}">
+                        <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{/requests/delete/{id}(id=${request.idRequest})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

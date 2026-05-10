@@ -1,118 +1,148 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-   <meta charset="UTF-8" />
-   <title>Crear nuevo PAP PATI</title>
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear nuevo PAP PATI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; padding: 20px 0; }
+        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-header h1 { margin: 0; font-weight: 600; }
+        .form-section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #667eea; }
+        .form-label { font-weight: 500; color: #333; margin-bottom: 8px; }
+        .form-control, .form-select { border: 1px solid #ddd; border-radius: 5px; padding: 10px 12px; font-size: 0.95rem; }
+        .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
+        .btn-group-custom { display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap; }
+        .btn-primary { background-color: #667eea; border-color: #667eea; padding: 10px 30px; font-weight: 600; border-radius: 5px; }
+        .btn-primary:hover { background-color: #5568d3; border-color: #5568d3; }
+        .btn-outline-secondary { border-color: #ddd; color: #333; padding: 10px 20px; }
+        .btn-outline-secondary:hover { background-color: #f0f0f0; border-color: #999; }
+        .form-check-input:checked { background-color: #667eea; border-color: #667eea; }
+    </style>
 </head>
-
 <body>
-<main class="container">
-   <h1>Nuevo PAP PATI</h1>
-   <form class="form-horizontal" th:action="@{/pap-patis/add}" th:object="${papPati}" method="post">
-       <div class="mb-3 col-md-4">
-           <label for="name" class="control-label col-sm-2">Nombre:</label>
-           <input id="name" type="text" th:field="*{name}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
-       </div>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-plus-circle"></i> Nuevo PAP PATI</h1>
+    </div>
+</div>
 
-       <div class="mb-3 col-md-4">
-           <label for="lastName" class="control-label col-sm-2">Apellidos:</label>
-           <input id="lastName" type="text" th:field="*{lastName}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></div>
-       </div>
+<div class="container mb-5">
+    <div class="form-section">
+        <form class="form-horizontal" th:action="@{/pap-patis/add}" th:object="${papPati}" method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Nombre:</label>
+                    <input id="name" type="text" th:field="*{name}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Apellidos:</label>
+                    <input id="lastName" type="text" th:field="*{lastName}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="email" class="control-label col-sm-2">Email:</label>
-           <input id="email" type="email" th:field="*{email}" class="form-control col-sm-4" maxlength="100">
-           <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
-       </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input id="email" type="email" th:field="*{email}" class="form-control" maxlength="100">
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Teléfono:</label>
+                    <input id="phone" type="text" th:field="*{phone}" class="form-control" maxlength="20">
+                    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="phone" class="control-label col-sm-2">Teléfono:</label>
-           <input id="phone" type="text" th:field="*{phone}" class="form-control col-sm-4" maxlength="20">
-           <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></div>
-       </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input id="password" type="password" th:field="*{password}" class="form-control" maxlength="255">
+                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="province" class="form-label">Provincia:</label>
+                    <input id="province" type="text" th:field="*{province}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('province')}" th:errors="*{province}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="password" class="control-label col-sm-2">Contraseña:</label>
-           <input id="password" type="password" th:field="*{password}" class="form-control col-sm-4" maxlength="255">
-           <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
-       </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="town" class="form-label">Población:</label>
+                    <input id="town" type="text" th:field="*{town}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('town')}" th:errors="*{town}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="pc" class="form-label">Código postal:</label>
+                    <input id="pc" type="text" th:field="*{pc}" class="form-control" maxlength="10">
+                    <div th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="age" class="form-label">Edad:</label>
+                    <input id="age" type="number" th:field="*{age}" class="form-control" min="0" step="1">
+                    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="province" class="control-label col-sm-2">Provincia:</label>
-           <input id="province" type="text" th:field="*{province}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('province')}" th:errors="*{province}" class="text-danger"></div>
-       </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="gender" class="form-label">Género:</label>
+                    <select id="gender" th:field="*{gender}" class="form-select">
+                        <option value="">Selecciona un género</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="cvUrl" class="form-label">URL CV:</label>
+                    <input id="cvUrl" type="url" th:field="*{cvUrl}" class="form-control" maxlength="255">
+                    <div th:if="${#fields.hasErrors('cvUrl')}" th:errors="*{cvUrl}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="status" class="form-label">Estado:</label>
+                    <select id="status" th:field="*{status}" class="form-select">
+                        <option value="">Selecciona un estado</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="ACCEPTED">ACCEPTED</option>
+                        <option value="REJECTED">REJECTED</option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="town" class="control-label col-sm-2">Población:</label>
-           <input id="town" type="text" th:field="*{town}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('town')}" th:errors="*{town}" class="text-danger"></div>
-       </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="training" class="form-label">Formación:</label>
+                    <input id="training" type="text" th:field="*{training}" class="form-control" maxlength="100">
+                    <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="experience" class="form-label">Experiencia:</label>
+                    <input id="experience" type="text" th:field="*{experience}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="experienceType" class="form-label">Tipo experiencia:</label>
+                    <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50">
+                    <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
 
-       <div class="mb-3 col-md-4">
-           <label for="pc" class="control-label col-sm-2">Código postal:</label>
-           <input id="pc" type="text" th:field="*{pc}" class="form-control col-sm-4" maxlength="10">
-           <div th:if="${#fields.hasErrors('pc')}" th:errors="*{pc}" class="text-danger"></div>
-       </div>
+            <div class="btn-group-custom">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar PAP PATI</button>
+                <a href="/pap-patis/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
 
-       <div class="mb-3 col-md-4">
-           <label for="age" class="control-label col-sm-2">Edad:</label>
-           <input id="age" type="number" th:field="*{age}" class="form-control col-sm-4" min="0" step="1">
-           <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="gender" class="control-label col-sm-2">Género:</label>
-           <select id="gender" th:field="*{gender}" class="form-control col-sm-4">
-               <option value="">Selecciona un género</option>
-               <option value="Masculino">Masculino</option>
-               <option value="Femenino">Femenino</option>
-               <option value="Otro">Otro</option>
-           </select>
-           <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="cvUrl" class="control-label col-sm-2">URL CV:</label>
-           <input id="cvUrl" type="url" th:field="*{cvUrl}" class="form-control col-sm-4" maxlength="255">
-           <div th:if="${#fields.hasErrors('cvUrl')}" th:errors="*{cvUrl}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="training" class="control-label col-sm-2">Formación:</label>
-           <input id="training" type="text" th:field="*{training}" class="form-control col-sm-4" maxlength="100">
-           <div th:if="${#fields.hasErrors('training')}" th:errors="*{training}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="experience" class="control-label col-sm-2">Experiencia:</label>
-           <input id="experience" type="text" th:field="*{experience}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="experienceType" class="control-label col-sm-2">Tipo experiencia:</label>
-           <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control col-sm-4" maxlength="50">
-           <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger"></div>
-       </div>
-
-       <div class="mb-3 col-md-4">
-           <label for="status" class="control-label col-sm-2">Estado:</label>
-           <select id="status" th:field="*{status}" class="form-control col-sm-4">
-               <option value="">Selecciona un estado</option>
-               <option value="PENDING">PENDING</option>
-               <option value="ACCEPTED">ACCEPTED</option>
-               <option value="REJECTED">REJECTED</option>
-           </select>
-           <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
-       </div>
-
-       <button type="submit" class="btn btn-primary">Afegeix PAP PATI</button>
-   </form>
-</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

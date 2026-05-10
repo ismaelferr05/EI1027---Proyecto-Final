@@ -39,5 +39,11 @@ public class OviUserDao {
         String sql = "SELECT * FROM OviUser";
         return jdbcTemplate.query(sql, new OviUserRowMapper());
     }
+
+    public OviUser getByEmail(String email) {
+        String sql = "SELECT * FROM OviUser WHERE LOWER(email)=LOWER(?)";
+        List<OviUser> users = jdbcTemplate.query(sql, new OviUserRowMapper(), email);
+        return users.isEmpty() ? null : users.get(0);
+    }
 }
 

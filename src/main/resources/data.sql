@@ -5,6 +5,12 @@ VALUES
     (2, 'maria.lopez@trainer.com',   'María',  'López',  'Psicóloga',      '623456789', 'Carrer Major 5, Castellón')
 ON CONFLICT (trainer_id) DO NOTHING;
 
+-- Technicians
+INSERT INTO Technician (technician_id, email, password, name, lastName)
+VALUES
+    (1, 'tecnico1@gmail.com', '1tecnico123', 'Técnico', 'Principal')
+ON CONFLICT (technician_id) DO NOTHING;
+
 -- Activities
 INSERT INTO Activity (activity_id, name, date, duration, location, category, description, trainer_id)
 VALUES
@@ -70,6 +76,7 @@ ON CONFLICT (contract_id) DO NOTHING;
 
 -- Alinea secuencias identity para que los siguientes inserts automaticos no repitan IDs.
 SELECT setval(pg_get_serial_sequence('trainer', 'trainer_id'), COALESCE((SELECT MAX(trainer_id) FROM trainer), 1), true);
+SELECT setval(pg_get_serial_sequence('technician', 'technician_id'), COALESCE((SELECT MAX(technician_id) FROM technician), 1), true);
 SELECT setval(pg_get_serial_sequence('activity', 'activity_id'), COALESCE((SELECT MAX(activity_id) FROM activity), 1), true);
 SELECT setval(pg_get_serial_sequence('oviuser', 'oviuser_id'), COALESCE((SELECT MAX(oviuser_id) FROM oviuser), 1), true);
 SELECT setval(pg_get_serial_sequence('pappati', 'pappati_id'), COALESCE((SELECT MAX(pappati_id) FROM pappati), 1), true);

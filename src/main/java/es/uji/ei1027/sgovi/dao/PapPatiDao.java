@@ -44,5 +44,11 @@ public class PapPatiDao {
         String sql = "SELECT * FROM PapPati WHERE status=?";
         return jdbcTemplate.query(sql, new PapPatiRowMapper(), status);
     }
+
+    public PapPati getByEmail(String email) {
+        String sql = "SELECT * FROM PapPati WHERE LOWER(email)=LOWER(?)";
+        List<PapPati> users = jdbcTemplate.query(sql, new PapPatiRowMapper(), email);
+        return users.isEmpty() ? null : users.get(0);
+    }
 }
 

@@ -2,50 +2,88 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios OVI - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-header h1 { margin: 0; font-weight: 600; }
+        .action-bar { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-bar a { padding: 8px 16px; border-radius: 5px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
+        .btn-primary-custom { background-color: #667eea; color: white; }
+        .btn-primary-custom:hover { background-color: #5568d3; color: white; }
+        .btn-outline-custom { background-color: white; color: #333; border: 1px solid #ddd; }
+        .btn-outline-custom:hover { background-color: #f0f0f0; }
+        table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 0.9rem; }
+        thead { background-color: #667eea; color: white; }
+        thead th { font-weight: 600; padding: 12px; border: none; }
+        tbody td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        tbody tr:hover { background-color: #f8f9fa; }
+        .action-btn { padding: 5px 10px; margin: 0 2px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: 500; display: inline-block; }
+        .btn-edit { background-color: #3498db; color: white; }
+        .btn-edit:hover { background-color: #2980b9; color: white; }
+        .btn-delete { background-color: #e74c3c; color: white; }
+        .btn-delete:hover { background-color: #c0392b; color: white; }
+    </style>
 </head>
 <body>
-    <h1>Listado de Usuarios OVI</h1>
-    <a href="/">Volver al inicio</a> | <a href="/ovi-users/add">Agregar Usuario</a>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-people"></i> Listado de Usuarios OVI</h1>
+    </div>
+</div>
 
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>Provincia</th>
-                <th>Ciudad</th>
-                <th>Código Postal</th>
-                <th>Edad</th>
-                <th>Género</th>
-                <th>Estado</th>
-                <th>LOPD</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="oviUser : ${oviUsers}">
-                <td th:text="${oviUser.idOviUser}"></td>
-                <td th:text="${oviUser.name}"></td>
-                <td th:text="${oviUser.lastName}"></td>
-                <td th:text="${oviUser.email}"></td>
-                <td th:text="${oviUser.phone}"></td>
-                <td th:text="${oviUser.province}"></td>
-                <td th:text="${oviUser.town}"></td>
-                <td th:text="${oviUser.pc}"></td>
-                <td th:text="${oviUser.age}"></td>
-                <td th:text="${oviUser.gender}"></td>
-                <td th:text="${oviUser.status}"></td>
-                <td th:text="${oviUser.lopdConsent ? 'Sí' : 'No'}"></td>
-                <td>
-                    <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.idOviUser})}">Editar</a>
-                    <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" onclick="return confirm('¿Confirmar eliminación?')">Eliminar</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container mb-5">
+    <div class="action-bar">
+        <a href="/dashboard" class="action-bar a btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
+        <a href="/ovi-users/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar usuario</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-person"></i> Nombre</th>
+                    <th><i class="bi bi-person"></i> Apellidos</th>
+                    <th><i class="bi bi-envelope"></i> Email</th>
+                    <th><i class="bi bi-telephone"></i> Teléfono</th>
+                    <th><i class="bi bi-geo-alt"></i> Provincia</th>
+                    <th><i class="bi bi-building"></i> Ciudad</th>
+                    <th><i class="bi bi-mailbox"></i> CP</th>
+                    <th><i class="bi bi-cake2"></i> Edad</th>
+                    <th><i class="bi bi-person-fill"></i> Género</th>
+                    <th><i class="bi bi-check-circle"></i> Estado</th>
+                    <th><i class="bi bi-shield-check"></i> LOPD</th>
+                    <th><i class="bi bi-tools"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="oviUser : ${oviUsers}">
+                    <td th:text="${oviUser.idOviUser}"></td>
+                    <td th:text="${oviUser.name}"></td>
+                    <td th:text="${oviUser.lastName}"></td>
+                    <td th:text="${oviUser.email}"></td>
+                    <td th:text="${oviUser.phone}"></td>
+                    <td th:text="${oviUser.province}"></td>
+                    <td th:text="${oviUser.town}"></td>
+                    <td th:text="${oviUser.pc}"></td>
+                    <td th:text="${oviUser.age}"></td>
+                    <td th:text="${oviUser.gender}"></td>
+                    <td th:text="${oviUser.status}"></td>
+                    <td th:text="${oviUser.lopdConsent ? 'Sí' : 'No'}"></td>
+                    <td>
+                        <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

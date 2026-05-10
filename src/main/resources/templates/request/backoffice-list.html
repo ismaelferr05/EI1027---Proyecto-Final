@@ -3,55 +3,87 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Back-office - Revision de solicitudes</title>
+    <title>Back-office - Revisión de solicitudes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-header h1 { margin: 0; font-weight: 600; }
+        .action-bar { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-bar a { padding: 8px 16px; border-radius: 5px; text-decoration: none; font-weight: 500; transition: all 0.3s; }
+        .btn-primary-custom { background-color: #667eea; color: white; }
+        .btn-primary-custom:hover { background-color: #5568d3; color: white; }
+        .btn-outline-custom { background-color: white; color: #333; border: 1px solid #ddd; }
+        .btn-outline-custom:hover { background-color: #f0f0f0; }
+        .section-title { color: #333; font-weight: 600; margin: 25px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        thead { background-color: #667eea; color: white; }
+        thead th { font-weight: 600; padding: 15px; border: none; }
+        tbody td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
+        tbody tr:hover { background-color: #f8f9fa; }
+        .btn-sm { padding: 5px 12px; font-size: 0.85rem; }
+        .list-group-item { border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-<main class="container py-4">
-    <h1 class="mb-3">Back-office: revision y propuestas</h1>
-    <div class="mb-3">
-        <a href="/" class="btn btn-link ps-0">Inicio</a>
-        <a href="/requests/frontoffice/add" class="btn btn-outline-secondary">Front-office: nueva solicitud</a>
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-check2-all"></i> Back-office: Revisión y Propuestas</h1>
+    </div>
+</div>
+
+<main class="container py-4 mb-5">
+    <div class="action-bar">
+        <a href="/dashboard" class="action-bar a btn-outline-custom"><i class="bi bi-house"></i> Dashboard</a>
+        <a href="/requests/frontoffice/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Nueva solicitud</a>
     </div>
 
-    <h2 class="h4 mt-4">Solicitudes pendientes</h2>
+    <h2 class="section-title"><i class="bi bi-hourglass-split"></i> Solicitudes Pendientes de Revisión</h2>
     <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
+        <table class="table table-hover">
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>Descripcion</th>
-                <th>Periodo</th>
-                <th>Estado</th>
-                <th>Accion</th>
-            </tr>
+                <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-blockquote"></i> Descripción</th>
+                    <th><i class="bi bi-calendar-range"></i> Período</th>
+                    <th><i class="bi bi-check-circle"></i> Estado</th>
+                    <th><i class="bi bi-tools"></i> Acción</th>
+                </tr>
             </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(pendingRequests)}">
-                <td colspan="5" class="text-center">No hay solicitudes en revision.</td>
-            </tr>
-            <tr th:each="request : ${pendingRequests}">
-                <td th:text="${request.idRequest}"></td>
-                <td th:text="${request.description}"></td>
-                <td th:text="|${request.startDate} -> ${request.endDate}|"></td>
-                <td><span class="badge text-bg-secondary" th:text="${request.status}"></span></td>
-                <td>
-                    <a class="btn btn-sm btn-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}">Revisar</a>
-                </td>
-            </tr>
+                <tr th:if="${#lists.isEmpty(pendingRequests)}">
+                    <td colspan="5" class="text-center text-muted py-4"><i class="bi bi-inbox"></i> No hay solicitudes en revisión</td>
+                </tr>
+                <tr th:each="request : ${pendingRequests}">
+                    <td th:text="${request.idRequest}"></td>
+                    <td th:text="${request.description}"></td>
+                    <td th:text="|${request.startDate} → ${request.endDate}|"></td>
+                    <td><span class="badge bg-warning text-dark" th:text="${request.status}"></span></td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Revisar</a>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 
-    <h2 class="h4 mt-4">Solicitudes ya aprobadas</h2>
-    <ul class="list-group" th:if="${!#lists.isEmpty(approvedRequests)}">
-        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="request : ${approvedRequests}">
-            <span th:text="|#${request.idRequest} - ${request.description}|"></span>
-            <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}">Ver propuesta</a>
-        </li>
-    </ul>
-    <p th:if="${#lists.isEmpty(approvedRequests)}" class="text-muted">Aun no hay solicitudes aprobadas.</p>
+    <h2 class="section-title"><i class="bi bi-check-circle"></i> Solicitudes Aprobadas</h2>
+    <div th:if="${!#lists.isEmpty(approvedRequests)}">
+        <div class="list-group">
+            <div class="list-group-item d-flex justify-content-between align-items-center" th:each="request : ${approvedRequests}">
+                <div>
+                    <h6 class="mb-1"><strong>#<span th:text="${request.idRequest}"></span></strong> - <span th:text="${request.description}"></span></h6>
+                    <small class="text-muted" th:text="|Período: ${request.startDate} → ${request.endDate}|"></small>
+                </div>
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver propuesta</a>
+            </div>
+        </div>
+    </div>
+    <p th:if="${#lists.isEmpty(approvedRequests)}" class="text-muted text-center py-4"><i class="bi bi-inbox"></i> Aún no hay solicitudes aprobadas</p>
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

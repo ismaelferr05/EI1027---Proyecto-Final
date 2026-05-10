@@ -24,6 +24,10 @@ public class RequestProposalService {
 
 	public List<CandidateProposal> buildProposals(Request request) {
 		List<CandidateProposal> proposals = new ArrayList<>();
+		if (request == null || request.getStartDate() == null || request.getEndDate() == null) {
+			return proposals;
+		}
+
 		for (PapPati papPati : papPatiDao.getByStatus("ACCEPTED")) {
 			if (!isAvailable(papPati, request)) {
 				continue;
@@ -69,6 +73,9 @@ public class RequestProposalService {
 	}
 
 	private boolean isAvailable(PapPati papPati, Request request) {
+		if (papPati == null || request == null || request.getStartDate() == null || request.getEndDate() == null) {
+			return false;
+		}
 		return !contractDao.hasOverlappingContractForPapPati(
 				papPati.getIdPapPati(),
 				request.getStartDate(),
