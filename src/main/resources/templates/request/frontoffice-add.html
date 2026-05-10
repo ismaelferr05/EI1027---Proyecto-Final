@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/base}">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Front-office - Nueva solicitud</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <title>Nueva Solicitud de Asistencia</title>
 </head>
 <body>
-<main class="container py-4">
-    <h1 class="mb-3">Registrar solicitud de asistencia personal</h1>
-    <p class="text-muted">Completa el formulario. El estado inicial siempre sera <strong>IN_REVIEW</strong>.</p>
+<section layout:fragment="content">
+    <h2 class="mb-3">Registrar solicitud de asistencia personal</h2>
+    <p class="text-muted">Completa el formulario. El estado inicial siempre será <strong>EN REVISIÓN</strong>.</p>
 
     <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post" class="row g-3">
         <input type="hidden" th:field="*{status}" />
@@ -88,7 +87,6 @@
             <a href="/" class="btn btn-link">Inicio</a>
         </div>
     </form>
-</main>
+</section>
 </body>
 </html>
-

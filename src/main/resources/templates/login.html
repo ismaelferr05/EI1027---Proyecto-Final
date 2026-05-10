@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <link rel="stylesheet" type="text/css"
+        href="/css/natacio.css"
+        th:href="@{/css/natacio.css}"/>
+  <title>Login</title>
+  <meta charset="UTF-8"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<main class="container">
+  <h1>Acceso</h1>
+  <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+
+
+    <div class="row mb-3">
+      <label for="email"
+             class="col-sm-2 col-form-label">Correo electrónico:</label>
+      <div class="col-sm-3">
+        <input id="email" class="form-control"
+               type="email" th:field="*{email}" />
+      </div>
+      <div class="col-sm-4">
+        <div th:if="${#fields.hasErrors('email')}"
+             th:errors="*{email}" class="error">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <label for="password"
+             class="col-sm-2 col-form-label">Contraseña:</label>
+      <div class="col-sm-3">
+        <input id="password" class="form-control"
+               type="password" th:field="*{password}" />
+      </div>
+      <div class="col-sm-4">
+        <div th:if="${#fields.hasErrors('password')}"
+             th:errors="*{password}" class="error">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-sm-3 offset-sm-2">
+        <button type="submit"
+                class="btn btn-primary">Iniciar sesión</button>
+      </div>
+    </div>
+  </form>
+</main>
+</body>
+</html>
