@@ -61,7 +61,7 @@
                     <td th:text="|${request.startDate} → ${request.endDate}|"></td>
                     <td><span class="badge bg-warning text-dark" th:text="${request.status}"></span></td>
                     <td>
-                        <a class="btn btn-sm btn-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Revisar</a>
+                        <a class="btn btn-sm btn-success" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-check2-circle"></i> Aprobar y proponer asistente</a>
                     </td>
                 </tr>
             </tbody>
@@ -76,7 +76,10 @@
                     <h6 class="mb-1"><strong>#<span th:text="${request.idRequest}"></span></strong> - <span th:text="${request.description}"></span></h6>
                     <small class="text-muted" th:text="|Período: ${request.startDate} → ${request.endDate}|"></small>
                 </div>
-                <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver propuesta</a>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver solicitud</a>
+                    <a class="btn btn-sm btn-outline-secondary" th:href="@{/requests/edit/{id}(id=${request.idRequest})}"><i class="bi bi-pencil-square"></i> Editar</a>
+                </div>
             </div>
         </div>
     </div>

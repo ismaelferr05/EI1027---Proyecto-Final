@@ -16,6 +16,17 @@ import java.util.Locale;
 @Service
 public class RequestProposalService {
 
+	private static final int MAX_SCORE_TOTAL = 100;
+	private static final int MAX_SCORE_UBICACION = 20;
+	private static final int MAX_SCORE_GENERO = 15;
+	private static final int MAX_SCORE_EDAD = 15;
+	private static final int MAX_SCORE_FORMACION = 10;
+	private static final int MAX_SCORE_EXPERIENCIA = 10;
+	private static final int MAX_SCORE_TIPO_EXPERIENCIA = 5;
+	private static final int MAX_SCORE_DISPONIBILIDAD = 25;
+
+	private record CriterionScore(int points, String detail, String label) {}
+
 	@Autowired
 	private PapPatiDao papPatiDao;
 
@@ -36,36 +47,29 @@ public class RequestProposalService {
 			int score = 0;
 			List<String> reasons = new ArrayList<>();
 
-			int locationScore = scoreLocationMatch(papPati, request);
-			score += locationScore;
-			reasons.add("proximitat " + locationScore + "p");
+			CriterionScore locationScore = scoreLocationMatch(papPati, request);
+			score += addReason(reasons, locationScore, MAX_SCORE_UBICACION);
 
-			int genderScore = scoreGenderMatch(papPati, request);
-			score += genderScore;
-			reasons.add("genere " + genderScore + "p");
+			CriterionScore genderScore = scoreGenderMatch(papPati, request);
+			score += addReason(reasons, genderScore, MAX_SCORE_GENERO);
 
-			int ageScore = scoreAgeMatch(papPati, request);
-			score += ageScore;
-			reasons.add("edat " + ageScore + "p");
+			CriterionScore ageScore = scoreAgeMatch(papPati, request);
+			score += addReason(reasons, ageScore, MAX_SCORE_EDAD);
 
-			int trainingScore = scoreTrainingMatch(papPati, request);
-			score += trainingScore;
-			reasons.add("formacio " + trainingScore + "p");
+			CriterionScore trainingScore = scoreTrainingMatch(papPati, request);
+			score += addReason(reasons, trainingScore, MAX_SCORE_FORMACION);
 
-			int experienceScore = scoreExperienceMatch(papPati, request);
-			score += experienceScore;
-			reasons.add("experiencia " + experienceScore + "p");
+			CriterionScore experienceScore = scoreExperienceMatch(papPati, request);
+			score += addReason(reasons, experienceScore, MAX_SCORE_EXPERIENCIA);
 
-			int experienceTypeScore = scoreExperienceTypeMatch(papPati, request);
-			score += experienceTypeScore;
-			reasons.add("tipus experiencia " + experienceTypeScore + "p");
+			CriterionScore experienceTypeScore = scoreExperienceTypeMatch(papPati, request);
+			score += addReason(reasons, experienceTypeScore, MAX_SCORE_TIPO_EXPERIENCIA);
 
-			// Priorizamos de forma clara la disponibilidad, criterio obligatorio del flujo.
-			score += 25;
-			reasons.add("disponible 25p");
+			// La disponibilidad es obligatoria: si pasa el filtro, suma el máximo de este criterio.
+			score += addReason(reasons, new CriterionScore(MAX_SCORE_DISPONIBILIDAD, "disponible en todo el periodo solicitado", "Disponibilidad"), MAX_SCORE_DISPONIBILIDAD);
 
-			String summary = String.join(" · ", reasons);
-			proposals.add(new CandidateProposal(papPati, score, summary));
+			String summary = score + "/" + MAX_SCORE_TOTAL;
+			proposals.add(new CandidateProposal(papPati, score, summary, List.copyOf(reasons)));
 		}
 
 		proposals.sort(Comparator.comparingInt(CandidateProposal::getScore).reversed());
@@ -83,86 +87,105 @@ public class RequestProposalService {
 		);
 	}
 
-	private int scoreLocationMatch(PapPati papPati, Request request) {
+	private CriterionScore scoreLocationMatch(PapPati papPati, Request request) {
 		if (isBlank(request.getPreferredPc())) {
-			return 8;
+			return new CriterionScore(8, "sin preferencia de CP", "Ubicación");
 		}
 		if (isBlank(papPati.getPc())) {
-			return 0;
+			return new CriterionScore(0, "el PAP/PATI no tiene CP registrado", "Ubicación");
 		}
 
 		if (request.getPreferredPc().equalsIgnoreCase(papPati.getPc())) {
-			return 20;
+			return new CriterionScore(20, "CP exacto", "Ubicación");
 		}
 
 		String reqPrefix = request.getPreferredPc().length() >= 2 ? request.getPreferredPc().substring(0, 2) : request.getPreferredPc();
 		String papPrefix = papPati.getPc().length() >= 2 ? papPati.getPc().substring(0, 2) : papPati.getPc();
 
-		return reqPrefix.equalsIgnoreCase(papPrefix) ? 10 : 0;
-	}
-
-	private int scoreGenderMatch(PapPati papPati, Request request) {
-		if (isBlank(request.getPreferredGender())) {
-			return 5;
+		if (reqPrefix.equalsIgnoreCase(papPrefix)) {
+			return new CriterionScore(10, "mismo prefijo de CP", "Ubicación");
 		}
-		return normalizeGender(request.getPreferredGender()).equals(normalizeGender(papPati.getGender())) ? 15 : 0;
+
+		return new CriterionScore(0, "CP distinto", "Ubicación");
 	}
 
-	private int scoreAgeMatch(PapPati papPati, Request request) {
+	private CriterionScore scoreGenderMatch(PapPati papPati, Request request) {
+		if (isBlank(request.getPreferredGender())) {
+			return new CriterionScore(5, "sin preferencia de género", "Género");
+		}
+		if (normalizeGender(request.getPreferredGender()).equals(normalizeGender(papPati.getGender()))) {
+			return new CriterionScore(15, "coincide con el género preferido", "Género");
+		}
+		return new CriterionScore(0, "género no coincidente", "Género");
+	}
+
+	private CriterionScore scoreAgeMatch(PapPati papPati, Request request) {
 		if (request.getPreferredAge() == null || papPati.getAge() == null) {
-			return 4;
+			return new CriterionScore(4, "falta edad para comparar", "Edad");
 		}
 
 		int diff = Math.abs(request.getPreferredAge() - papPati.getAge());
 		if (diff <= 5) {
-			return 15;
+			return new CriterionScore(15, "diferencia de edad menor o igual a 5 años", "Edad");
 		}
 		if (diff <= 10) {
-			return 8;
+			return new CriterionScore(8, "diferencia de edad menor o igual a 10 años", "Edad");
 		}
-		return 0;
+		return new CriterionScore(0, "diferencia de edad superior a 10 años", "Edad");
 	}
 
-	private int scoreTrainingMatch(PapPati papPati, Request request) {
+	private CriterionScore scoreTrainingMatch(PapPati papPati, Request request) {
 		if (isBlank(request.getTraining())) {
-			return 4;
+			return new CriterionScore(4, "sin preferencia de formación", "Formación");
 		}
 		if (isBlank(papPati.getTraining())) {
-			return 0;
+			return new CriterionScore(0, "el PAP/PATI no indica formación", "Formación");
 		}
 
 		String reqTraining = request.getTraining().toLowerCase(Locale.ROOT);
 		String papTraining = papPati.getTraining().toLowerCase(Locale.ROOT);
-		return papTraining.contains(reqTraining) ? 10 : 0;
+		if (papTraining.contains(reqTraining)) {
+			return new CriterionScore(10, "la formación del PAP/PATI contiene la formación solicitada", "Formación");
+		}
+		return new CriterionScore(0, "la formación no coincide", "Formación");
 	}
 
-	private int scoreExperienceMatch(PapPati papPati, Request request) {
+	private CriterionScore scoreExperienceMatch(PapPati papPati, Request request) {
 		if (request.getExperience() == null) {
-			return 5;
+			return new CriterionScore(5, "sin preferencia de experiencia", "Experiencia");
 		}
 
 		Integer papYears = parseExperience(papPati.getExperience());
 		if (papYears == null) {
-			return 0;
+			return new CriterionScore(0, "la experiencia del PAP/PATI no es numérica o no existe", "Experiencia");
 		}
 
 		if (papYears >= request.getExperience()) {
-			return 10;
+			return new CriterionScore(10, "experiencia igual o superior a la solicitada", "Experiencia");
 		}
 
 		int gap = request.getExperience() - papYears;
-		return Math.max(0, 10 - (gap * 2));
+		int points = Math.max(0, 10 - (gap * 2));
+		return new CriterionScore(points, "experiencia inferior en " + gap + " año(s)", "Experiencia");
 	}
 
-	private int scoreExperienceTypeMatch(PapPati papPati, Request request) {
+	private CriterionScore scoreExperienceTypeMatch(PapPati papPati, Request request) {
 		if (isBlank(request.getExperienceType())) {
-			return 3;
+			return new CriterionScore(3, "sin preferencia de tipo de experiencia", "Tipo de experiencia");
 		}
 		if (isBlank(papPati.getExperienceType())) {
-			return 0;
+			return new CriterionScore(0, "el PAP/PATI no indica tipo de experiencia", "Tipo de experiencia");
 		}
 
-		return request.getExperienceType().trim().equalsIgnoreCase(papPati.getExperienceType().trim()) ? 5 : 0;
+		if (request.getExperienceType().trim().equalsIgnoreCase(papPati.getExperienceType().trim())) {
+			return new CriterionScore(5, "coincide el tipo de experiencia", "Tipo de experiencia");
+		}
+		return new CriterionScore(0, "el tipo de experiencia no coincide", "Tipo de experiencia");
+	}
+
+	private int addReason(List<String> reasons, CriterionScore score, int maxPuntos) {
+		reasons.add(String.format(Locale.ROOT, "%s: %d/%d - %s", score.label(), score.points(), maxPuntos, score.detail()));
+		return score.points();
 	}
 
 	private Integer parseExperience(String value) {

@@ -2,15 +2,19 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.RequestDao;
 import es.uji.ei1027.sgovi.dao.OviUserDao;
+import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.model.CandidateProposal;
 import es.uji.ei1027.sgovi.model.Negotiation;
 import es.uji.ei1027.sgovi.model.Request;
 import es.uji.ei1027.sgovi.model.OviUser;
+import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.model.UserDetails;
 import es.uji.ei1027.sgovi.service.RequestProposalService;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,11 +29,16 @@ import java.util.Set;
 @RequestMapping("/requests")
 public class RequestController {
 
+    private static final Logger log = LoggerFactory.getLogger(RequestController.class);
+
     @Autowired
     private RequestDao requestDao;
 
     @Autowired
     private OviUserDao oviUserDao;
+
+    @Autowired
+    private PapPatiDao papPatiDao;
 
     @Autowired
     private NegotiationDao negotiationDao;
@@ -202,14 +211,60 @@ public class RequestController {
         return "request/frontoffice-track";
     }
 
+    @GetMapping("/frontoffice/view/{id}")
+    public String frontOfficeView(@PathVariable int id, HttpSession session, Model model) {
+        // Solo técnicos o el OviUser que creó la solicitud pueden verla
+        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
+            return "redirect:/login";
+        }
+
+        Request request = requestDao.get(id);
+        if (request == null) {
+            return "redirect:/requests/frontoffice/track";
+        }
+
+        // Si es OviUser, comprobar que la solicitud es suya
+        if (sessionUserService.isOviUser(session)) {
+            Integer currentOviId = sessionUserService.getCurrentOviUserId(session);
+            if (currentOviId == null || !currentOviId.equals(request.getIdOviUser())) {
+                return "redirect:/requests/frontoffice/track";
+            }
+        }
+
+        // Propuestas calculadas (candidatos disponibles)
+        List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
+
+        // Asistentes ya propuestos/negociaciones
+        List<es.uji.ei1027.sgovi.model.PapPati> assigned = new java.util.ArrayList<>();
+        for (Negotiation n : negotiationDao.getByRequest(id)) {
+            if (n.getIdPapPati() != null) {
+                assigned.add(papPatiDao.get(n.getIdPapPati()));
+            }
+        }
+
+        model.addAttribute("request", request);
+        model.addAttribute("proposals", proposals);
+        model.addAttribute("assignedPapPatis", assigned);
+        model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
+        model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+        return "request/frontoffice-view";
+    }
+
     @GetMapping("/backoffice/list")
     public String backOfficeList(HttpSession session, Model model) {
-        if (!sessionUserService.isTechnician(session)) {
+        boolean isTech = sessionUserService.isTechnician(session);
+        log.info("backOfficeList called - isTechnician={}", isTech);
+        if (!isTech) {
+            log.warn("Acceso denegado a backoffice: usuario no es técnico o no está logueado");
             return "redirect:/dashboard";
         }
 
-        model.addAttribute("pendingRequests", requestDao.getByStatus("IN_REVIEW"));
-        model.addAttribute("approvedRequests", requestDao.getByStatus("APPROVED"));
+        var pending = requestDao.getByStatus("IN_REVIEW");
+        var approved = requestDao.getByStatus("APPROVED");
+        log.info("pendingRequests size={}, approvedRequests size={}", pending.size(), approved.size());
+
+        model.addAttribute("pendingRequests", pending);
+        model.addAttribute("approvedRequests", approved);
         return "request/backoffice-list";
     }
 
@@ -229,13 +284,16 @@ public class RequestController {
 
         List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
         Set<Integer> existingPapPatis = new HashSet<>();
+        List<PapPati> proposedPapPatis = new java.util.ArrayList<>();
         for (Negotiation negotiation : negotiationDao.getByRequest(id)) {
             existingPapPatis.add(negotiation.getIdPapPati());
+            proposedPapPatis.add(papPatiDao.get(negotiation.getIdPapPati()));
         }
 
         model.addAttribute("request", request);
         model.addAttribute("proposals", proposals);
         model.addAttribute("existingPapPatis", existingPapPatis);
+        model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
         return "request/backoffice-review";
     }

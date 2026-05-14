@@ -53,10 +53,10 @@
         <table class="table table-striped table-bordered align-middle">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Descripcion</th>
                 <th>Periodo</th>
                 <th>Estado</th>
+                <th>Acción</th>
             </tr>
             </thead>
             <tbody>
@@ -64,13 +64,15 @@
                 <td colspan="4" class="text-center">No hay solicitudes para mostrar.</td>
             </tr>
             <tr th:each="request : ${requests}">
-                <td th:text="${request.idRequest}"></td>
                 <td th:text="${request.description}"></td>
                 <td th:text="|${request.startDate} -> ${request.endDate}|"></td>
                 <td>
                     <span class="badge"
                           th:classappend="${request.status == 'APPROVED'} ? ' text-bg-success' : (${request.status == 'REJECTED'} ? ' text-bg-danger' : ' text-bg-secondary')"
                           th:text="${request.status}"></span>
+                </td>
+                <td>
+                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver solicitud</a>
                 </td>
             </tr>
             </tbody>
