@@ -52,7 +52,7 @@ public class OviUserController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult) {
+    public String edit(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         OviUserValidator oviUserValidator = new OviUserValidator();
         oviUserValidator.validate(oviUser, bindingResult);
 
@@ -61,12 +61,14 @@ public class OviUserController {
         }
 
         oviUserDao.update(oviUser);
+        redirectAttributes.addFlashAttribute("successMessage", "Usuario OVI editado correctamente.");
         return "redirect:/ovi-users/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         oviUserDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Usuario OVI eliminado correctamente.");
         return "redirect:/ovi-users/list";
     }
 }

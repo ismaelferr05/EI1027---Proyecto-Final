@@ -49,7 +49,7 @@ public class TrainerController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult) {
+    public String edit(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         TrainerValidator trainerValidator = new TrainerValidator();
         trainerValidator.validate(trainer, bindingResult);
 
@@ -58,12 +58,14 @@ public class TrainerController {
         }
 
         trainerDao.update(trainer);
+        redirectAttributes.addFlashAttribute("successMessage", "Formador editado correctamente.");
         return "redirect:/trainers/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         trainerDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Formador eliminado correctamente.");
         return "redirect:/trainers/list";
     }
 }

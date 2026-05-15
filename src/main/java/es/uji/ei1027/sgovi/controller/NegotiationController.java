@@ -63,7 +63,7 @@ public class NegotiationController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model) {
+    public String edit(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         NegotiationValidator negotiationValidator = new NegotiationValidator();
         negotiationValidator.validate(negotiation, bindingResult);
 
@@ -74,12 +74,14 @@ public class NegotiationController {
         }
 
         negotiationDao.update(negotiation);
+        redirectAttributes.addFlashAttribute("successMessage", "Negociación editada correctamente.");
         return "redirect:/negotiations/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         negotiationDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Negociación eliminada correctamente.");
         return "redirect:/negotiations/list";
     }
 }

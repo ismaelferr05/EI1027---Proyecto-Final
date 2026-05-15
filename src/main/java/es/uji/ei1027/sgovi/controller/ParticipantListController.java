@@ -72,7 +72,7 @@ public class ParticipantListController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model) {
+    public String edit(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         ParticipantListValidator participantListValidator = new ParticipantListValidator();
         participantListValidator.validate(participantList, bindingResult);
 
@@ -84,12 +84,14 @@ public class ParticipantListController {
         }
 
         participantListDao.update(participantList);
+        redirectAttributes.addFlashAttribute("successMessage", "Participante editado correctamente.");
         return "redirect:/participant-lists/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         participantListDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Participante eliminado correctamente.");
         return "redirect:/participant-lists/list";
     }
 }

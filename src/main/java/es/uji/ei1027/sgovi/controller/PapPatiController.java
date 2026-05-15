@@ -51,7 +51,7 @@ public class PapPatiController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult) {
+    public String edit(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         PapPatiValidator papPatiValidator = new PapPatiValidator();
         papPatiValidator.validate(papPati, bindingResult);
 
@@ -60,12 +60,14 @@ public class PapPatiController {
         }
 
         papPatiDao.update(papPati);
+        redirectAttributes.addFlashAttribute("successMessage", "PAP PATI editado correctamente.");
         return "redirect:/pap-patis/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id) {
+    public String delete(@PathVariable int id, RedirectAttributes redirectAttributes) {
         papPatiDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "PAP PATI eliminado correctamente.");
         return "redirect:/pap-patis/list";
     }
 }

@@ -98,7 +98,7 @@ public class MessageController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("message") Message message, BindingResult bindingResult, HttpSession session, Model model) {
+    public String edit(@ModelAttribute("message") Message message, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -112,16 +112,18 @@ public class MessageController {
         }
 
         messageDao.update(message);
+        redirectAttributes.addFlashAttribute("successMessage", "Mensaje editado correctamente.");
         return "redirect:/messages/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id, HttpSession session) {
+    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
         messageDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Mensaje eliminado correctamente.");
         return "redirect:/messages/list";
     }
 

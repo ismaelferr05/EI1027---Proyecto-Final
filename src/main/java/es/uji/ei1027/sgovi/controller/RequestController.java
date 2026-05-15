@@ -120,7 +120,7 @@ public class RequestController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model) {
+    public String edit(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -134,16 +134,18 @@ public class RequestController {
         }
 
         requestDao.update(request);
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud editada correctamente.");
         return "redirect:/requests/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id, HttpSession session) {
+    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
         requestDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud eliminada correctamente.");
         return "redirect:/requests/list";
     }
 

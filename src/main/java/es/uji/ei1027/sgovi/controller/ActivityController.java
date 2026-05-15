@@ -77,7 +77,7 @@ public class ActivityController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, HttpSession session, Model model) {
+    public String edit(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
         }
@@ -91,16 +91,18 @@ public class ActivityController {
         }
 
         activityDao.update(activity);
+        redirectAttributes.addFlashAttribute("successMessage", "Actividad editada correctamente.");
         return "redirect:/activities/list";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id, HttpSession session) {
+    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
         }
 
         activityDao.delete(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Actividad eliminada correctamente.");
         return "redirect:/activities/list";
     }
 }
