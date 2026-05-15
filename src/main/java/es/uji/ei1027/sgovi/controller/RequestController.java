@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashSet;
 import java.util.List;
@@ -164,7 +165,7 @@ public class RequestController {
     }
 
     @PostMapping("/frontoffice/add")
-    public String frontOfficeAdd(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model) {
+    public String frontOfficeAdd(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isOviUser(session)) {
             return "redirect:/dashboard";
         }
@@ -186,6 +187,7 @@ public class RequestController {
         }
 
         requestDao.add(request);
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud enviada correctamente. Ya puedes verla en la lista de seguimiento.");
         return "redirect:/requests/frontoffice/track";
     }
 

@@ -11,6 +11,10 @@
         .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .page-header h1 { margin: 0; font-weight: 600; }
         .card-panel { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .alert-success-custom {
+            border-left: 4px solid #198754;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
         .action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn-primary-custom { background-color: #667eea; border-color: #667eea; color: white; }
         .btn-primary-custom:hover { background-color: #5568d3; border-color: #5568d3; color: white; }
@@ -34,6 +38,12 @@
 </div>
 
 <main class="container mb-5">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show alert-success-custom" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
     <div class="card-panel" th:if="${currentOviUser != null or isTechnician}">
         <p class="mb-0" th:if="${!isTechnician}">
             Solicitudes de <strong th:text="|${currentOviUser.name} ${currentOviUser.lastName}|"></strong>
