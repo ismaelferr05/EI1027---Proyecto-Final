@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/negotiations")
@@ -38,7 +39,7 @@ public class NegotiationController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model) {
+    public String add(@ModelAttribute("negotiation") Negotiation negotiation, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         NegotiationValidator negotiationValidator = new NegotiationValidator();
         negotiationValidator.validate(negotiation, bindingResult);
 
@@ -49,6 +50,7 @@ public class NegotiationController {
         }
 
         negotiationDao.add(negotiation);
+        redirectAttributes.addFlashAttribute("successMessage", "Negociación creada correctamente.");
         return "redirect:/negotiations/list";
     }
 

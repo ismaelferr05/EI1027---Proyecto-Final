@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/messages")
@@ -67,7 +68,7 @@ public class MessageController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("message") Message message, BindingResult bindingResult, HttpSession session, Model model) {
+    public String add(@ModelAttribute("message") Message message, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -81,6 +82,7 @@ public class MessageController {
         }
 
         messageDao.add(message);
+        redirectAttributes.addFlashAttribute("successMessage", "Mensaje creado correctamente.");
         return "redirect:/messages/list";
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/ovi-users")
@@ -31,7 +32,7 @@ public class OviUserController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult) {
+    public String add(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         OviUserValidator oviUserValidator = new OviUserValidator();
         oviUserValidator.validate(oviUser, bindingResult);
 
@@ -40,6 +41,7 @@ public class OviUserController {
         }
 
         oviUserDao.add(oviUser);
+        redirectAttributes.addFlashAttribute("successMessage", "Usuario OVI creado correctamente.");
         return "redirect:/ovi-users/list";
     }
 

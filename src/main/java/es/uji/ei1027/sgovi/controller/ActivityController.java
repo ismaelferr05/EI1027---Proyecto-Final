@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/activities")
@@ -46,7 +47,7 @@ public class ActivityController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, HttpSession session, Model model) {
+    public String add(@ModelAttribute("activity") Activity activity, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
         }
@@ -60,6 +61,7 @@ public class ActivityController {
         }
 
         activityDao.add(activity);
+        redirectAttributes.addFlashAttribute("successMessage", "Actividad creada correctamente.");
         return "redirect:/activities/list";
     }
 

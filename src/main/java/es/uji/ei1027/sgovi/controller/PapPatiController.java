@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/pap-patis")
@@ -30,7 +31,7 @@ public class PapPatiController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult) {
+    public String add(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         PapPatiValidator papPatiValidator = new PapPatiValidator();
         papPatiValidator.validate(papPati, bindingResult);
 
@@ -39,6 +40,7 @@ public class PapPatiController {
         }
 
         papPatiDao.add(papPati);
+        redirectAttributes.addFlashAttribute("successMessage", "PAP PATI creado correctamente.");
         return "redirect:/pap-patis/list";
     }
 

@@ -162,6 +162,12 @@
 </div>
 
 <main class="container mb-5">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
     <div class="card-panel" th:if="${isTechnician}">
         <strong><i class="bi bi-info-circle"></i> Vista de administración</strong>
         <div class="text-muted mt-1">Desde aquí puedes revisar, editar y eliminar mensajes.</div>

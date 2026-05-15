@@ -90,7 +90,7 @@ public class RequestController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model) {
+    public String add(@ModelAttribute("request") Request request, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -104,6 +104,7 @@ public class RequestController {
         }
 
         requestDao.add(request);
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud creada correctamente.");
         return "redirect:/requests/list";
     }
 

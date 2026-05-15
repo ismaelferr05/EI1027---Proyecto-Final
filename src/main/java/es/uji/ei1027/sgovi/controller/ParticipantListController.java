@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/participant-lists")
@@ -45,7 +46,7 @@ public class ParticipantListController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model) {
+    public String add(@ModelAttribute("participantList") ParticipantList participantList, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         ParticipantListValidator participantListValidator = new ParticipantListValidator();
         participantListValidator.validate(participantList, bindingResult);
 
@@ -57,6 +58,7 @@ public class ParticipantListController {
         }
 
         participantListDao.add(participantList);
+        redirectAttributes.addFlashAttribute("successMessage", "Participante añadido correctamente.");
         return "redirect:/participant-lists/list";
     }
 

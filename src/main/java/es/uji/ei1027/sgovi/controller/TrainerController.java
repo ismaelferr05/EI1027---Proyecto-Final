@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/trainers")
@@ -28,7 +29,7 @@ public class TrainerController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult) {
+    public String add(@ModelAttribute("trainer") Trainer trainer, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         TrainerValidator trainerValidator = new TrainerValidator();
         trainerValidator.validate(trainer, bindingResult);
 
@@ -37,6 +38,7 @@ public class TrainerController {
         }
 
         trainerDao.add(trainer);
+        redirectAttributes.addFlashAttribute("successMessage", "Formador creado correctamente.");
         return "redirect:/trainers/list";
     }
 

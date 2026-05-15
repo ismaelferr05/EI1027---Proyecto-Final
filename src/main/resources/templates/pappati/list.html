@@ -36,6 +36,12 @@
 </div>
 
 <div class="container mb-5">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
     <div class="action-bar">
         <a href="/dashboard" class="action-bar a btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <a href="/pap-patis/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar PAP PATI</a>
