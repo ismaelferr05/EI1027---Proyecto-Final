@@ -72,7 +72,7 @@
                           th:text="${request.status}"></span>
                 </td>
                 <td>
-                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver solicitud</a>
+                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver resolución</a>
                 </td>
             </tr>
             </tbody>
