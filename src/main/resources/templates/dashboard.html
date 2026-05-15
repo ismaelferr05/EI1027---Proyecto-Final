@@ -164,7 +164,7 @@
     </div>
 
     <!-- Requests Modules -->
-    <div class="module-section">
+    <div th:if="${isTechnician or isOviUser}" class="module-section">
         <h3><i class="bi bi-file-text"></i> Solicitudes</h3>
         <div th:if="${isTechnician}" class="module-card">
             <a href="/requests/list"><i class="bi bi-collection"></i> <span>Ver todas las solicitudes (CRUD)</span></a>
@@ -184,9 +184,6 @@
         <div th:if="${isTechnician}" class="module-card">
             <a href="/requests/backoffice/list"><i class="bi bi-check2-all"></i> <span>Back-office: Revisar y proponer candidatos</span></a>
         </div>
-        <div th:if="${isPapPati}" class="module-card">
-            <a href="/requests/list"><i class="bi bi-eye"></i> <span>Ver solicitudes disponibles</span></a>
-        </div>
     </div>
 
     <!-- Negotiations Modules -->
@@ -194,6 +191,17 @@
         <h3><i class="bi bi-chat-dots"></i> Negociaciones</h3>
         <div class="module-card">
             <a href="/negotiations/list"><i class="bi bi-handshake"></i> <span>Gestionar negociaciones</span></a>
+        </div>
+    </div>
+
+    <!-- Contracts Modules -->
+    <div th:if="${isTechnician or isPapPati}" class="module-section">
+        <h3><i class="bi bi-file-earmark-pdf"></i> Contratos</h3>
+        <div th:if="${isTechnician}" class="module-card">
+            <a th:href="@{/contracts/list}"><i class="bi bi-file-earmark-text"></i> <span>Gestionar contratos</span></a>
+        </div>
+        <div th:if="${isPapPati}" class="module-card">
+            <a th:href="@{/contracts/pappati/list}"><i class="bi bi-file-earmark-text"></i> <span>Mis contratos con OVIUsers</span></a>
         </div>
     </div>
 
@@ -205,14 +213,6 @@
         </div>
         <div th:if="${isOviUser or isPapPati}" class="module-card">
             <a href="/messages/list"><i class="bi bi-chat-left-text"></i> <span>Mis mensajes</span></a>
-        </div>
-    </div>
-
-    <!-- Contracts Modules -->
-    <div th:if="${isTechnician}" class="module-section">
-        <h3><i class="bi bi-file-earmark-pdf"></i> Contratos</h3>
-        <div class="module-card">
-            <a href="/contracts/list"><i class="bi bi-file-contract"></i> <span>Gestionar contratos</span></a>
         </div>
     </div>
 </main>

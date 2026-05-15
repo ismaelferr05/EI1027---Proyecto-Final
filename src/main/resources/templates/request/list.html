@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Solicitudes - SgOVI</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -51,9 +51,6 @@
         <span th:if="${isOviUser}">
             <a href="/requests/frontoffice/add" class="action-bar a btn-primary-custom"><i class="bi bi-plus-circle"></i> Crear solicitud</a>
             <a href="/requests/frontoffice/track" class="action-bar a btn-outline-custom"><i class="bi bi-search"></i> Mis solicitudes</a>
-        </span>
-        <span th:if="${isPapPati}">
-            <span class="action-bar a btn-outline-custom"><i class="bi bi-eye"></i> Vista de solo lectura</span>
         </span>
     </div>
 

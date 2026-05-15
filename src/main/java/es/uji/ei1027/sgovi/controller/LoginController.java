@@ -42,7 +42,7 @@ public class LoginController {
         }
         UserDetails userDetails = userDao.getUserByEmail(user.getEmail());
         if (userDetails == null || !userDetails.getPassword().equals(user.getPassword())) {
-            bindingResult.rejectValue("email", "error.user", "Invalid email or password");
+            bindingResult.rejectValue("email", "error.user", "Constraseña o email inválidos");
             return "login";
         }
         session.setAttribute("user", userDetails);

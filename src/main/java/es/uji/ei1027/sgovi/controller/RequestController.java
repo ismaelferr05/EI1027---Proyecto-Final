@@ -63,6 +63,8 @@ public class RequestController {
                 return "redirect:/login";
             }
             model.addAttribute("requests", requestDao.getByOviUser(idOviUser));
+        } else if ("PAPPATI".equals(role)) {
+            return "redirect:/contracts/pappati/list";
         } else {
             model.addAttribute("requests", requestDao.getAll());
         }

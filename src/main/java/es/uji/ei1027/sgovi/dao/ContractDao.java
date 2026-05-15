@@ -41,6 +41,28 @@ public class ContractDao {
         return jdbcTemplate.query(sql, new ContractRowMapper());
     }
 
+    public List<Contract> getByPapPatiId(int idPapPati) {
+        String sql = """
+                SELECT c.*
+                FROM Contract c
+                JOIN Negotiation n ON c.negotiation_id = n.negotiation_id
+                WHERE n.pappati_id = ?
+                ORDER BY c.startDate DESC, c.contract_id DESC
+                """;
+        return jdbcTemplate.query(sql, new ContractRowMapper(), idPapPati);
+    }
+
+    public boolean belongsToPapPati(int idContract, int idPapPati) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM Contract c
+                JOIN Negotiation n ON c.negotiation_id = n.negotiation_id
+                WHERE c.contract_id = ? AND n.pappati_id = ?
+                """;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idContract, idPapPati);
+        return count > 0;
+    }
+
     public boolean hasOverlappingContractForPapPati(int idPapPati, LocalDate startDate, LocalDate endDate) {
         String sql = """
                 SELECT COUNT(*)
@@ -58,7 +80,7 @@ public class ContractDao {
                 Date.valueOf(endDate),
                 Date.valueOf(startDate)
         );
-        return count != null && count > 0;
+        return count > 0;
     }
 }
 
