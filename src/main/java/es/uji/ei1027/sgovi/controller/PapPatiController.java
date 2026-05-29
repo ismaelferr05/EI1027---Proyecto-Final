@@ -16,6 +16,9 @@ public class PapPatiController {
     @Autowired
     private PapPatiDao papPatiDao;
 
+    @Autowired
+    private es.uji.ei1027.sgovi.service.PasswordService passwordService;
+
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("papPatis", papPatiDao.getAll());
@@ -39,6 +42,9 @@ public class PapPatiController {
             return "pappati/add";
         }
 
+        if (papPati.getPassword() != null && !papPati.getPassword().isBlank()) {
+            papPati.setPassword(passwordService.encrypt(papPati.getPassword()));
+        }
         papPatiDao.add(papPati);
         redirectAttributes.addFlashAttribute("successMessage", "PAP PATI creado correctamente.");
         return "redirect:/pap-patis/list";
@@ -59,6 +65,9 @@ public class PapPatiController {
             return "pappati/edit";
         }
 
+        if (papPati.getPassword() != null && !papPati.getPassword().isBlank()) {
+            papPati.setPassword(passwordService.encrypt(papPati.getPassword()));
+        }
         papPatiDao.update(papPati);
         redirectAttributes.addFlashAttribute("successMessage", "PAP PATI editado correctamente.");
         return "redirect:/pap-patis/list";

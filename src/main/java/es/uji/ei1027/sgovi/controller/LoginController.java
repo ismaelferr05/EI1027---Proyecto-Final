@@ -19,6 +19,9 @@ public class LoginController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private es.uji.ei1027.sgovi.service.PasswordService passwordService;
+
     @GetMapping("/")
     public String home(HttpSession session) {
         return session.getAttribute("user") != null ? "redirect:/dashboard" : "redirect:/login";
@@ -41,7 +44,7 @@ public class LoginController {
             return "login"; // Si hay errores de validación, vuelve a mostrar el formulario de inicio de sesión
         }
         UserDetails userDetails = userDao.getUserByEmail(user.getEmail());
-        if (userDetails == null || !userDetails.getPassword().equals(user.getPassword())) {
+        if (userDetails == null || !passwordService.check(user.getPassword(), userDetails.getPassword())) {
             bindingResult.rejectValue("email", "error.user", "Constraseña o email inválidos");
             return "login";
         }

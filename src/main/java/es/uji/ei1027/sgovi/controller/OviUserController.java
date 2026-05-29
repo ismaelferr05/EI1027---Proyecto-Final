@@ -16,6 +16,9 @@ public class OviUserController {
     @Autowired
     private OviUserDao oviUserDao;
 
+    @Autowired
+    private es.uji.ei1027.sgovi.service.PasswordService passwordService;
+
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("oviUsers", oviUserDao.getAll());
@@ -40,6 +43,10 @@ public class OviUserController {
             return "oviuser/add";
         }
 
+        // Encriptar contraseña antes de persistir
+        if (oviUser.getPassword() != null && !oviUser.getPassword().isBlank()) {
+            oviUser.setPassword(passwordService.encrypt(oviUser.getPassword()));
+        }
         oviUserDao.add(oviUser);
         redirectAttributes.addFlashAttribute("successMessage", "Usuario OVI creado correctamente.");
         return "redirect:/ovi-users/list";
@@ -60,6 +67,10 @@ public class OviUserController {
             return "oviuser/edit";
         }
 
+        // Encriptar contraseña antes de actualizar (si se proporciona)
+        if (oviUser.getPassword() != null && !oviUser.getPassword().isBlank()) {
+            oviUser.setPassword(passwordService.encrypt(oviUser.getPassword()));
+        }
         oviUserDao.update(oviUser);
         redirectAttributes.addFlashAttribute("successMessage", "Usuario OVI editado correctamente.");
         return "redirect:/ovi-users/list";
