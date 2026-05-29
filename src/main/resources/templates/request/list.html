@@ -21,7 +21,25 @@
         thead th { font-weight: 600; padding: 12px; border: none; }
         tbody td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
         tbody tr:hover { background-color: #f8f9fa; }
-        .action-btn { padding: 4px 8px; margin: 0 2px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: 500; display: inline-block; }
+        .action-btn { padding: 4px 8px; margin: 0 2px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: 500; display: inline-block; border: none; }
+        .action-btn:focus { outline: none; box-shadow: none; }
+        /* Inner thin black border for the review icon button to match visual weight */
+        .action-btn.btn-outline-custom {
+            position: relative;
+            padding: 4px 8px; /* ensure consistent outer size */
+        }
+        .action-btn.btn-outline-custom::after {
+            content: '';
+            position: absolute;
+            /* inset to create a small inner border */
+            top: 6px;
+            right: 6px;
+            bottom: 6px;
+            left: 6px;
+            border: 1px solid rgba(0,0,0,0.65);
+            border-radius: 3px;
+            pointer-events: none;
+        }
         .btn-edit { background-color: #3498db; color: white; }
         .btn-edit:hover { background-color: #2980b9; color: white; }
         .btn-delete { background-color: #e74c3c; color: white; }
