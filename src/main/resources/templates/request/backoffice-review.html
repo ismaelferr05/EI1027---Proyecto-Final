@@ -50,7 +50,7 @@
         </dl>
     </div>
 
-    <div class="panel-card" th:if="${request.status == 'APPROVED'}">
+    <div class="panel-card" th:if="${request.status == 'APPROVED' or request.status == 'REJECTED'}">
         <h2 class="section-title"><i class="bi bi-person-check"></i> Asistente propuesto</h2>
 
         <div th:if="${#lists.isEmpty(proposedPapPatis)}" class="text-muted">
@@ -68,8 +68,7 @@
         </div>
 
         <div class="btn-group-custom mt-4">
-            <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Editar solicitud</a>
-            <a href="/requests/backoffice/list" class="btn btn-outline-secondary">Volver al listado</a>
+            <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
         </div>
     </div>
 
@@ -98,7 +97,11 @@
                     </tr>
                     <tr th:each="proposal : ${proposals}">
                         <td>
-                            <input type="checkbox" name="selectedPapPatiIds" th:value="${proposal.papPati.idPapPati}" th:disabled="${existingPapPatis.contains(proposal.papPati.idPapPati)}" />
+                            <input type="radio"
+                                   name="selectedPapPatiId"
+                                   th:value="${proposal.papPati.idPapPati}"
+                                   th:disabled="${existingPapPatis.contains(proposal.papPati.idPapPati)}"
+                                   required />
                         </td>
                         <td th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></td>
                         <td th:text="${proposal.papPati.pc}"></td>
@@ -132,8 +135,14 @@
             </div>
 
             <div class="btn-group-custom">
-                <button type="submit" class="btn btn-success">Aprobar y proponer asistente</button>
-                <a href="/requests/backoffice/list" class="btn btn-outline-secondary">Volver al listado</a>
+                <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Editar solicitud</a>
+                <button type="submit" class="btn btn-success" th:disabled="${#lists.isEmpty(proposals)}">Aprobar y proponer asistente</button>
+                <form th:action="@{/requests/reject}" method="post" style="display:inline-block;">
+                    <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Confirmar rechazo de la solicitud?');">Rechazar</button>
+                </form>
+                <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
             </div>
         </form>
     </div>

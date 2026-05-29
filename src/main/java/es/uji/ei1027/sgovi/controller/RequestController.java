@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/requests")
@@ -51,24 +52,43 @@ public class RequestController {
     private SessionUserService sessionUserService;
 
     @GetMapping("/list")
-    public String list(HttpSession session, Model model) {
+    public String list(HttpSession session, Model model,
+                       @RequestParam(value = "status", required = false) String status,
+                       @RequestParam(value = "type", required = false) String type) {
         UserDetails currentUser = sessionUserService.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/login";
         }
 
         String role = currentUser.getRole();
+        List<Request> requests;
         if ("OVIUSER".equals(role)) {
             Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
             if (idOviUser == null) {
                 return "redirect:/login";
             }
-            model.addAttribute("requests", requestDao.getByOviUser(idOviUser));
+            requests = requestDao.getByOviUser(idOviUser);
         } else if ("PAPPATI".equals(role)) {
             return "redirect:/contracts/pappati/list";
         } else {
-            model.addAttribute("requests", requestDao.getAll());
+            requests = requestDao.getAll();
         }
+
+        // Filtrado opcional por estado y/o tipo (training)
+        if (status != null && !status.isBlank()) {
+            String st = status.trim();
+            requests = requests.stream()
+                    .filter(r -> st.equals(r.getStatus()))
+                    .collect(Collectors.toList());
+        }
+        if (type != null && !type.isBlank()) {
+            String tp = type.trim();
+            requests = requests.stream()
+                    .filter(r -> tp.equals(r.getTraining()))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("requests", requests);
 
         model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
@@ -138,14 +158,40 @@ public class RequestController {
         return "redirect:/requests/list";
     }
 
+    @Deprecated
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String deleteDeprecated(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        // Eliminación física ya no permitida. Use la acción de rechazar para conservar el historial.
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+        redirectAttributes.addFlashAttribute("errorMessage", "Operación no permitida. Use Rechazar para conservar el historial.");
+        return "redirect:/requests/list";
+    }
+
+    @PostMapping("/reject")
+    public String rejectRequest(@RequestParam("idRequest") int idRequest,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
-        requestDao.delete(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Solicitud eliminada correctamente.");
+        requestDao.updateStatus(idRequest, "REJECTED");
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud rechazada correctamente.");
+        return "redirect:/requests/list";
+    }
+
+    @PostMapping("/accept")
+    public String acceptRequest(@RequestParam("idRequest") int idRequest,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+
+        requestDao.updateStatus(idRequest, "APPROVED");
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud aceptada correctamente.");
         return "redirect:/requests/list";
     }
 
@@ -307,24 +353,24 @@ public class RequestController {
 
     @PostMapping("/backoffice/approve")
     public String backOfficeApprove(@RequestParam("idRequest") int idRequest,
-                                    @RequestParam(value = "selectedPapPatiIds", required = false) List<Integer> selectedPapPatiIds,
+                                    @RequestParam(value = "selectedPapPatiId", required = false) Integer selectedPapPatiId,
                                     HttpSession session) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
+        if (selectedPapPatiId == null) {
+            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=Debes seleccionar un único candidato para poder aprobar la solicitud";
+        }
+
         requestDao.updateStatus(idRequest, "APPROVED");
 
-        if (selectedPapPatiIds != null) {
-            for (Integer idPapPati : selectedPapPatiIds) {
-                if (!negotiationDao.existsByRequestAndPapPati(idRequest, idPapPati)) {
-                    Negotiation negotiation = new Negotiation();
-                    negotiation.setStateOfApproval("PENDING");
-                    negotiation.setIdRequest(idRequest);
-                    negotiation.setIdPapPati(idPapPati);
-                    negotiationDao.add(negotiation);
-                }
-            }
+        if (!negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
+            Negotiation negotiation = new Negotiation();
+            negotiation.setStateOfApproval("PENDING");
+            negotiation.setIdRequest(idRequest);
+            negotiation.setIdPapPati(selectedPapPatiId);
+            negotiationDao.add(negotiation);
         }
 
         String redirectUrl = "/requests/backoffice/review/" + idRequest + "?msg=Solicitud%20aprobada%20y%20propuesta%20generada";

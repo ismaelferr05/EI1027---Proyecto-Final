@@ -167,22 +167,13 @@
     <div th:if="${isTechnician or isOviUser}" class="module-section">
         <h3><i class="bi bi-file-text"></i> Solicitudes</h3>
         <div th:if="${isTechnician}" class="module-card">
-            <a href="/requests/list"><i class="bi bi-collection"></i> <span>Ver todas las solicitudes (CRUD)</span></a>
-        </div>
-        <div th:if="${isTechnician}" class="module-card">
-            <a href="/requests/add"><i class="bi bi-plus-circle"></i> <span>Crear solicitud</span></a>
+            <a th:href="@{/requests/list}"><i class="bi bi-collection"></i> <span>Gestionar solicitudes</span></a>
         </div>
         <div th:if="${isOviUser}" class="module-card">
-            <a href="/requests/frontoffice/add"><i class="bi bi-plus-circle"></i> <span>Crear solicitud</span></a>
-        </div>
-        <div th:if="${isTechnician}" class="module-card">
-            <a href="/requests/frontoffice/track"><i class="bi bi-search"></i> <span>Solicitudes</span></a>
+            <a th:href="@{/requests/frontoffice/add}"><i class="bi bi-plus-circle"></i> <span>Crear solicitud</span></a>
         </div>
         <div th:if="${isOviUser}" class="module-card">
-            <a href="/requests/frontoffice/track"><i class="bi bi-search"></i> <span>Mis solicitudes</span></a>
-        </div>
-        <div th:if="${isTechnician}" class="module-card">
-            <a href="/requests/backoffice/list"><i class="bi bi-check2-all"></i> <span>Back-office: Revisar y proponer candidatos</span></a>
+            <a th:href="@{/requests/frontoffice/track}"><i class="bi bi-search"></i> <span>Mis solicitudes</span></a>
         </div>
     </div>
 
