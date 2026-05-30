@@ -22,18 +22,24 @@
         <thead>
             <tr>
                 <th><i class="bi bi-hash"></i> ID</th>
-                <th><i class="bi bi-check-circle"></i> Estado de Aprobación</th>
-                <th><i class="bi bi-file-text"></i> ID Solicitud</th>
-                <th><i class="bi bi-person"></i> ID PAP PATI</th>
+                <th><i class="bi bi-check-circle"></i> Estado</th>
+                <th><i class="bi bi-file-text"></i> Solicitud</th>
+                <th><i class="bi bi-people"></i> Usuario OVI</th>
+                <th><i class="bi bi-person-arms-up"></i> PAP/PATI</th>
                 <th><i class="bi bi-tools"></i> Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="negotiation : ${negotiations}">
+            <tr th:each="negotiation : ${negotiations}"
+                th:with="req=${@nameMaps.requestById(negotiation.idRequest)}">
                 <td th:text="${negotiation.idNegotiation}"></td>
                 <td><span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span></td>
-                <td th:text="${negotiation.idRequest}"></td>
-                <td th:text="${negotiation.idPapPati}"></td>
+                <td>
+                    <span th:text="|#${negotiation.idRequest}|">#1</span>
+                    <div class="text-muted small" th:if="${req != null}" th:text="${req.description}"></div>
+                </td>
+                <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
+                <td th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}">PAP/PATI</td>
                 <td>
                     <a th:href="@{/negotiations/edit/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
                     <a th:href="@{/negotiations/delete/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i> Eliminar</a>

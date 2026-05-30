@@ -55,7 +55,6 @@ public class MessageController {
 
     @Autowired
     private SessionUserService sessionUserService;
-
     @GetMapping("/list")
     public String list(HttpSession session, Model model) {
         UserDetails currentUser = sessionUserService.getCurrentUser(session);

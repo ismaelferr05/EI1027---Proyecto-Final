@@ -55,7 +55,6 @@ public class RequestController {
 
     @Autowired
     private EmailService emailService;
-
     @GetMapping("/list")
     public String list(HttpSession session, Model model,
                        @RequestParam(value = "status", required = false) String status,

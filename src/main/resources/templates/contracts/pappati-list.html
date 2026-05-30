@@ -3,56 +3,85 @@
 <head th:replace="~{fragments/head :: head('Mis Contratos - SgOVI')}"></head>
 <body>
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
-<header th:replace="~{fragments/page-header :: pageHeader(title='Mis Contratos', icon='bi-file-earmark-pdf', subtitle='')}"></header>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Mis Contratos', icon='bi-file-earmark-pdf', subtitle='Contratos vinculados a tus negociaciones con usuarios OVI')}"></header>
 
 <main class="container page-content mb-5">
-    <div class="user-card" th:if="${currentPapPati != null}">
-        <i class="bi bi-person-circle"></i>
-        <strong th:text="|${currentPapPati.name} ${currentPapPati.lastName}|">PapPati</strong>
-        <span class="text-muted" th:text="| · ${currentPapPati.email}|"></span>
+    <div class="profile-strip" th:if="${currentPapPati != null}">
+        <div class="profile-strip-avatar" aria-hidden="true">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="profile-strip-body">
+            <div class="profile-strip-name" th:text="|${currentPapPati.name} ${currentPapPati.lastName}|">PAP/PATI</div>
+            <div class="profile-strip-meta">
+                <span th:text="${currentPapPati.email}">email@example.com</span>
+                <span class="profile-strip-sep" aria-hidden="true">·</span>
+                <span th:replace="~{fragments/status-badge :: statusBadge(${currentPapPati.status})}"></span>
+            </div>
+        </div>
     </div>
 
     <div class="action-bar">
         <a href="/dashboard" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
-        <a href="/messages/list" class="action-link btn-outline-custom"><i class="bi bi-chat-left-text"></i> Mis mensajes</a>
+        <a href="/messages/list" class="action-link btn-outline-custom"><i class="bi bi-chat-left-text"></i> Mis negociaciones</a>
     </div>
 
-    <div class="table-responsive" th:if="${not #lists.isEmpty(contracts)}">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
-                    <th><i class="bi bi-cash-coin"></i> Salario (€/h)</th>
-                    <th><i class="bi bi-calendar-range"></i> Inicio</th>
-                    <th><i class="bi bi-calendar-range"></i> Fin</th>
-                    <th><i class="bi bi-arrow-left-right"></i> Negociación</th>
-                    <th><i class="bi bi-file-earmark-arrow-down"></i> Documento</th>
-                    <th><i class="bi bi-info-circle"></i> Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="contract : ${contracts}">
-                    <td th:text="${contract.idContract}"></td>
-                    <td th:text="|€ ${contract.wage}|"></td>
-                    <td th:text="${contract.startDate}"></td>
-                    <td th:text="${contract.endDate}"></td>
-                    <td th:text="${contract.idNegotiation}"></td>
-                    <td>
-                        <a th:href="${contract.url}" target="_blank" rel="noopener noreferrer" class="btn-view">
-                            <i class="bi bi-download"></i> Ver PDF
-                        </a>
-                    </td>
-                    <td th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}">
-                        <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="stats-row" th:if="${not #lists.isEmpty(contracts)}">
+        <div class="stat-chip">
+            <span class="stat-chip-label">Total</span>
+            <strong class="stat-chip-value" th:text="${contractCount}">0</strong>
+        </div>
+        <div class="stat-chip">
+            <span class="stat-chip-label">Activos</span>
+            <strong class="stat-chip-value" th:text="${activeContractCount}">0</strong>
+        </div>
     </div>
 
-    <div class="empty-card" th:if="${#lists.isEmpty(contracts)}">
-        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
-        <p class="mb-0 mt-2">No tienes contratos registrados por ahora.</p>
+    <div class="contract-list" th:if="${not #lists.isEmpty(contracts)}">
+        <article class="contract-card" th:each="contract : ${contracts}"
+                 th:with="neg=${@nameMaps.negotiationById(contract.idNegotiation)},
+                          req=${neg != null ? @nameMaps.requestById(neg.idRequest) : null},
+                          contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}">
+            <div class="contract-card-head">
+                <div>
+                    <h2 class="contract-card-title" th:text="|Contrato #${contract.idContract}|">Contrato #1</h2>
+                    <p class="contract-card-subtitle" th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : 'Usuario OVI'}">Usuario OVI</p>
+                </div>
+                <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
+            </div>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Salario</span>
+                    <span class="meta-value" th:text="|€ ${contract.wage}/h|">€ 15.50/h</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Inicio</span>
+                    <span class="meta-value" th:text="${contract.startDate}">2026-05-01</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Fin</span>
+                    <span class="meta-value" th:text="${contract.endDate}">2026-12-31</span>
+                </div>
+            </div>
+
+            <div class="contract-card-actions">
+                <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-link btn-outline-custom">
+                    <i class="bi bi-eye"></i> Ver detalle
+                </a>
+                <a th:href="${contract.url}" target="_blank" rel="noopener noreferrer" class="action-link btn-primary-custom">
+                    <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                </a>
+            </div>
+        </article>
+    </div>
+
+    <div class="empty-state text-center" th:if="${#lists.isEmpty(contracts)}">
+        <i class="bi bi-file-earmark-x" style="font-size: 2rem;" aria-hidden="true"></i>
+        <h5 class="mt-3 mb-2">Aún no tienes contratos</h5>
+        <p class="text-muted mb-3">Cuando el técnico formalice un acuerdo tras una negociación, aparecerá aquí el documento.</p>
+        <a href="/messages/list" class="action-link btn-primary-custom">
+            <i class="bi bi-chat-left-text"></i> Ir a mis negociaciones
+        </a>
     </div>
 </main>
 

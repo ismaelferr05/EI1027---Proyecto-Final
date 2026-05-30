@@ -85,4 +85,3 @@ public class NegotiationController {
         return "redirect:/negotiations/list";
     }
 }
-

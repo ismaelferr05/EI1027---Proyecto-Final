@@ -24,7 +24,6 @@ public class ActivityController {
 
     @Autowired
     private SessionUserService sessionUserService;
-
     @GetMapping("/list")
     public String list(HttpSession session, Model model) {
         if (!sessionUserService.isTechnician(session)) {

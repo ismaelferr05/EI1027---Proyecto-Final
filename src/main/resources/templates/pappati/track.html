@@ -7,16 +7,28 @@
 <main class="container page-content mb-5">
     
     <div class="action-bar">
-        <a th:href="@{/}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al inicio</a>
+        <a th:if="${isLoggedIn}" th:href="@{/dashboard}" class="action-link btn-outline-custom"><i class="bi bi-grid-1x2"></i> Volver al dashboard</a>
+        <a th:unless="${isLoggedIn}" th:href="@{/}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al inicio</a>
     </div>
 <form th:action="@{/pap-patis/track}" method="post" class="d-flex gap-2 my-4">
         <input name="email" type="email" class="form-control" placeholder="Email usado en la solicitud" required>
         <button class="btn btn-primary">Consultar</button>
     </form>
-    <div th:if="${trackedUser != null}" class="alert alert-info">
-        <strong th:text="|${trackedUser.name} ${trackedUser.lastName}|"></strong>
-        <div>Estado: <span th:replace="~{fragments/status-badge :: statusBadge(${trackedUser.status})}"></span></div>
-        <div th:if="${trackedUser.status == 'REJECTED'}">Motivo: <span th:text="${trackedUser.rejectionReason}"></span></div>
+    <div th:if="${trackedUser != null}" class="panel-card">
+        <div class="profile-strip" style="margin-bottom: 0; box-shadow: none; border: 0; padding: 0; background: transparent;">
+            <div class="profile-strip-avatar" aria-hidden="true"><i class="bi bi-person-circle"></i></div>
+            <div class="profile-strip-body">
+                <div class="profile-strip-name" th:text="|${trackedUser.name} ${trackedUser.lastName}|"></div>
+                <div class="profile-strip-meta">
+                    <span th:text="${trackedUser.email}"></span>
+                    <span class="profile-strip-sep" aria-hidden="true">·</span>
+                    <span th:replace="~{fragments/status-badge :: statusBadge(${trackedUser.status})}"></span>
+                </div>
+            </div>
+        </div>
+        <div th:if="${trackedUser.status == 'REJECTED'}" class="alert alert-warning mt-3 mb-0">
+            <strong>Motivo del rechazo:</strong> <span th:text="${trackedUser.rejectionReason}"></span>
+        </div>
     </div>
     <div th:if="${searched != null and trackedUser == null}" class="alert alert-warning">No se ha encontrado ninguna solicitud con ese email.</div>
     <a href="/index.html" class="btn btn-outline-secondary">Volver</a>

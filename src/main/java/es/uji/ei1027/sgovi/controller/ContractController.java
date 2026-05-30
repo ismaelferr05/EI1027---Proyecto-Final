@@ -69,7 +69,15 @@ public class ContractController {
             return "redirect:/login";
         }
 
-        model.addAttribute("contracts", contractDao.getByPapPatiId(idPapPati));
+        List<Contract> contracts = contractDao.getByPapPatiId(idPapPati);
+        LocalDate today = LocalDate.now();
+        long activeContractCount = contracts.stream()
+                .filter(contract -> !contract.getEndDate().isBefore(today))
+                .count();
+
+        model.addAttribute("contracts", contracts);
+        model.addAttribute("contractCount", contracts.size());
+        model.addAttribute("activeContractCount", activeContractCount);
         model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
         return "contracts/pappati-list";
     }

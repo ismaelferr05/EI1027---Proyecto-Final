@@ -41,7 +41,7 @@
                     <td th:text="${activity.location}"></td>
                     <td><span class="badge bg-info" th:text="${activity.category}"></span></td>
                     <td th:text="${activity.description}"></td>
-                    <td th:text="${activity.idTrainer}"></td>
+                    <td th:text="${@nameMaps.trainerNameById(activity.idTrainer)}"></td>
                     <td>
                         <a th:href="@{/activities/edit/{id}(id=${activity.idActivity})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
                         <a th:href="@{/activities/delete/{id}(id=${activity.idActivity})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i> Eliminar</a>

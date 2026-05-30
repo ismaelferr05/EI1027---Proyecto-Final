@@ -6,9 +6,14 @@
 <header th:replace="~{fragments/page-header :: pageHeader(title=|Contrato #${contract.idContract}|, icon='bi-file-earmark-text', subtitle='')}"></header>
 <main class="container page-content mb-5">
     
-    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
+    <div class="action-bar">
+        <a th:if="${isTechnician}" href="/contracts/list" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a contratos</a>
+        <a th:if="${isPapPati}" th:href="@{/contracts/pappati/list}" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a mis contratos</a>
+        <a th:if="${isOviUser}" th:href="@{/contracts/oviuser/list}" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a mis contratos</a>
+        <a th:unless="${isTechnician or isPapPati or isOviUser}" th:href="@{/dashboard}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
+    </div>
 
-    <div class="bg-white p-4 rounded shadow-sm">
+    <div class="panel-card">
         <p><strong>Salario:</strong> <span th:text="|€ ${contract.wage}|"></span></p>
         <p><strong>Inicio:</strong> <span th:text="${contract.startDate}"></span></p>
         <p><strong>Fin:</strong> <span th:text="${contract.endDate}"></span></p>
@@ -17,9 +22,10 @@
                   th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
         </p>
         <p><strong>Negociación:</strong> <span th:text="${contract.idNegotiation}"></span></p>
-        <a th:href="${contract.url}" class="btn btn-primary" target="_blank">Abrir documento</a>
+        <a th:href="${contract.url}" class="action-link btn-primary-custom mt-3" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-file-earmark-pdf"></i> Abrir documento
+        </a>
     </div>
-    <a href="/contracts/list" class="btn btn-outline-secondary mt-3">Volver</a>
 </main>
 <script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>

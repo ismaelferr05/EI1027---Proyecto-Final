@@ -13,14 +13,25 @@
     </div>
     <div class="table-responsive sgovi-table-shell">
     <table class="table table-striped bg-white">
-        <thead><tr><th>ID</th><th>Salario</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Documento</th><th>Acciones</th></tr></thead>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>PAP/PATI</th>
+            <th>Salario</th>
+            <th>Vigencia</th>
+            <th>Estado</th>
+            <th>Documento</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(contracts)}"><td colspan="7">No tienes contratos registrados.</td></tr>
-        <tr th:each="contract : ${contracts}">
+        <tr th:each="contract : ${contracts}"
+            th:with="neg=${@nameMaps.negotiationById(contract.idNegotiation)}">
             <td th:text="${contract.idContract}"></td>
+            <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>
             <td th:text="|€ ${contract.wage}|"></td>
-            <td th:text="${contract.startDate}"></td>
-            <td th:text="${contract.endDate}"></td>
+            <td th:text="|${contract.startDate} → ${contract.endDate}|"></td>
             <td th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}">
                 <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
             </td>

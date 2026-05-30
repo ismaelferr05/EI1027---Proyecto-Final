@@ -42,8 +42,8 @@
             <tr th:if="${#lists.isEmpty(communications)}"><td colspan="5">No hay comunicaciones registradas.</td></tr>
             <tr th:each="item : ${communications}">
                 <td th:text="${item.communicationDateTime}"></td>
-                <td th:text="${item.senderRole}"></td>
-                <td th:text="|${item.recipientType} #${item.recipientId}|"></td>
+                <td th:text="${@nameMaps.roleLabel(item.senderRole)}"></td>
+                <td th:text="${@nameMaps.recipientLabel(item.recipientType, item.recipientId)}"></td>
                 <td th:text="${item.subject}"></td>
                 <td th:text="${item.text}"></td>
             </tr>

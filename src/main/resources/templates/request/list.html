@@ -49,6 +49,7 @@
                 <tr>
                     <th><i class="bi bi-hash"></i> ID</th>
                     <th><i class="bi bi-blockquote"></i> Descripción</th>
+                    <th th:if="${isTechnician}"><i class="bi bi-people"></i> Usuario OVI</th>
                     <th><i class="bi bi-book"></i> Formación</th>
                     <th><i class="bi bi-calendar"></i> Inicio</th>
                     <th><i class="bi bi-calendar"></i> Fin</th>
@@ -60,7 +61,8 @@
                 <tr th:each="request : ${requests}">
                     <td th:text="${request.idRequest}"></td>
                     <td th:text="${request.description}"></td>
-                    <td th:text="${request.training}"></td>
+                    <td th:if="${isTechnician}" th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
+                    <td th:text="${request.training != null ? request.training : '—'}"></td>
                     <td th:text="${request.startDate}"></td>
                     <td th:text="${request.endDate}"></td>
                     <td>

@@ -159,21 +159,34 @@
         </section>
 
         <!-- PAP/PATI -->
-        <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-contracts-title">
-            <h2 id="dash-contracts-title" class="dash-cat-title">Contratos y perfil</h2>
-            <nav class="dash-grid" aria-label="Contratos y perfil">
+        <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-prop-title">
+            <h2 id="dash-prop-title" class="dash-cat-title">Negociaciones</h2>
+            <nav class="dash-grid" aria-label="Negociaciones">
+                <a href="/messages/list" class="dash-box">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis negociaciones</strong>
+                        <small>Propuestas y conversaciones con usuarios OVI</small>
+                    </span>
+                </a>
                 <a th:href="@{/contracts/pappati/list}" class="dash-box">
                     <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                     <span>
                         <strong>Mis contratos</strong>
-                        <small>Contratos activos y documentación</small>
+                        <small>Documentación formalizada</small>
                     </span>
                 </a>
+            </nav>
+        </section>
+
+        <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-space-pap-title">
+            <h2 id="dash-space-pap-title" class="dash-cat-title">Mi espacio</h2>
+            <nav class="dash-grid" aria-label="Mi espacio">
                 <a href="/pap-patis/profile" class="dash-box">
                     <i class="bi bi-person" aria-hidden="true"></i>
                     <span>
                         <strong>Perfil PAP/PATI</strong>
-                        <small>Datos y disponibilidad</small>
+                        <small>Datos personales y disponibilidad</small>
                     </span>
                 </a>
             </nav>
