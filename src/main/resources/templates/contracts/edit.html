@@ -32,19 +32,6 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="startDate" class="form-label">Fecha inicio:</label>
-                    <input id="startDate" type="date" th:field="*{startDate}" class="form-control" />
-                    <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger small mt-2"></div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="endDate" class="form-label">Fecha fin:</label>
-                    <input id="endDate" type="date" th:field="*{endDate}" class="form-control" />
-                    <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger small mt-2"></div>
-                </div>
-            </div>
 
             <div class="mb-3">
                 <label for="url" class="form-label">URL del Documento:</label>

@@ -9,6 +9,7 @@ import es.uji.ei1027.sgovi.model.Request;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -114,6 +115,10 @@ public class ContractController {
                 return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
             }
 
+            if (contractDao.getByNegotiationId(negotiation.getIdNegotiation()) != null) {
+                return sessionUserService.isPapPati(session) ? "redirect:/contracts/pappati/list" : "redirect:/contracts/list";
+            }
+
             request = requestDao.get(negotiation.getIdRequest());
             if (request != null) {
                 contract.setIdNegotiation(negotiation.getIdNegotiation());
@@ -174,7 +179,19 @@ public class ContractController {
             return "contracts/add";
         }
 
-        int createdContractId = contractDao.add(contract);
+        int createdContractId;
+        try {
+            createdContractId = contractDao.add(contract);
+        } catch (DataIntegrityViolationException ex) {
+            // Defensa ante concurrencia: si otro usuario crea el contrato entre validación e inserción.
+            bindingResult.rejectValue("idNegotiation", "duplicate", "Ya existe un contrato para esta negociación");
+            model.addAttribute("requestBasedContract", requestBasedContract);
+            model.addAttribute("selectedRequest", request);
+            model.addAttribute("selectedNegotiation", negotiation);
+            model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
+            model.addAttribute("negotiations", availableNegotiations(session));
+            return "contracts/add";
+        }
         if (requestBasedContract) {
             String finalUrl = "/contracts/view/" + createdContractId;
             contract.setUrl(finalUrl);
@@ -206,8 +223,12 @@ public class ContractController {
             return "redirect:/dashboard";
         }
 
+        Contract persisted = contractDao.get(contract.getIdContract());
+        // Las fechas del contrato son inmutables en edición.
+        contract.setStartDate(persisted.getStartDate());
+        contract.setEndDate(persisted.getEndDate());
+
         if (sessionUserService.isPapPati(session)) {
-            Contract persisted = contractDao.get(contract.getIdContract());
             // PapPati solo puede editar datos del contrato, no reasignar la negociación.
             contract.setIdNegotiation(persisted.getIdNegotiation());
         }
@@ -308,7 +329,9 @@ public class ContractController {
 
     private List<Negotiation> availableNegotiations(HttpSession session) {
         if (sessionUserService.isTechnician(session)) {
-            return negotiationDao.getAll();
+            return negotiationDao.getAll().stream()
+                    .filter(negotiation -> contractDao.getByNegotiationId(negotiation.getIdNegotiation()) == null)
+                    .toList();
         }
         Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
         List<Negotiation> negotiations = new ArrayList<>();
@@ -320,7 +343,9 @@ public class ContractController {
                 negotiations.addAll(negotiationDao.getByRequest(request.getIdRequest()));
             }
         }
-        return negotiations;
+        return negotiations.stream()
+                .filter(negotiation -> contractDao.getByNegotiationId(negotiation.getIdNegotiation()) == null)
+                .toList();
     }
 
     private boolean canCreateContractForNegotiation(HttpSession session, Negotiation negotiation) {
@@ -369,6 +394,14 @@ public class ContractController {
                     .anyMatch(n -> n.getIdNegotiation() == contract.getIdNegotiation());
             if (!allowed) {
                 bindingResult.rejectValue("idNegotiation", "forbidden", "No puedes registrar contrato para esta negociación");
+            }
+        }
+
+        if (contract.getIdNegotiation() != null) {
+            Contract existing = contractDao.getByNegotiationId(contract.getIdNegotiation());
+            boolean isDifferentContract = existing != null && existing.getIdContract() != contract.getIdContract();
+            if (isDifferentContract) {
+                bindingResult.rejectValue("idNegotiation", "duplicate", "Ya existe un contrato para esta negociación");
             }
         }
     }

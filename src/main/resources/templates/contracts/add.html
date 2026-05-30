@@ -42,6 +42,7 @@
                 <div class="col-md-6 mb-3" th:if="${requestBasedContract}">
                     <label class="form-label">Negociación:</label>
                     <input type="text" class="form-control" th:value="${'Negociación #' + selectedNegotiation.idNegotiation}" readonly />
+                    <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger small mt-2"></div>
                 </div>
             </div>
 
