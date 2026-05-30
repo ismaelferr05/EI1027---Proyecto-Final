@@ -20,6 +20,10 @@
 		.info-value { font-weight: 600; color: #212529; word-break: break-word; }
 		.message-list { display: flex; flex-direction: column; gap: 12px; }
 		.message-bubble { max-width: 78%; border-radius: 14px; padding: 12px 14px; border: 1px solid #e9ecef; background: #fff; margin-right: auto; }
+		/* Right-side messages (current user) */
+		.message-bubble.mine { margin-left: auto; margin-right: 0; background: #e9f2ff; border-color: #bfd7ff; }
+		/* Left-side messages (counterpart) */
+		.message-bubble.other { margin-right: auto; margin-left: 0; background: #fff7e8; border-color: #ffd59a; }
 		.message-meta { font-size: 0.78rem; color: #6c757d; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 		.message-text { white-space: pre-wrap; }
 		.empty-state { background: white; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -81,7 +85,8 @@
 
 		<div class="message-list mb-4" th:if="${!#lists.isEmpty(messages)}">
 			<div th:each="message : ${messages}"
-					 class="message-bubble">
+					 class="message-bubble"
+					 th:classappend="${message.sender == currentUserLabel} ? ' mine' : ' other'">
 				<div class="message-meta">
 					<span><strong th:text="${message.sender}"></strong> → <span th:text="${message.receiver}"></span></span>
 					<span th:text="${message.messageDateTime}"></span>
