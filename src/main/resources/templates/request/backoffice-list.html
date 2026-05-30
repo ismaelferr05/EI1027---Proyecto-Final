@@ -11,7 +11,7 @@
         <a href="/requests/frontoffice/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Nueva solicitud</a>
     </div>
 
-    <h2 class="section-title"><i class="bi bi-hourglass-split"></i> Solicitudes Pendientes de Revisión</h2>
+    <h2 class="section-title"><i class="bi bi-hourglass-split" aria-hidden="true"></i> Solicitudes Pendientes de Revisión</h2>
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -42,7 +42,7 @@
         </table>
     </div>
 
-    <h2 class="section-title"><i class="bi bi-check-circle"></i> Solicitudes Aprobadas</h2>
+    <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas</h2>
     <div th:if="${!#lists.isEmpty(approvedRequests)}">
         <div class="list-group">
             <div class="list-group-item d-flex justify-content-between align-items-center" th:each="request : ${approvedRequests}">

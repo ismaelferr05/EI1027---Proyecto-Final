@@ -24,12 +24,12 @@
     <form class="mb-3" method="get" th:action="@{/requests/list}">
         <div class="row g-2 align-items-end">
             <div class="col-auto">
-                <label class="form-label">Tipo (formación)</label>
-                <input type="text" name="type" class="form-control" th:value="${param.type}">
+                <label for="filter-type" class="form-label">Tipo (formación)</label>
+                <input id="filter-type" type="text" name="type" class="form-control" th:value="${param.type}">
             </div>
             <div class="col-auto">
-                <label class="form-label">Estado</label>
-                <select name="status" class="form-select">
+                <label for="filter-status" class="form-label">Estado</label>
+                <select id="filter-status" name="status" class="form-select">
                     <option value="" th:selected="${param.status == null or param.status == ''}">Todos</option>
                     <option value="IN_REVIEW" th:selected="${param.status == 'IN_REVIEW'}">En revisión</option>
                     <option value="APPROVED" th:selected="${param.status == 'APPROVED'}">Aprobado</option>
@@ -69,15 +69,15 @@
                         <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
                     </td>
                     <td th:if="${isTechnician}">
-                        <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-outline-custom" title="Revisar"><i class="bi bi-eye"></i></a>
+                        <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-outline-custom" aria-label="Revisar"><i class="bi bi-eye" aria-hidden="true"></i></a>
                         <th:block th:if="${request.status == 'IN_REVIEW'}">
-                            <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="action-btn btn-edit" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-view" title="Aprobar y proponer asistente"><i class="bi bi-check-circle"></i></a>
+                            <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="action-btn btn-edit" aria-label="Editar"><i class="bi bi-pencil" aria-hidden="true"></i></a>
+                            <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-view" aria-label="Aprobar y proponer asistente"><i class="bi bi-check-circle" aria-hidden="true"></i></a>
                             <form th:action="@{/requests/reject}" method="post" style="display:inline-block;" onsubmit="return confirm('¿Confirmar rechazo de la solicitud?');">
                                 <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
-                                <input type="text" name="reason" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
+                                <input type="text" name="reason" th:id="|reject-reason-${request.idRequest}|" aria-label="Motivo del rechazo" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <button type="submit" class="action-btn btn-delete" title="Rechazar"><i class="bi bi-x-circle"></i></button>
+                                <button type="submit" class="action-btn btn-delete" aria-label="Rechazar"><i class="bi bi-x-circle" aria-hidden="true"></i></button>
                             </form>
                         </th:block>
                     </td>

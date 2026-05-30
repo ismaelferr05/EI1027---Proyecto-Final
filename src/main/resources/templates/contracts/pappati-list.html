@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/head :: head('Mis Contratos - SgOVI')}"></head>
 <body>
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
-<header th:replace="~{fragments/page-header :: pageHeader(title='Mis Contratos', icon='bi-file-earmark-pdf', subtitle='Contratos vinculados a tus negociaciones con usuarios OVI')}"></header>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Mis Contratos', icon='bi-file-earmark-text', subtitle='Contratos vinculados a tus negociaciones con usuarios OVI')}"></header>
 
 <main class="container page-content mb-5">
     <div class="profile-strip" th:if="${currentPapPati != null}">
@@ -68,8 +68,8 @@
                 <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-link btn-outline-custom">
                     <i class="bi bi-eye"></i> Ver detalle
                 </a>
-                <a th:href="${contract.url}" target="_blank" rel="noopener noreferrer" class="action-link btn-primary-custom">
-                    <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer" class="action-link btn-primary-custom">
+                    <i class="bi bi-download" aria-hidden="true"></i> Descargar documento
                 </a>
             </div>
         </article>

@@ -96,7 +96,7 @@
       header.tabIndex = 0;
       header.setAttribute("role", "button");
       header.setAttribute("aria-sort", "none");
-      header.setAttribute("title", "Ordenar por " + label);
+      header.setAttribute("aria-label", "Ordenar por " + label);
 
       const sort = () => {
         const current = header.dataset.sortDirection === "asc" ? "desc" : "asc";

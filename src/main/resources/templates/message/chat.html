@@ -19,7 +19,7 @@
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
     <div class="card-panel">
-		<h2 class="section-title"><i class="bi bi-person-lines-fill"></i> Información del chat</h2>
+		<h2 class="section-title"><i class="bi bi-person-lines-fill" aria-hidden="true"></i> Información del chat</h2>
 		<div class="info-grid">
 			<div class="info-item">
 				<span class="info-label">PAP/PATI</span>
@@ -45,7 +45,7 @@
 	</div>
 
 	<div class="card-panel">
-		<h2 class="section-title"><i class="bi bi-chat-left-text"></i> Mensajes</h2>
+		<h2 class="section-title"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Mensajes</h2>
 		<div th:if="${#lists.isEmpty(messages)}" class="empty-state mb-3">
 			<i class="bi bi-chat-square-dots" style="font-size: 2rem;"></i>
 			<h5 class="mt-3">Aún no hay mensajes</h5>

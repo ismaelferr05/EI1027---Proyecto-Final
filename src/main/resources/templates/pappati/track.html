@@ -11,7 +11,8 @@
         <a th:unless="${isLoggedIn}" th:href="@{/}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al inicio</a>
     </div>
 <form th:action="@{/pap-patis/track}" method="post" class="d-flex gap-2 my-4">
-        <input name="email" type="email" class="form-control" placeholder="Email usado en la solicitud" required>
+        <label for="track-email" class="visually-hidden">Email usado en la solicitud</label>
+        <input id="track-email" name="email" type="email" class="form-control" placeholder="Email usado en la solicitud" required>
         <button class="btn btn-primary">Consultar</button>
     </form>
     <div th:if="${trackedUser != null}" class="panel-card">

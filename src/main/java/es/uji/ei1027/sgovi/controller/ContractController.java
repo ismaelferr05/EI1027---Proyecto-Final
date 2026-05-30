@@ -188,6 +188,40 @@ public class ContractController {
         return "redirect:/dashboard";
     }
 
+    @GetMapping("/document/{id}")
+    public String document(@PathVariable int id, HttpSession session) {
+        if (sessionUserService.getCurrentUser(session) == null) {
+            return "redirect:/login";
+        }
+
+        Contract contract = contractDao.get(id);
+        if (contract == null || contract.getUrl() == null || contract.getUrl().isBlank()) {
+            return "redirect:/dashboard";
+        }
+
+        if (sessionUserService.isTechnician(session)) {
+            return "redirect:" + contract.getUrl();
+        }
+
+        if (sessionUserService.isPapPati(session)) {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            if (idPapPati == null || !contractDao.belongsToPapPati(id, idPapPati)) {
+                return "redirect:/contracts/pappati/list";
+            }
+            return "redirect:" + contract.getUrl();
+        }
+
+        if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            if (idOviUser == null || !contractDao.belongsToOviUser(id, idOviUser)) {
+                return "redirect:/contracts/oviuser/list";
+            }
+            return "redirect:" + contract.getUrl();
+        }
+
+        return "redirect:/dashboard";
+    }
+
     private boolean canManageContract(int idContract, HttpSession session) {
         if (sessionUserService.isTechnician(session)) {
             return true;

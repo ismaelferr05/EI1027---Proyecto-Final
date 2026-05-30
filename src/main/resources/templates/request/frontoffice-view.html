@@ -10,7 +10,7 @@
 
     <div class="panel-card">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
-            <h2 class="section-title mb-0"><i class="bi bi-card-text"></i> Solicitud</h2>
+            <h2 class="section-title mb-0"><i class="bi bi-card-text" aria-hidden="true"></i> Solicitud</h2>
             <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
         </div>
         <p class="text-muted mb-3">Resumen completo de la petición y de los asistentes relacionados con ella.</p>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="panel-card">
-        <h3 class="section-title"><i class="bi bi-person-check"></i> Asistentes asignados</h3>
+        <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistentes asignados</h2>
         <div th:if="${request.status != 'APPROVED'}" class="empty-state">
             Los asistentes estarán visibles una vez la solicitud sea aprobada.
         </div>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="panel-card" th:if="${request.status == 'APPROVED' and isOviUser}">
-        <h3 class="section-title"><i class="bi bi-people"></i> PAP/PATI compatibles</h3>
+        <h2 class="section-title"><i class="bi bi-people" aria-hidden="true"></i> PAP/PATI compatibles</h2>
         <div th:if="${#lists.isEmpty(proposals)}" class="empty-state">No hay candidaturas compatibles disponibles.</div>
         <div th:each="proposal : ${proposals}" class="pap-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">

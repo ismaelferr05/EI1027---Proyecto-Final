@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/head :: head('Contratos - SgOVI')}"></head>
 <body>
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
-<header th:replace="~{fragments/page-header :: pageHeader(title='Listado de Contratos', icon='bi-file-earmark-pdf', subtitle='')}"></header>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Listado de Contratos', icon='bi-file-earmark-text', subtitle='')}"></header>
 
 <main class="container page-content mb-5">
     <div class="action-bar">
@@ -33,7 +33,7 @@
                 <td th:text="|${contract.startDate} → ${contract.endDate}|"></td>
                 <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
                 <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>
-                <td><a th:href="${contract.url}" target="_blank" class="action-btn btn-view"><i class="bi bi-download"></i> Ver PDF</a></td>
+                <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer" class="action-btn btn-view"><i class="bi bi-download" aria-hidden="true"></i> Ver documento</a></td>
                 <td>
                     <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view"><i class="bi bi-eye"></i> Detalles</a>
                     <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="action-btn btn-view"><i class="bi bi-pencil"></i> Editar</a>

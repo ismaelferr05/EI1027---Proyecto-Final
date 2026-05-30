@@ -13,23 +13,23 @@
     <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm mb-4">
         <div class="row g-3">
             <div class="col-md-4" th:if="${isTechnician}">
-                <label class="form-label">Tipo destinatario</label>
-                <select th:field="*{recipientType}" class="form-select">
+                <label for="recipientType" class="form-label">Tipo destinatario</label>
+                <select id="recipientType" th:field="*{recipientType}" class="form-select">
                     <option value="OVIUSER">Usuario OVI</option>
                     <option value="PAPPATI">PAP/PATI</option>
                 </select>
             </div>
             <div class="col-md-4" th:if="${isTechnician}">
-                <label class="form-label">ID destinatario</label>
-                <input th:field="*{recipientId}" type="number" class="form-control" required>
+                <label for="recipientId" class="form-label">ID destinatario</label>
+                <input id="recipientId" th:field="*{recipientId}" type="number" class="form-control" required>
             </div>
             <div class="col-md-8">
-                <label class="form-label">Asunto</label>
-                <input th:field="*{subject}" class="form-control" maxlength="120" required>
+                <label for="subject" class="form-label">Asunto</label>
+                <input id="subject" th:field="*{subject}" class="form-control" maxlength="120" required>
             </div>
             <div class="col-12">
-                <label class="form-label">Texto</label>
-                <textarea th:field="*{text}" class="form-control" rows="3" required></textarea>
+                <label for="text" class="form-label">Texto</label>
+                <textarea id="text" th:field="*{text}" class="form-control" rows="3" required></textarea>
             </div>
         </div>
         <button class="btn btn-primary mt-3">Registrar comunicación</button>

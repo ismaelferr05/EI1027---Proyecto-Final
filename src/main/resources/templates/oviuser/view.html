@@ -26,7 +26,7 @@
             <td th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}">
                 <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
             </td>
-            <td><a th:href="${contract.url}" target="_blank">Ver</a></td>
+            <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer">Ver documento</a></td>
         </tr>
         </tbody>
     </table>

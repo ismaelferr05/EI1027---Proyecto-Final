@@ -11,20 +11,20 @@
     </div>
 <form th:action="@{/pap-patis/register}" th:object="${papPati}" method="post" class="bg-white p-4 rounded shadow-sm">
         <div class="row g-3">
-            <div class="col-md-6"><label class="form-label">Nombre</label><input th:field="*{name}" class="form-control"><div th:errors="*{name}" class="text-danger small"></div></div>
-            <div class="col-md-6"><label class="form-label">Apellidos</label><input th:field="*{lastName}" class="form-control"><div th:errors="*{lastName}" class="text-danger small"></div></div>
-            <div class="col-md-6"><label class="form-label">Email</label><input th:field="*{email}" type="email" class="form-control"><div th:errors="*{email}" class="text-danger small"></div></div>
-            <div class="col-md-6"><label class="form-label">Teléfono</label><input th:field="*{phone}" class="form-control"><div th:errors="*{phone}" class="text-danger small"></div></div>
-            <div class="col-md-6"><label class="form-label">Contraseña</label><input th:field="*{password}" type="password" class="form-control"><div th:errors="*{password}" class="text-danger small"></div></div>
-            <div class="col-md-6"><label class="form-label">Provincia</label><input th:field="*{province}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">Población</label><input th:field="*{town}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">CP</label><input th:field="*{pc}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">Edad</label><input th:field="*{age}" type="number" class="form-control"></div>
-            <div class="col-md-6"><label class="form-label">Género</label><input th:field="*{gender}" class="form-control"></div>
-            <div class="col-md-6"><label class="form-label">URL CV</label><input th:field="*{cvUrl}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">Formación</label><input th:field="*{training}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">Experiencia</label><input th:field="*{experience}" class="form-control"></div>
-            <div class="col-md-4"><label class="form-label">Tipo experiencia</label><input th:field="*{experienceType}" class="form-control"></div>
+            <div class="col-md-6"><label for="name" class="form-label">Nombre</label><input th:field="*{name}" class="form-control"><div th:errors="*{name}" class="text-danger small"></div></div>
+            <div class="col-md-6"><label for="lastName" class="form-label">Apellidos</label><input th:field="*{lastName}" class="form-control"><div th:errors="*{lastName}" class="text-danger small"></div></div>
+            <div class="col-md-6"><label for="email" class="form-label">Email</label><input th:field="*{email}" type="email" class="form-control"><div th:errors="*{email}" class="text-danger small"></div></div>
+            <div class="col-md-6"><label for="phone" class="form-label">Teléfono</label><input th:field="*{phone}" class="form-control"><div th:errors="*{phone}" class="text-danger small"></div></div>
+            <div class="col-md-6"><label for="password" class="form-label">Contraseña</label><input th:field="*{password}" type="password" class="form-control"><div th:errors="*{password}" class="text-danger small"></div></div>
+            <div class="col-md-6"><label for="province" class="form-label">Provincia</label><input th:field="*{province}" class="form-control"></div>
+            <div class="col-md-4"><label for="town" class="form-label">Población</label><input th:field="*{town}" class="form-control"></div>
+            <div class="col-md-4"><label for="pc" class="form-label">CP</label><input th:field="*{pc}" class="form-control"></div>
+            <div class="col-md-4"><label for="age" class="form-label">Edad</label><input th:field="*{age}" type="number" class="form-control"></div>
+            <div class="col-md-6"><label for="gender" class="form-label">Género</label><input th:field="*{gender}" class="form-control"></div>
+            <div class="col-md-6"><label for="cvUrl" class="form-label">URL CV</label><input th:field="*{cvUrl}" class="form-control"></div>
+            <div class="col-md-4"><label for="training" class="form-label">Formación</label><input th:field="*{training}" class="form-control"></div>
+            <div class="col-md-4"><label for="experience" class="form-label">Experiencia</label><input th:field="*{experience}" class="form-control"></div>
+            <div class="col-md-4"><label for="experienceType" class="form-label">Tipo experiencia</label><input th:field="*{experienceType}" class="form-control"></div>
         </div>
         <input type="hidden" th:field="*{status}">
         <button class="btn btn-primary mt-4" type="submit">Enviar solicitud</button>

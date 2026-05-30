@@ -11,7 +11,7 @@
         <!-- Técnico -->
         <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-ops-title">
             <h2 id="dash-ops-title" class="dash-cat-title">Operaciones</h2>
-            <nav class="dash-grid" aria-label="Operaciones">
+            <nav class="dash-grid">
                 <a th:href="@{/requests/list}" class="dash-box">
                     <i class="bi bi-inbox" aria-hidden="true"></i>
                     <span>
@@ -38,7 +38,7 @@
 
         <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-com-tech-title">
             <h2 id="dash-com-tech-title" class="dash-cat-title">Comunicación</h2>
-            <nav class="dash-grid" aria-label="Comunicación">
+            <nav class="dash-grid">
                 <a href="/messages/list" class="dash-box">
                     <i class="bi bi-chat-left-text" aria-hidden="true"></i>
                     <span>
@@ -58,7 +58,7 @@
 
         <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-admin-title">
             <h2 id="dash-admin-title" class="dash-cat-title">Administración</h2>
-            <nav class="dash-grid" aria-label="Administración">
+            <nav class="dash-grid">
                 <a href="/trainers/list" class="dash-box">
                     <i class="bi bi-person-badge" aria-hidden="true"></i>
                     <span>
@@ -100,7 +100,7 @@
         <!-- Usuario OVI -->
         <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-req-title">
             <h2 id="dash-req-title" class="dash-cat-title">Solicitudes</h2>
-            <nav class="dash-grid" aria-label="Solicitudes">
+            <nav class="dash-grid">
                 <a th:href="@{/requests/frontoffice/add}" class="dash-box">
                     <i class="bi bi-plus-lg" aria-hidden="true"></i>
                     <span>
@@ -120,7 +120,7 @@
 
         <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-space-ovi-title">
             <h2 id="dash-space-ovi-title" class="dash-cat-title">Mi espacio</h2>
-            <nav class="dash-grid" aria-label="Mi espacio">
+            <nav class="dash-grid">
                 <a th:href="@{/contracts/oviuser/list}" class="dash-box">
                     <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                     <span>
@@ -140,7 +140,7 @@
 
         <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-com-ovi-title">
             <h2 id="dash-com-ovi-title" class="dash-cat-title">Comunicación</h2>
-            <nav class="dash-grid" aria-label="Comunicación">
+            <nav class="dash-grid">
                 <a href="/messages/list" class="dash-box">
                     <i class="bi bi-chat-left-text" aria-hidden="true"></i>
                     <span>
@@ -161,7 +161,7 @@
         <!-- PAP/PATI -->
         <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-prop-title">
             <h2 id="dash-prop-title" class="dash-cat-title">Negociaciones</h2>
-            <nav class="dash-grid" aria-label="Negociaciones">
+            <nav class="dash-grid">
                 <a href="/messages/list" class="dash-box">
                     <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
                     <span>
@@ -181,7 +181,7 @@
 
         <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-space-pap-title">
             <h2 id="dash-space-pap-title" class="dash-cat-title">Mi espacio</h2>
-            <nav class="dash-grid" aria-label="Mi espacio">
+            <nav class="dash-grid">
                 <a href="/pap-patis/profile" class="dash-box">
                     <i class="bi bi-person" aria-hidden="true"></i>
                     <span>
@@ -194,7 +194,7 @@
 
         <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-com-pap-title">
             <h2 id="dash-com-pap-title" class="dash-cat-title">Comunicación</h2>
-            <nav class="dash-grid" aria-label="Comunicación">
+            <nav class="dash-grid">
                 <a href="/messages/list" class="dash-box">
                     <i class="bi bi-chat-left-text" aria-hidden="true"></i>
                     <span>

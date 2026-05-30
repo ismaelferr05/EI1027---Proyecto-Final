@@ -22,8 +22,8 @@
                   th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
         </p>
         <p><strong>Negociación:</strong> <span th:text="${contract.idNegotiation}"></span></p>
-        <a th:href="${contract.url}" class="action-link btn-primary-custom mt-3" target="_blank" rel="noopener noreferrer">
-            <i class="bi bi-file-earmark-pdf"></i> Abrir documento
+        <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="action-link btn-primary-custom mt-3" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-download" aria-hidden="true"></i> Abrir documento
         </a>
     </div>
 </main>

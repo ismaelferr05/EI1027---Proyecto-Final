@@ -14,7 +14,7 @@
     </div>
 
     <div class="panel-card">
-        <h2 class="section-title"><i class="bi bi-card-text"></i> Datos de la solicitud</h2>
+        <h2 class="section-title"><i class="bi bi-card-text" aria-hidden="true"></i> Datos de la solicitud</h2>
         <dl class="row mb-0">
             <dt class="col-sm-3">Descripción</dt>
             <dd class="col-sm-9" th:text="${request.description}"></dd>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="panel-card" th:if="${request.status == 'APPROVED' or request.status == 'REJECTED'}">
-        <h2 class="section-title"><i class="bi bi-person-check"></i> Asistente propuesto</h2>
+        <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistente propuesto</h2>
 
         <div th:if="${#lists.isEmpty(proposedPapPatis)}" class="text-muted">
             Todavía no se ha asignado ningún asistente a esta solicitud.
@@ -50,7 +50,7 @@
     </div>
 
     <div class="panel-card" th:if="${request.status == 'IN_REVIEW'}">
-        <h2 class="section-title"><i class="bi bi-people"></i> Propuesta de candidaturas (ordenada por afinidad)</h2>
+        <h2 class="section-title"><i class="bi bi-people" aria-hidden="true"></i> Propuesta de candidaturas (ordenada por afinidad)</h2>
 
         <form th:action="@{/requests/backoffice/approve}" method="post">
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
@@ -79,6 +79,7 @@
                                    name="selectedPapPatiId"
                                    th:value="${proposal.papPati.idPapPati}"
                                    th:disabled="${existingPapPatis.contains(proposal.papPati.idPapPati)}"
+                                   th:attr="aria-label=|Seleccionar ${proposal.papPati.name} ${proposal.papPati.lastName}|"
                                    required />
                         </td>
                         <td th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></td>
