@@ -1,8 +1,18 @@
 package es.uji.ei1027.sgovi.controller;
 
+import es.uji.ei1027.sgovi.dao.ContractDao;
 import es.uji.ei1027.sgovi.dao.MessageDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
+import es.uji.ei1027.sgovi.dao.OviUserDao;
+import es.uji.ei1027.sgovi.dao.PapPatiDao;
+import es.uji.ei1027.sgovi.dao.RequestDao;
+import es.uji.ei1027.sgovi.model.ChatThreadSummary;
+import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.Message;
+import es.uji.ei1027.sgovi.model.Negotiation;
+import es.uji.ei1027.sgovi.model.OviUser;
+import es.uji.ei1027.sgovi.model.PapPati;
+import es.uji.ei1027.sgovi.model.Request;
 import es.uji.ei1027.sgovi.model.UserDetails;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import jakarta.servlet.http.HttpSession;
@@ -13,15 +23,35 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 @Controller
 @RequestMapping("/messages")
 public class MessageController {
+
+    private static final String NEGOTIATION_REJECTED = "REJECTED";
+    private static final String NEGOTIATION_CANCELLED = "CANCELLED";
 
     @Autowired
     private MessageDao messageDao;
 
     @Autowired
     private NegotiationDao negotiationDao;
+
+    @Autowired
+    private RequestDao requestDao;
+
+    @Autowired
+    private OviUserDao oviUserDao;
+
+    @Autowired
+    private PapPatiDao papPatiDao;
+
+    @Autowired
+    private ContractDao contractDao;
 
     @Autowired
     private SessionUserService sessionUserService;
@@ -33,27 +63,23 @@ public class MessageController {
             return "redirect:/login";
         }
 
-        String role = currentUser.getRole();
-        if ("OVIUSER".equals(role)) {
-            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
-            if (idOviUser == null) {
-                return "redirect:/login";
-            }
-            model.addAttribute("messages", idOviUser != null ? messageDao.getByOviUser(idOviUser) : java.util.List.of());
-        } else if ("PAPPATI".equals(role)) {
-            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
-            if (idPapPati == null) {
-                return "redirect:/login";
-            }
-            model.addAttribute("messages", idPapPati != null ? messageDao.getByPapPati(idPapPati) : java.util.List.of());
-        } else {
+        if (sessionUserService.isTechnician(session)) {
             model.addAttribute("messages", messageDao.getAll());
+            model.addAttribute("isTechnician", true);
+            model.addAttribute("isOviUser", false);
+            model.addAttribute("isPapPati", false);
+            return "message/list";
         }
 
+        List<ChatThreadSummary> chats = buildChats(session);
+        model.addAttribute("chats", chats);
+        model.addAttribute("currentUserRole", currentUser.getRole());
+        model.addAttribute("currentOviUser", sessionUserService.getCurrentOviUser(session));
+        model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
         model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
-        return "message/list";
+        return "message/chats";
     }
 
     @GetMapping("/add")
@@ -127,15 +153,220 @@ public class MessageController {
         return "redirect:/messages/list";
     }
 
-    @GetMapping("/negotiation/{idNegotiation}")
-    public String listByNegotiation(@PathVariable int idNegotiation, HttpSession session, Model model) {
-        if (!sessionUserService.isTechnician(session)) {
-            return "redirect:/dashboard";
+    @GetMapping("/chat/{idNegotiation}")
+    public String chat(@PathVariable int idNegotiation, HttpSession session, Model model) {
+        UserDetails currentUser = sessionUserService.getCurrentUser(session);
+        if (currentUser == null) {
+            return "redirect:/login";
         }
 
+        if (sessionUserService.isTechnician(session)) {
+            return "redirect:/messages/list";
+        }
+
+        Negotiation negotiation = negotiationDao.get(idNegotiation);
+        if (negotiation == null || !isNegotiationForCurrentUser(session, negotiation)) {
+            model.addAttribute("errorMessage", "No se pudo abrir este chat.");
+            model.addAttribute("chats", buildChats(session));
+            model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+            model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+            return "message/chats";
+        }
+
+        ChatThreadSummary chat = buildChatSummary(negotiation);
+        if (chat == null) {
+            model.addAttribute("errorMessage", "Todavía no hay información suficiente para abrir este chat.");
+            model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+            model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+            model.addAttribute("chats", buildChats(session));
+            return "message/chats";
+        }
+
+        model.addAttribute("chat", chat);
         model.addAttribute("messages", messageDao.getByNegotiation(idNegotiation));
-        model.addAttribute("idNegotiation", idNegotiation);
-        return "message/list";
+        model.addAttribute("message", new Message());
+        model.addAttribute("currentUserLabel", getCurrentParticipantLabel(session));
+        model.addAttribute("papPatiLabel", compactLabel(chat.getPapPati().getName(), chat.getPapPati().getLastName()));
+        model.addAttribute("oviUserLabel", compactLabel(chat.getOviUser().getName(), chat.getOviUser().getLastName()));
+        model.addAttribute("counterpartLabel", getCounterpartLabel(session, chat));
+        model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+        model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+        return "message/chat";
+    }
+
+    @PostMapping("/chat/{idNegotiation}/send")
+    public String sendChatMessage(@PathVariable int idNegotiation,
+                                  @RequestParam("text") String text,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+        UserDetails currentUser = sessionUserService.getCurrentUser(session);
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        if (sessionUserService.isTechnician(session)) {
+            return "redirect:/messages/list";
+        }
+
+        Negotiation negotiation = negotiationDao.get(idNegotiation);
+        if (negotiation == null || !isNegotiationForCurrentUser(session, negotiation)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No puedes enviar mensajes en esta conversación.");
+            return "redirect:/messages/list";
+        }
+
+        String trimmed = text == null ? "" : text.trim();
+        if (trimmed.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "El mensaje no puede estar vacío.");
+            return "redirect:/messages/chat/" + idNegotiation;
+        }
+
+        ChatThreadSummary chat = buildChatSummary(negotiation);
+
+        Message message = new Message();
+        message.setMessageDateTime(LocalDateTime.now());
+        message.setIdNegotiation(idNegotiation);
+        message.setText(trimmed);
+        message.setSender(getCurrentParticipantLabel(session));
+        message.setReceiver(getCounterpartLabel(session, chat));
+        messageDao.add(message);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Mensaje enviado correctamente.");
+        return "redirect:/messages/chat/" + idNegotiation;
+    }
+
+    private List<ChatThreadSummary> buildChats(HttpSession session) {
+        List<ChatThreadSummary> chats = new ArrayList<>();
+
+        if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            OviUser currentOviUser = sessionUserService.getCurrentOviUser(session);
+            if (idOviUser == null || currentOviUser == null) {
+                return chats;
+            }
+            for (Request request : requestDao.getByOviUser(idOviUser)) {
+                for (Negotiation negotiation : negotiationDao.getByRequest(request.getIdRequest())) {
+                    ChatThreadSummary chat = buildChatSummary(negotiation);
+                    if (chat != null) {
+                        chats.add(chat);
+                    }
+                }
+            }
+        } else if (sessionUserService.isPapPati(session)) {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            if (idPapPati == null) {
+                return chats;
+            }
+            for (Negotiation negotiation : negotiationDao.getByPapPati(idPapPati)) {
+                ChatThreadSummary chat = buildChatSummary(negotiation);
+                if (chat != null) {
+                    chats.add(chat);
+                }
+            }
+        }
+
+        chats.sort(Comparator.comparing(this::chatSortKey).reversed());
+        return chats;
+    }
+
+    private ChatThreadSummary buildChatSummary(Negotiation negotiation) {
+        if (negotiation == null || negotiation.getIdRequest() == null || negotiation.getIdPapPati() == null) {
+            return null;
+        }
+
+        Request request = requestDao.get(negotiation.getIdRequest());
+        PapPati papPati = papPatiDao.get(negotiation.getIdPapPati());
+        if (request == null || papPati == null || !isChatVisible(negotiation)) {
+            return null;
+        }
+
+        OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        if (oviUser == null) {
+            return null;
+        }
+
+        List<Message> threadMessages = messageDao.getByNegotiation(negotiation.getIdNegotiation());
+        Contract contract = contractDao.getByNegotiationId(negotiation.getIdNegotiation());
+
+        ChatThreadSummary chat = new ChatThreadSummary();
+        chat.setNegotiation(negotiation);
+        chat.setRequest(request);
+        chat.setOviUser(oviUser);
+        chat.setPapPati(papPati);
+        chat.setContract(contract);
+        chat.setMessageCount(threadMessages.size());
+        chat.setLastMessage(threadMessages.isEmpty() ? null : threadMessages.get(threadMessages.size() - 1));
+        chat.setActive(true);
+        return chat;
+    }
+
+    private boolean isNegotiationForCurrentUser(HttpSession session, Negotiation negotiation) {
+        if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            if (idOviUser == null || negotiation.getIdRequest() == null) {
+                return false;
+            }
+            Request request = requestDao.get(negotiation.getIdRequest());
+            return request != null && idOviUser.equals(request.getIdOviUser());
+        }
+
+        if (sessionUserService.isPapPati(session)) {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            return idPapPati != null && idPapPati.equals(negotiation.getIdPapPati());
+        }
+
+        return false;
+    }
+
+    private boolean isChatVisible(Negotiation negotiation) {
+        if (negotiation == null || negotiation.getStateOfApproval() == null) {
+            return false;
+        }
+        return !NEGOTIATION_REJECTED.equals(negotiation.getStateOfApproval())
+                && !NEGOTIATION_CANCELLED.equals(negotiation.getStateOfApproval());
+    }
+
+    private String getCurrentParticipantLabel(HttpSession session) {
+        if (sessionUserService.isOviUser(session)) {
+            OviUser user = sessionUserService.getCurrentOviUser(session);
+            return user == null ? "OVI" : compactLabel(user.getName(), user.getLastName());
+        }
+        if (sessionUserService.isPapPati(session)) {
+            PapPati user = sessionUserService.getCurrentPapPati(session);
+            return user == null ? "PAP" : compactLabel(user.getName(), user.getLastName());
+        }
+        return "usuario";
+    }
+
+    private String getCounterpartLabel(HttpSession session, ChatThreadSummary chat) {
+        if (chat == null) {
+            return "destinatario";
+        }
+        if (sessionUserService.isOviUser(session)) {
+            return compactLabel(chat.getPapPati().getName(), chat.getPapPati().getLastName());
+        }
+        if (sessionUserService.isPapPati(session)) {
+            return compactLabel(chat.getOviUser().getName(), chat.getOviUser().getLastName());
+        }
+        return "destinatario";
+    }
+
+    private String compactLabel(String name, String lastName) {
+        String label = ((name == null ? "" : name) + " " + (lastName == null ? "" : lastName)).trim();
+        if (label.isEmpty()) {
+            return "usuario";
+        }
+        return label.length() <= 20 ? label : label.substring(0, 20);
+    }
+
+    private java.time.LocalDateTime chatSortKey(ChatThreadSummary chat) {
+        if (chat == null) {
+            return java.time.LocalDateTime.MIN;
+        }
+        if (chat.getLastMessage() != null && chat.getLastMessage().getMessageDateTime() != null) {
+            return chat.getLastMessage().getMessageDateTime();
+        }
+        return chat.getRequest() != null && chat.getRequest().getStartDate() != null
+                ? chat.getRequest().getStartDate().atStartOfDay()
+                : java.time.LocalDateTime.MIN;
     }
 }
 

@@ -52,6 +52,12 @@ public class ContractDao {
         return jdbcTemplate.query(sql, new ContractRowMapper(), idPapPati);
     }
 
+                    public Contract getByNegotiationId(int idNegotiation) {
+                        String sql = "SELECT * FROM Contract WHERE negotiation_id=?";
+                        List<Contract> contracts = jdbcTemplate.query(sql, new ContractRowMapper(), idNegotiation);
+                        return contracts.isEmpty() ? null : contracts.get(0);
+                    }
+
     public boolean belongsToPapPati(int idContract, int idPapPati) {
         String sql = """
                 SELECT COUNT(*)

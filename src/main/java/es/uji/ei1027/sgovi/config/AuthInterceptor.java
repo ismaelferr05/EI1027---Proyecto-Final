@@ -58,7 +58,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             return "/dashboard".equals(path)
                     || "/requests/list".equals(path)
                     || path.startsWith("/requests/frontoffice")
-                    || "/messages/list".equals(path);
+                    || "/messages/list".equals(path)
+                    || path.startsWith("/messages/chat/");
         }
 
         if ("PAPPATI".equals(role)) {
@@ -66,7 +67,8 @@ public class AuthInterceptor implements HandlerInterceptor {
                     || "/requests/list".equals(path)
                     || path.startsWith("/contracts/pappati")
                     || path.startsWith("/contracts/view/")
-                    || "/messages/list".equals(path);
+                    || "/messages/list".equals(path)
+                    || path.startsWith("/messages/chat/");
         }
 
         return false;

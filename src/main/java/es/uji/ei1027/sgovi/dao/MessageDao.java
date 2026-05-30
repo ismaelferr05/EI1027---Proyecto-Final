@@ -40,7 +40,7 @@ public class MessageDao {
     }
 
     public List<Message> getByNegotiation(int idNegotiation) {
-        String sql = "SELECT * FROM Message WHERE negotiation_id=?";
+        String sql = "SELECT * FROM Message WHERE negotiation_id=? ORDER BY messageDateTime ASC, messageId ASC";
         return jdbcTemplate.query(sql, new MessageRowMapper(), idNegotiation);
     }
 
