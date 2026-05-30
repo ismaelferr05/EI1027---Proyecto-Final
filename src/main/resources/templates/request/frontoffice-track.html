@@ -83,6 +83,7 @@
                 </td>
                 <td>
                     <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver resolución</a>
+                    <span th:if="${request.status == 'REJECTED'}" class="text-muted small" th:text="${request.rejectionReason != null ? request.rejectionReason : 'Rechazada'}"></span>
                 </td>
             </tr>
             </tbody>
@@ -93,4 +94,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

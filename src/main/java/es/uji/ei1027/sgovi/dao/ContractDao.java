@@ -52,6 +52,18 @@ public class ContractDao {
         return jdbcTemplate.query(sql, new ContractRowMapper(), idPapPati);
     }
 
+    public List<Contract> getByOviUserId(int idOviUser) {
+        String sql = """
+                SELECT c.*
+                FROM Contract c
+                JOIN Negotiation n ON c.negotiation_id = n.negotiation_id
+                JOIN Request r ON n.request_id = r.request_id
+                WHERE r.oviuser_id = ?
+                ORDER BY c.startDate DESC, c.contract_id DESC
+                """;
+        return jdbcTemplate.query(sql, new ContractRowMapper(), idOviUser);
+    }
+
                     public Contract getByNegotiationId(int idNegotiation) {
                         String sql = "SELECT * FROM Contract WHERE negotiation_id=?";
                         List<Contract> contracts = jdbcTemplate.query(sql, new ContractRowMapper(), idNegotiation);
@@ -66,6 +78,18 @@ public class ContractDao {
                 WHERE c.contract_id = ? AND n.pappati_id = ?
                 """;
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idContract, idPapPati);
+        return count > 0;
+    }
+
+    public boolean belongsToOviUser(int idContract, int idOviUser) {
+        String sql = """
+                SELECT COUNT(*)
+                FROM Contract c
+                JOIN Negotiation n ON c.negotiation_id = n.negotiation_id
+                JOIN Request r ON n.request_id = r.request_id
+                WHERE c.contract_id = ? AND r.oviuser_id = ?
+                """;
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idContract, idOviUser);
         return count > 0;
     }
 
@@ -89,4 +113,3 @@ public class ContractDao {
         return count > 0;
     }
 }
-

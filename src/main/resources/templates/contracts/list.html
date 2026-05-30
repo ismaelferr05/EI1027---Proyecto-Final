@@ -34,6 +34,7 @@
 <div class="container mb-5">
     <div class="action-bar">
         <a href="/dashboard" class="action-bar a btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
+        <a href="/contracts/add" class="action-bar a btn-outline-custom"><i class="bi bi-plus-circle"></i> Nuevo contrato</a>
     </div>
 
     <table class="table table-hover">
@@ -58,6 +59,7 @@
                 <td th:text="${contract.idNegotiation}"></td>
                 <td>
                     <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view"><i class="bi bi-eye"></i> Detalles</a>
+                    <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="action-btn btn-view"><i class="bi bi-pencil"></i> Editar</a>
                 </td>
             </tr>
         </tbody>

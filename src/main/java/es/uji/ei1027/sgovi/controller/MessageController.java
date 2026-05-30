@@ -194,6 +194,18 @@ public class MessageController {
         return "message/chat";
     }
 
+    @GetMapping("/negotiation/{idNegotiation}")
+    public String messagesByNegotiation(@PathVariable int idNegotiation, HttpSession session, Model model) {
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+        model.addAttribute("messages", messageDao.getByNegotiation(idNegotiation));
+        model.addAttribute("isTechnician", true);
+        model.addAttribute("isOviUser", false);
+        model.addAttribute("isPapPati", false);
+        return "message/list";
+    }
+
     @PostMapping("/chat/{idNegotiation}/send")
     public String sendChatMessage(@PathVariable int idNegotiation,
                                   @RequestParam("text") String text,
@@ -369,4 +381,3 @@ public class MessageController {
                 : java.time.LocalDateTime.MIN;
     }
 }
-

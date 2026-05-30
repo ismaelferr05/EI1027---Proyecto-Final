@@ -21,8 +21,8 @@ public class OviUserRowMapper implements RowMapper<OviUser> {
         oviUser.setAge((Integer) rs.getObject("age"));
         oviUser.setGender(rs.getString("gender"));
         oviUser.setStatus(rs.getString("status"));
+        oviUser.setRejectionReason(rs.getString("rejectionReason"));
         oviUser.setLopdConsent(rs.getBoolean("lopdConsent"));
         return oviUser;
     }
 }
-

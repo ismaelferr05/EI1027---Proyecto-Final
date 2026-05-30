@@ -13,20 +13,20 @@ public class RequestDao {
     private JdbcTemplate jdbcTemplate;
 
     public int add(Request request) {
-        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING request_id";
+        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, rejectionReason, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING request_id";
         int generatedId = jdbcTemplate.queryForObject(sql, Integer.class,
                 request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
                 Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
-                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getIdOviUser());
+                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getRejectionReason(), request.getIdOviUser());
         request.setIdRequest(generatedId);
         return generatedId;
     }
 
     public void update(Request request) {
-        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, preferredGender=?, preferredPc=?, preferredAge=?, status=?, oviuser_id=? WHERE request_id=?";
+        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, preferredGender=?, preferredPc=?, preferredAge=?, status=?, rejectionReason=?, oviuser_id=? WHERE request_id=?";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
                 Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
-                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getIdOviUser(), request.getIdRequest());
+                request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getRejectionReason(), request.getIdOviUser(), request.getIdRequest());
     }
 
     public void delete(int idRequest) {
@@ -55,8 +55,11 @@ public class RequestDao {
     }
 
     public void updateStatus(int idRequest, String status) {
-        String sql = "UPDATE Request SET status=? WHERE request_id=?";
-        jdbcTemplate.update(sql, status, idRequest);
+        updateStatus(idRequest, status, null);
+    }
+
+    public void updateStatus(int idRequest, String status, String rejectionReason) {
+        String sql = "UPDATE Request SET status=?, rejectionReason=? WHERE request_id=?";
+        jdbcTemplate.update(sql, status, rejectionReason, idRequest);
     }
 }
-

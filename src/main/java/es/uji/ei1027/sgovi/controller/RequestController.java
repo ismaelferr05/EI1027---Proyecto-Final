@@ -176,6 +176,7 @@ public class RequestController {
 
     @PostMapping("/reject")
     public String rejectRequest(@RequestParam("idRequest") int idRequest,
+                                @RequestParam(value = "reason", required = false) String reason,
                                 HttpSession session,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
@@ -189,10 +190,11 @@ public class RequestController {
             return "redirect:/requests/list";
         }
 
+        request.setStatus("REJECTED");
+        request.setRejectionReason(reason);
         OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        requestDao.updateStatus(idRequest, "REJECTED", reason);
         EmailContent email = emailService.sendRejectionEmail(request, oviUser);
-
-        requestDao.updateStatus(idRequest, "REJECTED");
         return showConfirmation(model, request, oviUser, null, email, "rejection");
     }
 
@@ -216,6 +218,7 @@ public class RequestController {
         PapPati selectedPapPati = selectedPapPatiId != null ? papPatiDao.get(selectedPapPatiId) : null;
 
         requestDao.updateStatus(idRequest, "APPROVED");
+        request.setStatus("APPROVED");
 
         if (selectedPapPatiId != null && !negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
             Negotiation negotiation = new Negotiation();
@@ -337,6 +340,35 @@ public class RequestController {
         return "request/frontoffice-view";
     }
 
+    @PostMapping("/frontoffice/start-chat")
+    public String frontOfficeStartChat(@RequestParam("idRequest") int idRequest,
+                                       @RequestParam("idPapPati") int idPapPati,
+                                       HttpSession session,
+                                       RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isOviUser(session)) {
+            return "redirect:/dashboard";
+        }
+
+        Request request = requestDao.get(idRequest);
+        Integer currentOviId = sessionUserService.getCurrentOviUserId(session);
+        if (request == null || currentOviId == null || !currentOviId.equals(request.getIdOviUser()) || !"APPROVED".equals(request.getStatus())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No puedes iniciar esta conversación.");
+            return "redirect:/requests/frontoffice/track";
+        }
+
+        Negotiation negotiation = negotiationDao.getByRequestAndPapPati(idRequest, idPapPati);
+        if (negotiation == null) {
+            negotiation = new Negotiation();
+            negotiation.setStateOfApproval("IN_PROGRESS");
+            negotiation.setIdRequest(idRequest);
+            negotiation.setIdPapPati(idPapPati);
+            negotiationDao.add(negotiation);
+            negotiation = negotiationDao.getByRequestAndPapPati(idRequest, idPapPati);
+        }
+
+        return "redirect:/messages/chat/" + negotiation.getIdNegotiation();
+    }
+
     @GetMapping("/backoffice/list")
     public String backOfficeList(HttpSession session, Model model) {
         boolean isTech = sessionUserService.isTechnician(session);
@@ -407,6 +439,7 @@ public class RequestController {
         PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
 
         requestDao.updateStatus(idRequest, "APPROVED");
+        request.setStatus("APPROVED");
 
         if (!negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
             Negotiation negotiation = new Negotiation();
@@ -431,10 +464,11 @@ public class RequestController {
             return "redirect:/requests/backoffice/list";
         }
 
+        request.setStatus("REJECTED");
+        request.setRejectionReason("No cumple los criterios de la asistencia solicitada.");
         OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        requestDao.updateStatus(idRequest, "REJECTED", request.getRejectionReason());
         EmailContent email = emailService.sendRejectionEmail(request, oviUser);
-
-        requestDao.updateStatus(idRequest, "REJECTED");
         return showConfirmation(model, request, oviUser, null, email, "rejection");
     }
 
@@ -452,5 +486,3 @@ public class RequestController {
         return "request/confirmation";
     }
 }
-
-

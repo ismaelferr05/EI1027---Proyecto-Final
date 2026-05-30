@@ -25,7 +25,7 @@ public class PapPatiRowMapper implements RowMapper<PapPati> {
         papPati.setExperience(rs.getString("experience"));
         papPati.setExperienceType(rs.getString("experienceType"));
         papPati.setStatus(rs.getString("status"));
+        papPati.setRejectionReason(rs.getString("rejectionReason"));
         return papPati;
     }
 }
-

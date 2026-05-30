@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Comunicaciones</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"></head>
+<body class="bg-light">
+<main class="container py-5">
+    <h1>Comunicaciones con técnico OVI</h1>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm mb-4">
+        <div class="row g-3">
+            <div class="col-md-4" th:if="${isTechnician}">
+                <label class="form-label">Tipo destinatario</label>
+                <select th:field="*{recipientType}" class="form-select">
+                    <option value="OVIUSER">Usuario OVI</option>
+                    <option value="PAPPATI">PAP/PATI</option>
+                </select>
+            </div>
+            <div class="col-md-4" th:if="${isTechnician}">
+                <label class="form-label">ID destinatario</label>
+                <input th:field="*{recipientId}" type="number" class="form-control" required>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Asunto</label>
+                <input th:field="*{subject}" class="form-control" maxlength="120" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Texto</label>
+                <textarea th:field="*{text}" class="form-control" rows="3" required></textarea>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3">Registrar comunicación</button>
+        <a href="/dashboard" class="btn btn-outline-secondary mt-3">Inicio</a>
+    </form>
+
+    <table class="table table-striped bg-white">
+        <thead><tr><th>Fecha</th><th>Emisor</th><th>Destinatario</th><th>Asunto</th><th>Texto</th></tr></thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(communications)}"><td colspan="5">No hay comunicaciones registradas.</td></tr>
+        <tr th:each="item : ${communications}">
+            <td th:text="${item.communicationDateTime}"></td>
+            <td th:text="${item.senderRole}"></td>
+            <td th:text="|${item.recipientType} #${item.recipientId}|"></td>
+            <td th:text="${item.subject}"></td>
+            <td th:text="${item.text}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -31,7 +31,7 @@
 
 <div class="container mb-5">
     <div class="form-section">
-        <form th:action="@{/pap-patis/edit}" th:object="${papPati}" method="post">
+        <form th:action="${selfProfile} ? @{/pap-patis/profile} : @{/pap-patis/edit}" th:object="${papPati}" method="post">
             <input type="hidden" th:field="*{idPapPati}" />
 
             <div class="row">
@@ -64,6 +64,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="password" class="form-label">Contraseña:</label>
                     <input id="password" type="password" th:field="*{password}" class="form-control" maxlength="255" />
+                    <div class="form-text">Déjala vacía para mantener la contraseña actual.</div>
                     <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger small mt-2"></div>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -109,7 +110,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="status" class="form-label">Estado:</label>
-                    <select id="status" th:field="*{status}" class="form-select">
+                    <select id="status" th:field="*{status}" class="form-select" th:disabled="${selfProfile}">
                         <option value="">Selecciona un estado</option>
                         <option value="PENDING">PENDING</option>
                         <option value="ACCEPTED">ACCEPTED</option>
@@ -139,7 +140,7 @@
 
             <div class="btn-group-custom">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar cambios</button>
-                <a href="/pap-patis/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                <a th:href="${selfProfile} ? @{/dashboard} : @{/pap-patis/list}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
             </div>
         </form>
     </div>

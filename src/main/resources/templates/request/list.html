@@ -132,6 +132,7 @@
                             <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-view" title="Aprobar y proponer asistente"><i class="bi bi-check-circle"></i></a>
                             <form th:action="@{/requests/reject}" method="post" style="display:inline-block;" onsubmit="return confirm('¿Confirmar rechazo de la solicitud?');">
                                 <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+                                <input type="text" name="reason" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button type="submit" class="action-btn btn-delete" title="Rechazar"><i class="bi bi-x-circle"></i></button>
                             </form>

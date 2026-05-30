@@ -22,8 +22,8 @@ public class RequestRowMapper implements RowMapper<Request> {
         Object preferredAge = rs.getObject("preferredAge");
         request.setPreferredAge(preferredAge != null ? rs.getInt("preferredAge") : null);
         request.setStatus(rs.getString("status"));
+        request.setRejectionReason(rs.getString("rejectionReason"));
         request.setIdOviUser(rs.getInt("oviuser_id"));
         return request;
     }
 }
-

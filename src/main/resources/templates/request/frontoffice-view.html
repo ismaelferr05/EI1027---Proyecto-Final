@@ -92,13 +92,30 @@
         </div>
     </div>
 
+    <div class="panel-card" th:if="${request.status == 'APPROVED' and isOviUser}">
+        <h3 class="section-title"><i class="bi bi-people"></i> PAP/PATI compatibles</h3>
+        <div th:if="${#lists.isEmpty(proposals)}" class="empty-state">No hay candidaturas compatibles disponibles.</div>
+        <div th:each="proposal : ${proposals}" class="pap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h5 th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></h5>
+                    <div class="pap-meta" th:text="${'CP: ' + proposal.papPati.pc + ' · Género: ' + proposal.papPati.gender + ' · Edad: ' + proposal.papPati.age}"></div>
+                    <div class="text-muted small" th:text="${proposal.matchSummary}"></div>
+                </div>
+                <form th:action="@{/requests/frontoffice/start-chat}" method="post">
+                    <input type="hidden" name="idRequest" th:value="${request.idRequest}">
+                    <input type="hidden" name="idPapPati" th:value="${proposal.papPati.idPapPati}">
+                    <button class="btn btn-primary" type="submit">Iniciar conversación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <a href="/requests/frontoffice/track" class="btn btn-outline-secondary mb-4">Volver</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
 
 

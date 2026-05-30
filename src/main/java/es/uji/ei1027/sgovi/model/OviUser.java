@@ -13,6 +13,7 @@ public class OviUser {
     private Integer age;
     private String gender;
     private String status;
+    private String rejectionReason;
     private boolean lopdConsent;
 
     public OviUser() {}
@@ -61,7 +62,8 @@ public class OviUser {
     public void setGender(String gender) { this.gender = gender; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getRejectionReason() { return rejectionReason; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
     public boolean isLopdConsent() { return lopdConsent; }
     public void setLopdConsent(boolean lopdConsent) { this.lopdConsent = lopdConsent; }
 }
-

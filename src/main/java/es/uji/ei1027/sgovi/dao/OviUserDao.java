@@ -12,17 +12,17 @@ public class OviUserDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(OviUser oviUser) {
-        String sql = "INSERT INTO OviUser (name, lastName, email, phone, password, province, town, pc, age, gender, status, lopdConsent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO OviUser (name, lastName, email, phone, password, province, town, pc, age, gender, status, rejectionReason, lopdConsent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, oviUser.getName(), oviUser.getLastName(), oviUser.getEmail(), oviUser.getPhone(), oviUser.getPassword(),
                 oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(),
-                oviUser.getStatus(), oviUser.isLopdConsent());
+                oviUser.getStatus(), oviUser.getRejectionReason(), oviUser.isLopdConsent());
     }
 
     public void update(OviUser oviUser) {
-        String sql = "UPDATE OviUser SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, status=?, lopdConsent=? WHERE oviuser_id=?";
+        String sql = "UPDATE OviUser SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, status=?, rejectionReason=?, lopdConsent=? WHERE oviuser_id=?";
         jdbcTemplate.update(sql, oviUser.getName(), oviUser.getLastName(), oviUser.getEmail(), oviUser.getPhone(), oviUser.getPassword(),
                 oviUser.getProvince(), oviUser.getTown(), oviUser.getPc(), oviUser.getAge(), oviUser.getGender(),
-                oviUser.getStatus(), oviUser.isLopdConsent(), oviUser.getIdOviUser());
+                oviUser.getStatus(), oviUser.getRejectionReason(), oviUser.isLopdConsent(), oviUser.getIdOviUser());
     }
 
     public void delete(int idOviUser) {
@@ -40,10 +40,19 @@ public class OviUserDao {
         return jdbcTemplate.query(sql, new OviUserRowMapper());
     }
 
+    public List<OviUser> getByStatus(String status) {
+        String sql = "SELECT * FROM OviUser WHERE status=? ORDER BY lastName, name";
+        return jdbcTemplate.query(sql, new OviUserRowMapper(), status);
+    }
+
+    public void updateStatus(int idOviUser, String status, String rejectionReason) {
+        String sql = "UPDATE OviUser SET status=?, rejectionReason=? WHERE oviuser_id=?";
+        jdbcTemplate.update(sql, status, rejectionReason, idOviUser);
+    }
+
     public OviUser getByEmail(String email) {
         String sql = "SELECT * FROM OviUser WHERE LOWER(email)=LOWER(?)";
         List<OviUser> users = jdbcTemplate.query(sql, new OviUserRowMapper(), email);
         return users.isEmpty() ? null : users.get(0);
     }
 }
-

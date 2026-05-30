@@ -85,3 +85,4 @@ SELECT setval(pg_get_serial_sequence('request', 'request_id'), COALESCE((SELECT 
 SELECT setval(pg_get_serial_sequence('negotiation', 'negotiation_id'), COALESCE((SELECT MAX(negotiation_id) FROM negotiation), 1), true);
 SELECT setval(pg_get_serial_sequence('message', 'messageid'), COALESCE((SELECT MAX(messageid) FROM message), 1), true);
 SELECT setval(pg_get_serial_sequence('contract', 'contract_id'), COALESCE((SELECT MAX(contract_id) FROM contract), 1), true);
+SELECT setval(pg_get_serial_sequence('techniciancommunication', 'communication_id'), COALESCE((SELECT MAX(communication_id) FROM techniciancommunication), 1), true);

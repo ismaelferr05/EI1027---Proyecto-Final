@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Confirmación</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"></head>
+<body class="bg-light">
+<main class="container py-5">
+    <div class="alert alert-success">
+        Acción aplicada sobre <strong th:text="${entityName}"></strong>.
+    </div>
+    <div class="bg-white p-4 rounded shadow-sm">
+        <h2>Email generado</h2>
+        <p><strong>Para:</strong> <span th:text="${email.to}"></span></p>
+        <p><strong>Asunto:</strong> <span th:text="${email.subject}"></span></p>
+        <pre th:text="${email.body}"></pre>
+    </div>
+    <a href="/dashboard" class="btn btn-primary mt-3">Volver al dashboard</a>
+</main>
+</body>
+</html>

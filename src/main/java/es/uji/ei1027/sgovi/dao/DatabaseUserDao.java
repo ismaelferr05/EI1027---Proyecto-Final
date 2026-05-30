@@ -28,10 +28,10 @@ public class DatabaseUserDao implements UserDao {
         String normalized = email.trim();
 
         OviUser o = oviUserDao.getByEmail(normalized);
-        if (o != null) return mapOviUser(o);
+        if (o != null) return "ACCEPTED".equals(o.getStatus()) ? mapOviUser(o) : null;
 
         PapPati p = papPatiDao.getByEmail(normalized);
-        if (p != null) return mapPapPati(p);
+        if (p != null) return "ACCEPTED".equals(p.getStatus()) ? mapPapPati(p) : null;
 
         // Technician table: only email/password are needed here
         String sql = "SELECT email, password FROM Technician WHERE LOWER(email)=LOWER(?)";
@@ -86,4 +86,3 @@ public class DatabaseUserDao implements UserDao {
         return u;
     }
 }
-

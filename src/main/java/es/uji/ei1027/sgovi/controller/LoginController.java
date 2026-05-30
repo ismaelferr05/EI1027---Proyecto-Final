@@ -28,7 +28,7 @@ public class LoginController {
 
     @GetMapping("/")
     public String home(HttpSession session) {
-        return session.getAttribute("user") != null ? "redirect:/dashboard" : "redirect:/login";
+        return session.getAttribute("user") != null ? "redirect:/dashboard" : "redirect:/index.html";
     }
 
     @GetMapping("/login")

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Contrato</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"></head>
+<body class="bg-light">
+<main class="container py-5">
+    <h1 th:text="|Contrato #${contract.idContract}|"></h1>
+    <div class="bg-white p-4 rounded shadow-sm">
+        <p><strong>Salario:</strong> <span th:text="|€ ${contract.wage}|"></span></p>
+        <p><strong>Inicio:</strong> <span th:text="${contract.startDate}"></span></p>
+        <p><strong>Fin:</strong> <span th:text="${contract.endDate}"></span></p>
+        <p><strong>Estado:</strong> <span th:text="${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}"></span></p>
+        <p><strong>Negociación:</strong> <span th:text="${contract.idNegotiation}"></span></p>
+        <a th:href="${contract.url}" class="btn btn-primary" target="_blank">Abrir documento</a>
+    </div>
+    <a href="/contracts/list" class="btn btn-outline-secondary mt-3">Volver</a>
+</main>
+</body>
+</html>

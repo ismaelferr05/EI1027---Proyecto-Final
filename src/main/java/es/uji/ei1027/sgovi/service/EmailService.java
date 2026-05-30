@@ -46,6 +46,27 @@ public class EmailService {
         return email;
     }
 
+    public EmailContent sendUserStatusEmail(String to, String fullName, String status, String reason) {
+        boolean accepted = "ACCEPTED".equals(status);
+        StringBuilder body = new StringBuilder();
+        body.append("Hola ").append(safeText(fullName, "usuario")).append(",\n\n");
+        body.append("Su solicitud de alta en SGOVI ha sido ")
+                .append(accepted ? "ACEPTADA." : "RECHAZADA.")
+                .append("\n");
+        if (!accepted && reason != null && !reason.isBlank()) {
+            body.append("Motivo: ").append(reason).append("\n");
+        }
+        body.append("\nSaludos,\nEquipo SGOVI");
+
+        EmailContent email = createEmail(
+                to,
+                accepted ? "Alta aceptada en SGOVI" : "Alta rechazada en SGOVI",
+                body.toString()
+        );
+        logEmail(email);
+        return email;
+    }
+
     private EmailContent createEmail(String to, String subject, String body) {
         return new EmailContent(
                 safeText(to, "desconocido@sgovi.local"),
@@ -91,7 +112,11 @@ public class EmailService {
     private String buildRejectionBody(Request request, OviUser oviUser) {
         StringBuilder body = new StringBuilder();
         body.append("Hola ").append(formatUserName(oviUser)).append(",\n\n");
-        body.append("Lamentamos informarle de que su solicitud ha sido RECHAZADA.\n\n");
+        body.append("Lamentamos informarle de que su solicitud ha sido RECHAZADA.\n");
+        if (request != null && request.getRejectionReason() != null && !request.getRejectionReason().isBlank()) {
+            body.append("Motivo: ").append(request.getRejectionReason()).append("\n");
+        }
+        body.append("\n");
         appendRequestDetails(body, request);
         body.append("\nSi desea más información, puede contactar con el equipo gestor.\n\n");
         body.append("Saludos,\n");
@@ -127,4 +152,3 @@ public class EmailService {
                 email.getTo(), email.getFrom(), email.getSubject(), email.getFormattedDate(), email.getBody());
     }
 }
-

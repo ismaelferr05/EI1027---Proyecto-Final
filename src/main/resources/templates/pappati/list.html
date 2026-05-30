@@ -83,7 +83,17 @@
                     <td th:text="${papPati.experience}"></td>
                     <td th:text="${papPati.status}"></td>
                     <td>
+                        <a th:href="@{/pap-patis/view/{id}(id=${papPati.idPapPati})}" class="action-btn btn-edit"><i class="bi bi-eye"></i></a>
                         <a th:href="@{/pap-patis/edit/{id}(id=${papPati.idPapPati})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i></a>
+                        <form th:if="${papPati.status == 'PENDING'}" th:action="@{/pap-patis/accept}" method="post" style="display:inline-block;">
+                            <input type="hidden" name="idPapPati" th:value="${papPati.idPapPati}">
+                            <button type="submit" class="action-btn btn-edit"><i class="bi bi-check"></i></button>
+                        </form>
+                        <form th:if="${papPati.status != 'REJECTED'}" th:action="@{/pap-patis/reject}" method="post" style="display:inline-block;">
+                            <input type="hidden" name="idPapPati" th:value="${papPati.idPapPati}">
+                            <input type="text" name="reason" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
+                            <button type="submit" class="action-btn btn-delete"><i class="bi bi-x"></i></button>
+                        </form>
                         <a th:href="@{/pap-patis/delete/{id}(id=${papPati.idPapPati})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>

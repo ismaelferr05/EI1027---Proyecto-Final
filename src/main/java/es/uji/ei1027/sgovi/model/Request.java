@@ -14,6 +14,7 @@ public class Request {
     private String preferredPc;
     private Integer preferredAge;
     private String status;
+    private String rejectionReason;
     private Integer idOviUser;
 
     public Request() {}
@@ -54,7 +55,8 @@ public class Request {
     public void setPreferredAge(Integer preferredAge) { this.preferredAge = preferredAge; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getRejectionReason() { return rejectionReason; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
     public Integer getIdOviUser() { return idOviUser; }
     public void setIdOviUser(Integer idOviUser) { this.idOviUser = idOviUser; }
 }
-

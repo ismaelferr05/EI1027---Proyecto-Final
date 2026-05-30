@@ -39,6 +39,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private boolean isPublicPath(String path) {
         return "/".equals(path)
                 || "/login".equals(path)
+                || path.startsWith("/ovi-users/register")
+                || path.startsWith("/ovi-users/track")
+                || path.startsWith("/pap-patis/register")
+                || path.startsWith("/pap-patis/track")
                 || "/logout".equals(path)
                 || "/error".equals(path)
                 || path.startsWith("/css/")
@@ -57,6 +61,12 @@ public class AuthInterceptor implements HandlerInterceptor {
         if ("OVIUSER".equals(role)) {
             return "/dashboard".equals(path)
                     || "/requests/list".equals(path)
+                    || path.startsWith("/ovi-users/profile")
+                    || path.startsWith("/contracts/oviuser")
+                    || path.startsWith("/contracts/add")
+                    || path.startsWith("/contracts/edit")
+                    || path.startsWith("/contracts/view/")
+                    || path.startsWith("/communications")
                     || path.startsWith("/requests/frontoffice")
                     || "/messages/list".equals(path)
                     || path.startsWith("/messages/chat/");
@@ -65,6 +75,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         if ("PAPPATI".equals(role)) {
             return "/dashboard".equals(path)
                     || "/requests/list".equals(path)
+                    || path.startsWith("/pap-patis/profile")
+                    || path.startsWith("/communications")
                     || path.startsWith("/contracts/pappati")
                     || path.startsWith("/contracts/view/")
                     || "/messages/list".equals(path)
@@ -74,5 +86,3 @@ public class AuthInterceptor implements HandlerInterceptor {
         return false;
     }
 }
-
-

@@ -53,5 +53,10 @@ public class NegotiationDao {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idRequest, idPapPati);
         return count != null && count > 0;
     }
-}
 
+    public Negotiation getByRequestAndPapPati(int idRequest, int idPapPati) {
+        String sql = "SELECT * FROM Negotiation WHERE request_id=? AND pappati_id=?";
+        List<Negotiation> negotiations = jdbcTemplate.query(sql, new NegotiationRowMapper(), idRequest, idPapPati);
+        return negotiations.isEmpty() ? null : negotiations.get(0);
+    }
+}

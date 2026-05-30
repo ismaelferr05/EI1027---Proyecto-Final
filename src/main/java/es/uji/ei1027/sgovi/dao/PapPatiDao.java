@@ -12,17 +12,17 @@ public class PapPatiDao {
     private JdbcTemplate jdbcTemplate;
 
     public void add(PapPati papPati) {
-        String sql = "INSERT INTO PapPati (name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PapPati (name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, status, rejectionReason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, papPati.getName(), papPati.getLastName(), papPati.getEmail(), papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
                 papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(), papPati.getTraining(),
-                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus());
+                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus(), papPati.getRejectionReason());
     }
 
     public void update(PapPati papPati) {
-        String sql = "UPDATE PapPati SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cvUrl=?, training=?, experience=?, experienceType=?, status=? WHERE pappati_id=?";
+        String sql = "UPDATE PapPati SET name=?, lastName=?, email=?, phone=?, password=?, province=?, town=?, pc=?, age=?, gender=?, cvUrl=?, training=?, experience=?, experienceType=?, status=?, rejectionReason=? WHERE pappati_id=?";
         jdbcTemplate.update(sql, papPati.getName(), papPati.getLastName(), papPati.getEmail(), papPati.getPhone(), papPati.getPassword(), papPati.getProvince(),
                 papPati.getTown(), papPati.getPc(), papPati.getAge(), papPati.getGender(), papPati.getCvUrl(), papPati.getTraining(),
-                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus(), papPati.getIdPapPati());
+                papPati.getExperience(), papPati.getExperienceType(), papPati.getStatus(), papPati.getRejectionReason(), papPati.getIdPapPati());
     }
 
     public void delete(int idPapPati) {
@@ -50,5 +50,9 @@ public class PapPatiDao {
         List<PapPati> users = jdbcTemplate.query(sql, new PapPatiRowMapper(), email);
         return users.isEmpty() ? null : users.get(0);
     }
-}
 
+    public void updateStatus(int idPapPati, String status, String rejectionReason) {
+        String sql = "UPDATE PapPati SET status=?, rejectionReason=? WHERE pappati_id=?";
+        jdbcTemplate.update(sql, status, rejectionReason, idPapPati);
+    }
+}
