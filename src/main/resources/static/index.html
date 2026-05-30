@@ -18,58 +18,81 @@
         <div class="app-topbar-menu">
             <div class="app-nav-links">
                 <a class="app-nav-link" href="/index.html">
-                    <i class="bi bi-house"></i><span>Inicio</span>
+                    <i class="bi bi-house" aria-hidden="true"></i><span>Inicio</span>
                 </a>
                 <a class="app-nav-link" href="/login">
-                    <i class="bi bi-box-arrow-in-right"></i><span>Acceso</span>
+                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span>Acceso</span>
                 </a>
                 <a class="app-nav-link" href="/ovi-users/register">
-                    <i class="bi bi-person-plus"></i><span>Alta OVI</span>
+                    <i class="bi bi-person-plus" aria-hidden="true"></i><span>Alta OVI</span>
                 </a>
                 <a class="app-nav-link" href="/pap-patis/register">
-                    <i class="bi bi-person-badge"></i><span>Alta PAP/PATI</span>
+                    <i class="bi bi-person-badge" aria-hidden="true"></i><span>Alta PAP/PATI</span>
                 </a>
             </div>
         </div>
     </div>
 </nav>
-<header class="page-header">
+
+<header class="page-header page-header-hero">
     <div class="container">
-        <h1><i class="bi bi-universal-access" aria-hidden="true"></i> SgOVI</h1>
+        <h1><i class="bi bi-universal-access" aria-hidden="true"></i> <span>SgOVI</span></h1>
         <p>Sistema de Gestión de la Oficina para la Vida Independiente de la Universitat Jaume I.</p>
     </div>
 </header>
 
-<main class="container">
-    <section class="panel-card">
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-            <div>
-                <h2 class="section-title mb-2">Accede o solicita el alta</h2>
-                <p class="text-muted mb-0">Usuarios OVI, PAP/PATI y técnicos gestionan solicitudes, conversaciones, contratos y comunicaciones desde un único espacio.</p>
-            </div>
-            <a href="/login" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Iniciar sesión</a>
-        </div>
+<main class="container page-content mb-5">
+    <p class="home-lead">Usuarios OVI, PAP/PATI y técnicos gestionan solicitudes, conversaciones, contratos y comunicaciones desde un único espacio.</p>
+
+    <section class="panel-card home-intro" aria-labelledby="home-access-title">
+        <h2 id="home-access-title" class="section-title home-intro-title">Accede o solicita el alta</h2>
+        <a href="/login" class="btn btn-primary home-intro-action">
+            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+            <span>Iniciar sesión</span>
+        </a>
     </section>
 
-    <section class="module-section">
-        <h2><i class="bi bi-person-plus" aria-hidden="true"></i> Altas</h2>
-        <div class="module-card">
-            <a href="/ovi-users/register"><i class="bi bi-person"></i> <span>Alta usuario OVI</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/pap-patis/register"><i class="bi bi-person-badge"></i> <span>Alta PAP/PATI</span></a>
-        </div>
-    </section>
+    <div class="dash-cats home-actions">
+        <section class="dash-cat" aria-labelledby="home-altas-title">
+            <h2 id="home-altas-title" class="dash-cat-title">Altas</h2>
+            <nav class="dash-grid dash-grid-2">
+                <a href="/ovi-users/register" class="dash-box">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <span>
+                        <strong>Alta usuario OVI</strong>
+                        <small>Solicita el alta como usuario de la Oficina</small>
+                    </span>
+                </a>
+                <a href="/pap-patis/register" class="dash-box">
+                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                    <span>
+                        <strong>Alta PAP/PATI</strong>
+                        <small>Regístrate como persona de apoyo o técnico</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <section class="module-section">
-        <h2><i class="bi bi-search" aria-hidden="true"></i> Seguimiento</h2>
-        <div class="module-card">
-            <a href="/ovi-users/track"><i class="bi bi-activity"></i> <span>Seguimiento OVI</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/pap-patis/track"><i class="bi bi-activity"></i> <span>Seguimiento PAP/PATI</span></a>
-        </div>
-    </section>
+        <section class="dash-cat" aria-labelledby="home-track-title">
+            <h2 id="home-track-title" class="dash-cat-title">Seguimiento</h2>
+            <nav class="dash-grid dash-grid-2">
+                <a href="/ovi-users/track" class="dash-box">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <span>
+                        <strong>Seguimiento OVI</strong>
+                        <small>Consulta el estado de tu solicitud de alta</small>
+                    </span>
+                </a>
+                <a href="/pap-patis/track" class="dash-box">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <span>
+                        <strong>Seguimiento PAP/PATI</strong>
+                        <small>Consulta el estado de tu solicitud de alta</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
+    </div>
 </main>
 <script src="/js/sgovi.js"></script>
 </body>
