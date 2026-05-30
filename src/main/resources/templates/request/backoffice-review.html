@@ -77,6 +77,7 @@
 
         <form th:action="@{/requests/backoffice/approve}" method="post">
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="table-responsive mb-3">
                 <table class="table table-hover align-middle">
@@ -137,14 +138,15 @@
             <div class="btn-group-custom">
                 <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Editar solicitud</a>
                 <button type="submit" class="btn btn-success" th:disabled="${#lists.isEmpty(proposals)}">Aprobar y proponer asistente</button>
-                <form th:action="@{/requests/reject}" method="post" style="display:inline-block;">
-                    <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
-                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Confirmar rechazo de la solicitud?');">Rechazar</button>
-                </form>
-                <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
             </div>
         </form>
+
+        <form th:action="@{/requests/reject}" method="post" class="mt-3 d-inline-block">
+            <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Confirmar rechazo de la solicitud?');">Rechazar</button>
+        </form>
+        <a th:href="@{/requests/list}" class="btn btn-outline-secondary mt-3 ms-2">Volver al listado</a>
     </div>
 </main>
 

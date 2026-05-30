@@ -17,7 +17,14 @@ public class PasswordService {
 
 	public boolean check(String plainPassword, String encrypted) {
 		if (plainPassword == null || encrypted == null) return false;
-		return encryptor.checkPassword(plainPassword, encrypted);
+		try {
+			if (encryptor.checkPassword(plainPassword, encrypted)) {
+				return true;
+			}
+		} catch (RuntimeException ignored) {
+			// Compatible con contraseñas antiguas guardadas en texto plano o hashes inválidos.
+		}
+		return plainPassword.equals(encrypted);
 	}
 }
 

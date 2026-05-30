@@ -3,6 +3,8 @@ package es.uji.ei1027.sgovi.controller;
 import jakarta.servlet.http.HttpSession;
 import es.uji.ei1027.sgovi.dao.UserDao;
 import es.uji.ei1027.sgovi.model.UserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +18,8 @@ import org.springframework.ui.Model;
 
 @Controller
 public class LoginController {
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private UserDao userDao;
 
@@ -43,13 +47,19 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return "login"; // Si hay errores de validación, vuelve a mostrar el formulario de inicio de sesión
         }
-        UserDetails userDetails = userDao.getUserByEmail(user.getEmail());
-        if (userDetails == null || !passwordService.check(user.getPassword(), userDetails.getPassword())) {
-            bindingResult.rejectValue("email", "error.user", "Constraseña o email inválidos");
+        try {
+            UserDetails userDetails = userDao.getUserByEmail(user.getEmail());
+            if (userDetails == null || !passwordService.check(user.getPassword(), userDetails.getPassword())) {
+                bindingResult.rejectValue("email", "error.user", "Contraseña o email inválidos");
+                return "login";
+            }
+            session.setAttribute("user", userDetails);
+            return "redirect:/dashboard";
+        } catch (Exception ex) {
+            log.error("Error inesperado durante el login para {}", user.getEmail(), ex);
+            bindingResult.rejectValue("email", "error.user", "No se pudo iniciar sesión. Revisa los datos o inténtalo de nuevo.");
             return "login";
         }
-        session.setAttribute("user", userDetails);
-        return "redirect:/dashboard";
     }
 
     @GetMapping("/dashboard")

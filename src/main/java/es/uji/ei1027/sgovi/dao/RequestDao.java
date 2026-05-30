@@ -12,11 +12,14 @@ public class RequestDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void add(Request request) {
-        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
+    public int add(Request request) {
+        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING request_id";
+        int generatedId = jdbcTemplate.queryForObject(sql, Integer.class,
+                request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
                 Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
                 request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getIdOviUser());
+        request.setIdRequest(generatedId);
+        return generatedId;
     }
 
     public void update(Request request) {

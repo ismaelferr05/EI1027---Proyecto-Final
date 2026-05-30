@@ -5,11 +5,13 @@ import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.model.CandidateProposal;
+import es.uji.ei1027.sgovi.model.EmailContent;
 import es.uji.ei1027.sgovi.model.Negotiation;
 import es.uji.ei1027.sgovi.model.Request;
 import es.uji.ei1027.sgovi.model.OviUser;
 import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.model.UserDetails;
+import es.uji.ei1027.sgovi.service.EmailService;
 import es.uji.ei1027.sgovi.service.RequestProposalService;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import jakarta.servlet.http.HttpSession;
@@ -50,6 +52,9 @@ public class RequestController {
 
     @Autowired
     private SessionUserService sessionUserService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/list")
     public String list(HttpSession session, Model model,
@@ -172,27 +177,56 @@ public class RequestController {
     @PostMapping("/reject")
     public String rejectRequest(@RequestParam("idRequest") int idRequest,
                                 HttpSession session,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
+        Request request = requestDao.get(idRequest);
+        if (request == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Solicitud no encontrada.");
+            return "redirect:/requests/list";
+        }
+
+        OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        EmailContent email = emailService.sendRejectionEmail(request, oviUser);
+
         requestDao.updateStatus(idRequest, "REJECTED");
-        redirectAttributes.addFlashAttribute("successMessage", "Solicitud rechazada correctamente.");
-        return "redirect:/requests/list";
+        return showConfirmation(model, request, oviUser, null, email, "rejection");
     }
 
     @PostMapping("/accept")
     public String acceptRequest(@RequestParam("idRequest") int idRequest,
+                                @RequestParam(value = "selectedPapPatiId", required = false) Integer selectedPapPatiId,
                                 HttpSession session,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
+        Request request = requestDao.get(idRequest);
+        if (request == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Solicitud no encontrada.");
+            return "redirect:/requests/list";
+        }
+
+        OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        PapPati selectedPapPati = selectedPapPatiId != null ? papPatiDao.get(selectedPapPatiId) : null;
+
         requestDao.updateStatus(idRequest, "APPROVED");
-        redirectAttributes.addFlashAttribute("successMessage", "Solicitud aceptada correctamente.");
-        return "redirect:/requests/list";
+
+        if (selectedPapPatiId != null && !negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
+            Negotiation negotiation = new Negotiation();
+            negotiation.setStateOfApproval("PENDING");
+            negotiation.setIdRequest(idRequest);
+            negotiation.setIdPapPati(selectedPapPatiId);
+            negotiationDao.add(negotiation);
+        }
+
+        EmailContent email = emailService.sendAcceptanceEmail(request, oviUser, selectedPapPati);
+        return showConfirmation(model, request, oviUser, selectedPapPati, email, "acceptance");
     }
 
     @GetMapping("/frontoffice/add")
@@ -236,8 +270,8 @@ public class RequestController {
         }
 
         requestDao.add(request);
-        redirectAttributes.addFlashAttribute("successMessage", "Solicitud enviada correctamente. Ya puedes verla en la lista de seguimiento.");
-        return "redirect:/requests/frontoffice/track";
+        EmailContent email = emailService.sendRequestCreatedEmail(request, currentOviUser);
+        return showConfirmation(model, request, currentOviUser, null, email, "creation");
     }
 
     @GetMapping("/frontoffice/track")
@@ -354,7 +388,8 @@ public class RequestController {
     @PostMapping("/backoffice/approve")
     public String backOfficeApprove(@RequestParam("idRequest") int idRequest,
                                     @RequestParam(value = "selectedPapPatiId", required = false) Integer selectedPapPatiId,
-                                    HttpSession session) {
+                                    HttpSession session,
+                                    Model model) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -362,6 +397,14 @@ public class RequestController {
         if (selectedPapPatiId == null) {
             return "redirect:/requests/backoffice/review/" + idRequest + "?msg=Debes seleccionar un único candidato para poder aprobar la solicitud";
         }
+
+        Request request = requestDao.get(idRequest);
+        if (request == null) {
+            return "redirect:/requests/backoffice/list";
+        }
+
+        OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
 
         requestDao.updateStatus(idRequest, "APPROVED");
 
@@ -373,19 +416,40 @@ public class RequestController {
             negotiationDao.add(negotiation);
         }
 
-        String redirectUrl = "/requests/backoffice/review/" + idRequest + "?msg=Solicitud%20aprobada%20y%20propuesta%20generada";
-        return "redirect:" + redirectUrl;
+        EmailContent email = emailService.sendAcceptanceEmail(request, oviUser, selectedPapPati);
+        return showConfirmation(model, request, oviUser, selectedPapPati, email, "acceptance");
     }
 
     @PostMapping("/backoffice/reject")
-    public String backOfficeReject(@RequestParam("idRequest") int idRequest, HttpSession session) {
+    public String backOfficeReject(@RequestParam("idRequest") int idRequest, HttpSession session, Model model) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
+        Request request = requestDao.get(idRequest);
+        if (request == null) {
+            return "redirect:/requests/backoffice/list";
+        }
+
+        OviUser oviUser = oviUserDao.get(request.getIdOviUser());
+        EmailContent email = emailService.sendRejectionEmail(request, oviUser);
+
         requestDao.updateStatus(idRequest, "REJECTED");
-        String redirectUrl = "/requests/backoffice/review/" + idRequest + "?msg=Solicitud%20rechazada";
-        return "redirect:" + redirectUrl;
+        return showConfirmation(model, request, oviUser, null, email, "rejection");
+    }
+
+    private String showConfirmation(Model model,
+                                    Request request,
+                                    OviUser oviUser,
+                                    PapPati selectedPapPati,
+                                    EmailContent email,
+                                    String action) {
+        model.addAttribute("request", request);
+        model.addAttribute("oviUser", oviUser);
+        model.addAttribute("selectedPapPati", selectedPapPati);
+        model.addAttribute("email", email);
+        model.addAttribute("action", action);
+        return "request/confirmation";
     }
 }
 

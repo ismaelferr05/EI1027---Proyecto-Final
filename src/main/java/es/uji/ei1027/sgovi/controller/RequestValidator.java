@@ -3,6 +3,9 @@ package es.uji.ei1027.sgovi.controller;
 import es.uji.ei1027.sgovi.model.Request;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.springframework.lang.NonNull;
+
+import java.time.LocalDate;
 
 public class RequestValidator implements Validator {
 
@@ -25,6 +28,8 @@ public class RequestValidator implements Validator {
 
         if (request.getStartDate() == null) {
             errors.rejectValue("startDate", "obligatorio", "La fecha de inicio es obligatoria");
+        } else if (request.getStartDate().isBefore(LocalDate.now())) {
+            errors.rejectValue("startDate", "pasada", "La fecha de inicio no puede ser anterior a hoy");
         }
 
         if (request.getEndDate() == null) {
