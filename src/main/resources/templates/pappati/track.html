@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Seguimiento PAP/PATI</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"></head>
-<body class="bg-light">
-<main class="container py-5">
-    <h1>Seguimiento de solicitud PAP/PATI</h1>
-    <form th:action="@{/pap-patis/track}" method="post" class="d-flex gap-2 my-4">
+<head th:replace="~{fragments/head :: head('Seguimiento PAP/PATI')}"></head>
+<body>
+<nav th:replace="~{fragments/topbar :: topbar}"></nav>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Seguimiento de solicitud PAP/PATI', icon='bi-search', subtitle='')}"></header>
+<main class="container page-content mb-5">
+    
+    <div class="action-bar">
+        <a th:href="@{/}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al inicio</a>
+    </div>
+<form th:action="@{/pap-patis/track}" method="post" class="d-flex gap-2 my-4">
         <input name="email" type="email" class="form-control" placeholder="Email usado en la solicitud" required>
         <button class="btn btn-primary">Consultar</button>
     </form>
     <div th:if="${trackedUser != null}" class="alert alert-info">
         <strong th:text="|${trackedUser.name} ${trackedUser.lastName}|"></strong>
-        <div>Estado: <span class="badge bg-secondary" th:text="${trackedUser.status}"></span></div>
+        <div>Estado: <span th:replace="~{fragments/status-badge :: statusBadge(${trackedUser.status})}"></span></div>
         <div th:if="${trackedUser.status == 'REJECTED'}">Motivo: <span th:text="${trackedUser.rejectionReason}"></span></div>
     </div>
     <div th:if="${searched != null and trackedUser == null}" class="alert alert-warning">No se ha encontrado ninguna solicitud con ese email.</div>
     <a href="/index.html" class="btn btn-outline-secondary">Volver</a>
 </main>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

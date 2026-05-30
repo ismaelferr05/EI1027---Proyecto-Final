@@ -1,106 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login</title>
-  <link rel="stylesheet" type="text/css"
-        href="/css/natacio.css"
-        th:href="@{/css/natacio.css}"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <style>
-    body {
-      min-height: 100vh;
-      margin: 0;
-      background-color: #f8f9fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-wrapper {
-      width: 100%;
-      max-width: 520px;
-    }
-
-    .login-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 24px;
-      border-radius: 10px 10px 0 0;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .login-header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-
-    .login-header p {
-      margin: 8px 0 0;
-      opacity: 0.9;
-      font-size: 0.95rem;
-    }
-
-    .login-card {
-      background: white;
-      border-radius: 0 0 10px 10px;
-      border-left: 4px solid #667eea;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      padding: 24px;
-    }
-
-    .form-label {
-      color: #333;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .form-control {
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 10px 12px;
-      font-size: 0.95rem;
-    }
-
-    .form-control:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    }
-
-    .btn-primary {
-      width: 100%;
-      background-color: #667eea;
-      border-color: #667eea;
-      font-weight: 600;
-      padding: 10px 16px;
-      border-radius: 5px;
-    }
-
-    .btn-primary:hover {
-      background-color: #5568d3;
-      border-color: #5568d3;
-    }
-
-    .error {
-      color: #dc3545;
-      font-size: 0.875rem;
-      margin-top: 6px;
-    }
-  </style>
-</head>
-<body>
+<head th:replace="~{fragments/head :: head('Login')}"></head>
+<body class="login-page">
 <main class="login-wrapper">
-  <section class="login-header text-center">
-    <h1><i class="bi bi-box-arrow-in-right"></i> Acceso</h1>
-    <p>Inicia sesión para continuar en SGOVI.</p>
-  </section>
+  <header class="login-intro">
+    <a th:replace="~{fragments/brand :: brandLink('login-brand')}"></a>
+
+    <div class="login-header">
+      <h1>
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+        <span>Acceso</span>
+      </h1>
+      <p>Inicia sesión para continuar en SgOVI.</p>
+    </div>
+  </header>
 
   <section class="login-card">
-    <form action="#" th:action="@{/login}" th:object="${user}" method="post">
+    <form class="login-form" action="#" th:action="@{/login}" th:object="${user}" method="post">
       <div class="mb-3">
         <label for="email" class="form-label">Correo electrónico</label>
         <input id="email" class="form-control" type="email" th:field="*{email}"/>
@@ -113,9 +29,16 @@
         <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
       </div>
 
-      <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+      <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
     </form>
+
+    <p class="login-links mt-4 mb-0">
+      <a th:href="@{/ovi-users/register}" href="/ovi-users/register">Alta OVI</a>
+      <span aria-hidden="true"> · </span>
+      <a th:href="@{/pap-patis/register}" href="/pap-patis/register">Alta PAP/PATI</a>
+    </p>
   </section>
 </main>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

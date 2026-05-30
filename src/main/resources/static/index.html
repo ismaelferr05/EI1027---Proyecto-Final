@@ -4,22 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SgOVI - Inicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/sgovi.css">
 </head>
 <body>
-    <h1>SgOVI</h1>
-    <p>Sistema de Gestión de la Oficina para la Vida Independiente</p>
-    <p>EI1027 · Universitat Jaume I · 2025-2026</p>
-    <hr>
-    <p>Consulta información pública del sistema, solicita el alta o inicia sesión si tu solicitud ya está aceptada.</p>
-    <ul>
-        <li>Usuarios OVI: solicitud de alta, seguimiento, solicitudes de asistencia, conversaciones y contratos.</li>
-        <li>PAP/PATI: solicitud de alta, seguimiento, conversaciones asociadas y contratos.</li>
-        <li>Técnico OVI: revisión de altas, solicitudes, negociaciones, contratos y comunicaciones.</li>
-    </ul>
-    <a href="/login">Iniciar sesión</a>
-    <a href="/ovi-users/register">Alta usuario OVI</a>
-    <a href="/pap-patis/register">Alta PAP/PATI</a>
-    <a href="/ovi-users/track">Seguimiento OVI</a>
-    <a href="/pap-patis/track">Seguimiento PAP/PATI</a>
+<nav class="app-topbar">
+    <div class="container app-topbar-inner">
+        <a class="app-brand" href="/index.html">
+            <span class="app-brand-mark" aria-hidden="true"><i class="bi bi-universal-access"></i></span>
+            <span>SgOVI</span>
+        </a>
+        <div class="app-topbar-menu">
+            <div class="app-nav-links">
+                <a class="app-nav-link" href="/index.html">
+                    <i class="bi bi-house"></i><span>Inicio</span>
+                </a>
+                <a class="app-nav-link" href="/login">
+                    <i class="bi bi-box-arrow-in-right"></i><span>Acceso</span>
+                </a>
+                <a class="app-nav-link" href="/ovi-users/register">
+                    <i class="bi bi-person-plus"></i><span>Alta OVI</span>
+                </a>
+                <a class="app-nav-link" href="/pap-patis/register">
+                    <i class="bi bi-person-badge"></i><span>Alta PAP/PATI</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+<header class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-universal-access" aria-hidden="true"></i> SgOVI</h1>
+        <p>Sistema de Gestión de la Oficina para la Vida Independiente de la Universitat Jaume I.</p>
+    </div>
+</header>
+
+<main class="container">
+    <section class="panel-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <h2 class="section-title mb-2">Accede o solicita el alta</h2>
+                <p class="text-muted mb-0">Usuarios OVI, PAP/PATI y técnicos gestionan solicitudes, conversaciones, contratos y comunicaciones desde un único espacio.</p>
+            </div>
+            <a href="/login" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Iniciar sesión</a>
+        </div>
+    </section>
+
+    <section class="module-section">
+        <h3><i class="bi bi-person-plus"></i> Altas</h3>
+        <div class="module-card">
+            <a href="/ovi-users/register"><i class="bi bi-person"></i> <span>Alta usuario OVI</span></a>
+        </div>
+        <div class="module-card">
+            <a href="/pap-patis/register"><i class="bi bi-person-badge"></i> <span>Alta PAP/PATI</span></a>
+        </div>
+    </section>
+
+    <section class="module-section">
+        <h3><i class="bi bi-search"></i> Seguimiento</h3>
+        <div class="module-card">
+            <a href="/ovi-users/track"><i class="bi bi-activity"></i> <span>Seguimiento OVI</span></a>
+        </div>
+        <div class="module-card">
+            <a href="/pap-patis/track"><i class="bi bi-activity"></i> <span>Seguimiento PAP/PATI</span></a>
+        </div>
+    </section>
+</main>
+<script src="/js/sgovi.js"></script>
 </body>
 </html>

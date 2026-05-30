@@ -1,40 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Confirmación - Solicitud</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body { background-color: #f8f9fa; padding: 24px 0; }
-        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 28px 0; margin-bottom: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .confirmation-card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #667eea; }
-        .section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-        .section-title i { color: #667eea; }
-        .request-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
-        .request-item { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 12px 14px; }
-        .label { display: block; font-size: 0.78rem; text-transform: uppercase; color: #6c757d; letter-spacing: 0.04em; margin-bottom: 4px; }
-        .value { font-weight: 600; color: #212529; word-break: break-word; }
-        .email-box { background: #111827; color: #f8fafc; border-radius: 12px; padding: 18px; font-family: Consolas, monospace; }
-        .email-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; margin-bottom: 10px; }
-        .email-key { color: #93c5fd; font-weight: 700; }
-        .email-body { white-space: pre-wrap; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 14px; line-height: 1.55; }
-        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-        @media (max-width: 768px) {
-            .request-grid { grid-template-columns: 1fr; }
-            .email-row { grid-template-columns: 1fr; gap: 4px; }
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/head :: head('Confirmación - Solicitud')}"></head>
 <body>
-<div class="page-header">
-    <div class="container">
-        <h1 class="mb-0"><i class="bi bi-envelope-check"></i> Confirmación</h1>
-    </div>
-</div>
+<nav th:replace="~{fragments/topbar :: topbar}"></nav>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Confirmación', icon='bi-envelope-check', subtitle='')}"></header>
 
-<main class="container mb-5">
+<main class="container page-content mb-5">
+    
+    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
+
     <div class="confirmation-card" th:if="${action == 'creation'}">
         <div class="alert alert-success mb-0">
             <strong>Solicitud enviada correctamente.</strong>
@@ -66,9 +40,7 @@
             <div class="request-item">
                 <span class="label">Estado</span>
                 <span class="value">
-                    <span class="badge"
-                          th:classappend="${request.status == 'APPROVED'} ? ' text-bg-success' : (${request.status == 'REJECTED'} ? ' text-bg-danger' : ' text-bg-secondary')"
-                          th:text="${request.status}"></span>
+                    <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
                 </span>
             </div>
             <div class="request-item">
@@ -155,6 +127,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>
 

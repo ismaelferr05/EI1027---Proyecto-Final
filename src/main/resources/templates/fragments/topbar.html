@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<nav th:fragment="topbar" th:if="${topbarMode != 'none'}" class="app-topbar">
+    <div class="container app-topbar-inner">
+        <a th:replace="~{fragments/brand :: brandLink('app-brand')}"></a>
+
+        <div class="app-topbar-menu">
+            <div class="app-nav-links">
+                <!-- Invitado -->
+                <a class="app-nav-link" th:if="${topbarMode.startsWith('guest')}" th:href="@{/}" href="/index.html">
+                    <i class="bi bi-house"></i><span>Inicio</span>
+                </a>
+                <a class="app-nav-link" th:if="${topbarMode.startsWith('guest')}" th:href="@{/login}" href="/login">
+                    <i class="bi bi-box-arrow-in-right"></i><span>Acceso</span>
+                </a>
+                <a class="app-nav-link"
+                   th:if="${topbarMode == 'guest-full' or topbarMode == 'guest-pappati-register'}"
+                   th:href="@{/ovi-users/register}" href="/ovi-users/register">
+                    <i class="bi bi-person-plus"></i><span>Alta OVI</span>
+                </a>
+                <a class="app-nav-link"
+                   th:if="${topbarMode == 'guest-full' or topbarMode == 'guest-ovi-register'}"
+                   th:href="@{/pap-patis/register}" href="/pap-patis/register">
+                    <i class="bi bi-person-badge"></i><span>Alta PAP/PATI</span>
+                </a>
+
+                <!-- Sesión iniciada -->
+                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/dashboard}" href="/dashboard">
+                    <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+                </a>
+                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/messages/list}" href="/messages/list">
+                    <i class="bi bi-chat-left-text"></i><span>Mensajes</span>
+                </a>
+                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/communications/list}" href="/communications/list">
+                    <i class="bi bi-envelope-paper"></i><span>Comunicaciones</span>
+                </a>
+            </div>
+
+            <div class="app-nav-session" th:if="${topbarMode == 'app'}">
+                <span class="app-user-email" th:text="${currentUser.email}" th:title="${currentUser.email}">usuario@uji.es</span>
+                <a class="app-nav-link app-nav-muted" th:href="@{/logout}" href="/logout" aria-label="Cerrar sesión">
+                    <i class="bi bi-box-arrow-right"></i><span>Salir</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

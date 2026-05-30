@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <title>Editar negociación</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-</head>
+<head th:replace="~{fragments/head :: head('Editar negociación')}"></head>
 
 <body>
-<main class="container">
-    <h1>Edita negociación</h1>
+<nav th:replace="~{fragments/topbar :: topbar}"></nav>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Editar negociación', icon='bi-pencil-square', subtitle='')}"></header>
+<main class="container page-content mb-5">
+    
+    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
+
     <form th:action="@{/negotiations/edit}" th:object="${negotiation}" method="post">
         <input type="hidden" th:field="*{idNegotiation}" />
 
@@ -46,6 +46,7 @@
         <button type="submit" class="btn btn-warning">Actualiza negociación</button>
     </form>
 </main>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>
 

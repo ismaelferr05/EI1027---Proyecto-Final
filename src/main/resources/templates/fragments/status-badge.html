@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<span th:fragment="statusBadge(value)"
+      class="status-badge"
+      th:classappend="${value == 'APPROVED' or value == 'ACCEPTED' or value == 'ACTIVO' ? ' status-approved' :
+                       (value == 'REJECTED' ? ' status-rejected' :
+                       (value == 'CANCELLED' or value == 'FINALIZADO' ? ' status-cancelled' :
+                       (value == 'IN_REVIEW' or value == 'PENDING' or value == 'IN_PROGRESS' ? ' status-pending' : ' status-neutral')))}"
+      th:text="${value}">STATUS</span>
+</body>
+</html>

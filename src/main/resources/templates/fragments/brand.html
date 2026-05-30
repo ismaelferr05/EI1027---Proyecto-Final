@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<a th:fragment="brandLink(linkClass)"
+   th:class="${linkClass}"
+   th:href="@{/}"
+   href="/index.html">
+    <span class="app-brand-mark" aria-hidden="true"><i class="bi bi-universal-access"></i></span>
+    <span>SgOVI</span>
+</a>
+</body>
+</html>

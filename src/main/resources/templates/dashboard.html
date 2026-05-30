@@ -1,230 +1,207 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SgOVI - Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .dashboard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 0;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .dashboard-header h1 {
-            margin: 0;
-            font-weight: 700;
-            font-size: 2.5rem;
-        }
-        .dashboard-header p {
-            margin: 10px 0 0 0;
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-        .user-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 4px solid #667eea;
-        }
-        .user-card h5 {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .user-info {
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-        .user-info strong {
-            color: #667eea;
-        }
-        .module-section {
-            margin-bottom: 40px;
-        }
-        .module-section h3 {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-        .module-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            border-left: 4px solid #ddd;
-        }
-        .module-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-left-color: #667eea;
-            transform: translateY(-2px);
-        }
-        .module-card a {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-        }
-        .module-card i {
-            color: #667eea;
-            font-size: 1.3rem;
-            min-width: 30px;
-        }
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .logout-btn:hover {
-            background-color: #c0392b;
-            color: white;
-        }
-        .role-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        .role-badge.tecnico {
-            background-color: #667eea;
-            color: white;
-        }
-        .role-badge.oviuser {
-            background-color: #27ae60;
-            color: white;
-        }
-        .role-badge.pappati {
-            background-color: #f39c12;
-            color: white;
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/head :: head('SgOVI - Dashboard')}"></head>
 <body>
-<div class="dashboard-header">
-    <div class="container">
-        <h1><i class="bi bi-speedometer2"></i> SgOVI Dashboard</h1>
-        <p>Sistema de Gestión de la Oficina para la Vida Independiente · Universitat Jaume I</p>
-    </div>
-</div>
+<nav th:replace="~{fragments/topbar :: topbar}"></nav>
 
-<main class="container mb-5">
-    <!-- User Info Card -->
-    <div class="user-card">
-        <h5><i class="bi bi-person-circle"></i> Información del Usuario</h5>
-        <div class="user-info">
-            <div><strong>Email:</strong> <span th:text="${currentUser.email}"></span></div>
-            <div>
-                <strong>Rol:</strong>
-                <span class="role-badge" th:classappend="${isTechnician ? 'tecnico' : (isOviUser ? 'oviuser' : 'pappati')}"
-                      th:text="${currentRole}"></span>
-            </div>
-        </div>
-        <a href="/logout" class="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
-    </div>
+<header th:replace="~{fragments/page-header :: pageHeaderImpl(title='Área de trabajo', icon='bi-grid-1x2', subtitle='', large=false, showRole=true)}"></header>
 
-    <div th:if="${isOviUser or isPapPati}" class="module-section">
-        <h3><i class="bi bi-person"></i> Perfil</h3>
-        <div th:if="${isOviUser}" class="module-card">
-            <a href="/ovi-users/profile"><i class="bi bi-pencil-square"></i> <span>Modificar mis datos</span></a>
-        </div>
-        <div th:if="${isPapPati}" class="module-card">
-            <a href="/pap-patis/profile"><i class="bi bi-pencil-square"></i> <span>Modificar mis datos, disponibilidad y estado</span></a>
-        </div>
-    </div>
+<main class="container page-content dash mb-5">
+    <div class="dash-cats">
+        <!-- Técnico -->
+        <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-ops-title">
+            <h2 id="dash-ops-title" class="dash-cat-title">Operaciones</h2>
+            <nav class="dash-grid" aria-label="Operaciones">
+                <a th:href="@{/requests/list}" class="dash-box">
+                    <i class="bi bi-inbox" aria-hidden="true"></i>
+                    <span>
+                        <strong>Gestionar solicitudes</strong>
+                        <small>Filtrar, revisar y tramitar peticiones</small>
+                    </span>
+                </a>
+                <a th:href="@{/negotiations/list}" class="dash-box">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                    <span>
+                        <strong>Negociaciones</strong>
+                        <small>Acuerdos y candidaturas</small>
+                    </span>
+                </a>
+                <a th:href="@{/contracts/list}" class="dash-box">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Contratos</strong>
+                        <small>Gestión documental</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <!-- Technician Modules -->
-    <div th:if="${isTechnician}" class="module-section">
-        <h3><i class="bi bi-wrench"></i> Administración General</h3>
-        <div class="module-card">
-            <a href="/trainers/list"><i class="bi bi-person-badge"></i> <span>Formadores</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/activities/list"><i class="bi bi-calendar-event"></i> <span>Actividades</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/ovi-users/list"><i class="bi bi-people"></i> <span>Usuarios OVI</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/pap-patis/list"><i class="bi bi-person-arms-up"></i> <span>PAP PATI</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/participant-lists/list"><i class="bi bi-list-check"></i> <span>Listas de Participantes</span></a>
-        </div>
-    </div>
+        <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-com-tech-title">
+            <h2 id="dash-com-tech-title" class="dash-cat-title">Comunicación</h2>
+            <nav class="dash-grid" aria-label="Comunicación">
+                <a href="/messages/list" class="dash-box">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mensajes</strong>
+                        <small>Bandeja completa</small>
+                    </span>
+                </a>
+                <a href="/communications/list" class="dash-box">
+                    <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+                    <span>
+                        <strong>Comunicaciones</strong>
+                        <small>Contacto con usuarios OVI</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <!-- Requests Modules -->
-    <div th:if="${isTechnician or isOviUser}" class="module-section">
-        <h3><i class="bi bi-file-text"></i> Solicitudes</h3>
-        <div th:if="${isTechnician}" class="module-card">
-            <a th:href="@{/requests/list}"><i class="bi bi-collection"></i> <span>Gestionar solicitudes (filtrar y revisar)</span></a>
-        </div>
-        <div th:if="${isOviUser}" class="module-card">
-            <a th:href="@{/requests/frontoffice/add}"><i class="bi bi-plus-circle"></i> <span>Crear solicitud</span></a>
-        </div>
-        <div th:if="${isOviUser}" class="module-card">
-            <a th:href="@{/requests/frontoffice/track}"><i class="bi bi-search"></i> <span>Mis solicitudes</span></a>
-        </div>
-    </div>
+        <section th:if="${isTechnician}" class="dash-cat" aria-labelledby="dash-admin-title">
+            <h2 id="dash-admin-title" class="dash-cat-title">Administración</h2>
+            <nav class="dash-grid" aria-label="Administración">
+                <a href="/trainers/list" class="dash-box">
+                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                    <span>
+                        <strong>Formadores</strong>
+                        <small>Catálogo de formadores</small>
+                    </span>
+                </a>
+                <a href="/activities/list" class="dash-box">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                    <span>
+                        <strong>Actividades</strong>
+                        <small>Programación y talleres</small>
+                    </span>
+                </a>
+                <a href="/ovi-users/list" class="dash-box">
+                    <i class="bi bi-people" aria-hidden="true"></i>
+                    <span>
+                        <strong>Usuarios OVI</strong>
+                        <small>Altas y seguimiento</small>
+                    </span>
+                </a>
+                <a href="/pap-patis/list" class="dash-box">
+                    <i class="bi bi-person-arms-up" aria-hidden="true"></i>
+                    <span>
+                        <strong>PAP PATI</strong>
+                        <small>Perfiles y disponibilidad</small>
+                    </span>
+                </a>
+                <a href="/participant-lists/list" class="dash-box">
+                    <i class="bi bi-list-check" aria-hidden="true"></i>
+                    <span>
+                        <strong>Listas de participantes</strong>
+                        <small>Grupos y asignaciones</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <!-- Negotiations Modules -->
-    <div th:if="${isTechnician}" class="module-section">
-        <h3><i class="bi bi-chat-dots"></i> Negociaciones</h3>
-        <div class="module-card">
-            <a href="/negotiations/list"><i class="bi bi-handshake"></i> <span>Gestionar negociaciones</span></a>
-        </div>
-    </div>
+        <!-- Usuario OVI -->
+        <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-req-title">
+            <h2 id="dash-req-title" class="dash-cat-title">Solicitudes</h2>
+            <nav class="dash-grid" aria-label="Solicitudes">
+                <a th:href="@{/requests/frontoffice/add}" class="dash-box">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    <span>
+                        <strong>Crear solicitud</strong>
+                        <small>Nueva petición al equipo OVI</small>
+                    </span>
+                </a>
+                <a th:href="@{/requests/frontoffice/track}" class="dash-box">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis solicitudes</strong>
+                        <small>Estado y seguimiento</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <!-- Contracts Modules -->
-    <div th:if="${isTechnician or isPapPati or isOviUser}" class="module-section">
-        <h3><i class="bi bi-file-earmark-pdf"></i> Contratos</h3>
-        <div th:if="${isTechnician}" class="module-card">
-            <a th:href="@{/contracts/list}"><i class="bi bi-file-earmark-text"></i> <span>Gestionar contratos</span></a>
-        </div>
-        <div th:if="${isPapPati}" class="module-card">
-            <a th:href="@{/contracts/pappati/list}"><i class="bi bi-file-earmark-text"></i> <span>Mis contratos con OVIUsers</span></a>
-        </div>
-        <div th:if="${isOviUser}" class="module-card">
-            <a th:href="@{/contracts/oviuser/list}"><i class="bi bi-file-earmark-text"></i> <span>Mis contratos</span></a>
-        </div>
-    </div>
+        <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-space-ovi-title">
+            <h2 id="dash-space-ovi-title" class="dash-cat-title">Mi espacio</h2>
+            <nav class="dash-grid" aria-label="Mi espacio">
+                <a th:href="@{/contracts/oviuser/list}" class="dash-box">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis contratos</strong>
+                        <small>Documentación asignada</small>
+                    </span>
+                </a>
+                <a href="/ovi-users/profile" class="dash-box">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <span>
+                        <strong>Perfil OVI</strong>
+                        <small>Datos personales</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
 
-    <!-- Messages Modules -->
-    <div class="module-section">
-        <h3><i class="bi bi-envelope"></i> Mensajes</h3>
-        <div th:if="${isTechnician}" class="module-card">
-            <a href="/messages/list"><i class="bi bi-inbox"></i> <span>Ver todos los mensajes</span></a>
-        </div>
-        <div th:if="${isOviUser or isPapPati}" class="module-card">
-            <a href="/messages/list"><i class="bi bi-chat-left-text"></i> <span>Mis mensajes</span></a>
-        </div>
-        <div class="module-card">
-            <a href="/communications/list"><i class="bi bi-envelope-paper"></i> <span>Comunicaciones con técnico OVI</span></a>
-        </div>
+        <section th:if="${isOviUser}" class="dash-cat" aria-labelledby="dash-com-ovi-title">
+            <h2 id="dash-com-ovi-title" class="dash-cat-title">Comunicación</h2>
+            <nav class="dash-grid" aria-label="Comunicación">
+                <a href="/messages/list" class="dash-box">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis mensajes</strong>
+                        <small>Conversaciones</small>
+                    </span>
+                </a>
+                <a href="/communications/list" class="dash-box">
+                    <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+                    <span>
+                        <strong>Comunicaciones</strong>
+                        <small>Contacto con técnico OVI</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
+
+        <!-- PAP/PATI -->
+        <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-contracts-title">
+            <h2 id="dash-contracts-title" class="dash-cat-title">Contratos y perfil</h2>
+            <nav class="dash-grid" aria-label="Contratos y perfil">
+                <a th:href="@{/contracts/pappati/list}" class="dash-box">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis contratos</strong>
+                        <small>Contratos activos y documentación</small>
+                    </span>
+                </a>
+                <a href="/pap-patis/profile" class="dash-box">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    <span>
+                        <strong>Perfil PAP/PATI</strong>
+                        <small>Datos y disponibilidad</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
+
+        <section th:if="${isPapPati}" class="dash-cat" aria-labelledby="dash-com-pap-title">
+            <h2 id="dash-com-pap-title" class="dash-cat-title">Comunicación</h2>
+            <nav class="dash-grid" aria-label="Comunicación">
+                <a href="/messages/list" class="dash-box">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                    <span>
+                        <strong>Mis mensajes</strong>
+                        <small>Conversaciones</small>
+                    </span>
+                </a>
+                <a href="/communications/list" class="dash-box">
+                    <i class="bi bi-envelope-paper" aria-hidden="true"></i>
+                    <span>
+                        <strong>Comunicaciones</strong>
+                        <small>Contacto con técnico OVI</small>
+                    </span>
+                </a>
+            </nav>
+        </section>
     </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>
-

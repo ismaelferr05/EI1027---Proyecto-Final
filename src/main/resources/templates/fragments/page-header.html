@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<header th:fragment="pageHeaderImpl(title, icon, subtitle, large, showRole)"
+        class="page-header"
+        th:classappend="${large} ? ' page-header-hero' : ''">
+    <div class="container" th:classappend="${showRole} ? ' page-header-row' : ''">
+        <div class="page-header-main">
+            <h1>
+                <i th:class="${icon.startsWith('bi-') ? 'bi ' + icon : 'bi bi-' + icon}" aria-hidden="true"></i>
+                <span th:text="${title}">Título</span>
+            </h1>
+            <p th:if="${subtitle != null and !#strings.isEmpty(subtitle)}" th:text="${subtitle}"></p>
+        </div>
+        <span th:if="${showRole}"
+              class="role-badge page-header-role"
+              th:classappend="${isTechnician ? 'tecnico' : (isOviUser ? 'oviuser' : 'pappati')}"
+              th:text="${currentRole}">ROL</span>
+    </div>
+</header>
+
+<header th:fragment="pageHeader(title, icon, subtitle)"
+        th:replace="~{fragments/page-header :: pageHeaderImpl(title=${title}, icon=${icon}, subtitle=${subtitle}, large=false, showRole=false)}">
+</header>
+</body>
+</html>

@@ -1,45 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Chat - SgOVI</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-	<style>
-		body { background-color: #f8f9fa; }
-		.page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 0; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-		.page-header h1 { margin: 0; font-weight: 700; }
-		.page-header p { margin: 6px 0 0 0; opacity: 0.95; }
-		.card-panel { background: white; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #667eea; }
-		.section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-		.section-title i { color: #667eea; }
-		.info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
-		.info-item { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 12px 14px; }
-		.info-label { display: block; font-size: 0.78rem; text-transform: uppercase; color: #6c757d; letter-spacing: 0.04em; margin-bottom: 4px; }
-		.info-value { font-weight: 600; color: #212529; word-break: break-word; }
-		.message-list { display: flex; flex-direction: column; gap: 12px; }
-		.message-bubble { max-width: 78%; border-radius: 14px; padding: 12px 14px; border: 1px solid #e9ecef; background: #fff; margin-right: auto; }
-		/* Right-side messages (current user) */
-		.message-bubble.mine { margin-left: auto; margin-right: 0; background: #e9f2ff; border-color: #bfd7ff; }
-		/* Left-side messages (counterpart) */
-		.message-bubble.other { margin-right: auto; margin-left: 0; background: #fff7e8; border-color: #ffd59a; }
-		.message-meta { font-size: 0.78rem; color: #6c757d; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-		.message-text { white-space: pre-wrap; }
-		.empty-state { background: white; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-		.composer textarea { min-height: 110px; }
-		@media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .message-bubble { max-width: 100%; } }
-	</style>
-</head>
+<head th:replace="~{fragments/head :: head('Chat - SgOVI')}"></head>
 <body>
-<div class="page-header">
-	<div class="container">
-		<h1 class="mb-0"><i class="bi bi-chat-dots"></i> Chat</h1>
-		<p class="mb-0 mt-2" th:text="${'Conversación con ' + counterpartLabel + ' · Solicitud #' + chat.request.idRequest}"></p>
-	</div>
-</div>
+<nav th:replace="~{fragments/topbar :: topbar}"></nav>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Chat', icon='bi-chat-dots', subtitle='')}"></header>
 
-<main class="container mb-5">
+<main class="container page-content mb-5">
 	<div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
 		<span th:text="${successMessage}"></span>
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
@@ -49,7 +15,10 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
 	</div>
 
-	<div class="card-panel">
+	
+    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
+
+    <div class="card-panel">
 		<h2 class="section-title"><i class="bi bi-person-lines-fill"></i> Información del chat</h2>
 		<div class="info-grid">
 			<div class="info-item">
@@ -69,7 +38,7 @@
 			</div>
 			<div class="info-item">
 				<span class="info-label">Estado de negociación</span>
-				<span class="info-value" th:text="${chat.negotiation.stateOfApproval}"></span>
+				<span class="info-value"><span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span></span>
 				<div class="text-muted small" th:if="${chat.contract != null}" th:text="${'Contrato: ' + chat.contract.startDate + ' -> ' + chat.contract.endDate}"></div>
 			</div>
 		</div>
@@ -113,6 +82,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>
 
