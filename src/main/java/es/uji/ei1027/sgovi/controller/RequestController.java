@@ -1,10 +1,12 @@
 package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.RequestDao;
+import es.uji.ei1027.sgovi.dao.ContractDao;
 import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.model.CandidateProposal;
+import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.EmailContent;
 import es.uji.ei1027.sgovi.model.Negotiation;
 import es.uji.ei1027.sgovi.model.Request;
@@ -37,6 +39,9 @@ public class RequestController {
 
     @Autowired
     private RequestDao requestDao;
+
+    @Autowired
+    private ContractDao contractDao;
 
     @Autowired
     private OviUserDao oviUserDao;
@@ -133,7 +138,7 @@ public class RequestController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable int id, HttpSession session, Model model) {
+    public String editForm(@PathVariable("id") int id, HttpSession session, Model model) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -164,7 +169,7 @@ public class RequestController {
 
     @Deprecated
     @GetMapping("/delete/{id}")
-    public String deleteDeprecated(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String deleteDeprecated(@PathVariable("id") int id, HttpSession session, RedirectAttributes redirectAttributes) {
         // Eliminación física ya no permitida. Use la acción de rechazar para conservar el historial.
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
@@ -301,7 +306,7 @@ public class RequestController {
     }
 
     @GetMapping("/frontoffice/view/{id}")
-    public String frontOfficeView(@PathVariable int id, HttpSession session, Model model) {
+    public String frontOfficeView(@PathVariable("id") int id, HttpSession session, Model model) {
         // Solo técnicos o el OviUser que creó la solicitud pueden verla
         if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
             return "redirect:/login";
@@ -378,16 +383,18 @@ public class RequestController {
         }
 
         var pending = requestDao.getByStatus("IN_REVIEW");
-        var approved = requestDao.getByStatus("APPROVED");
-        log.info("pendingRequests size={}, approvedRequests size={}", pending.size(), approved.size());
+        var approvedWithoutContract = requestDao.getByStatus("APPROVED").stream()
+                .filter(request -> !hasAnyContractForRequest(request.getIdRequest()))
+                .collect(Collectors.toList());
+        log.info("pendingRequests size={}, approvedWithoutContract size={}", pending.size(), approvedWithoutContract.size());
 
         model.addAttribute("pendingRequests", pending);
-        model.addAttribute("approvedRequests", approved);
+        model.addAttribute("approvedRequests", approvedWithoutContract);
         return "request/backoffice-list";
     }
 
     @GetMapping("/backoffice/review/{id}")
-    public String backOfficeReview(@PathVariable int id,
+    public String backOfficeReview(@PathVariable("id") int id,
                                    @RequestParam(value = "msg", required = false) String msg,
                                    HttpSession session,
                                    Model model) {
@@ -401,15 +408,19 @@ public class RequestController {
         }
 
         List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
+        List<Negotiation> negotiations = negotiationDao.getByRequest(id);
+        List<Contract> associatedContracts = getContractsForRequest(id);
         Set<Integer> existingPapPatis = new HashSet<>();
         List<PapPati> proposedPapPatis = new java.util.ArrayList<>();
-        for (Negotiation negotiation : negotiationDao.getByRequest(id)) {
+        for (Negotiation negotiation : negotiations) {
             existingPapPatis.add(negotiation.getIdPapPati());
             proposedPapPatis.add(papPatiDao.get(negotiation.getIdPapPati()));
         }
 
         model.addAttribute("request", request);
         model.addAttribute("proposals", proposals);
+        model.addAttribute("negotiations", negotiations);
+        model.addAttribute("associatedContracts", associatedContracts);
         model.addAttribute("existingPapPatis", existingPapPatis);
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
@@ -483,5 +494,20 @@ public class RequestController {
         model.addAttribute("email", email);
         model.addAttribute("action", action);
         return "request/confirmation";
+    }
+
+    private boolean hasAnyContractForRequest(int idRequest) {
+        return !getContractsForRequest(idRequest).isEmpty();
+    }
+
+    private List<Contract> getContractsForRequest(int idRequest) {
+        List<Contract> contracts = new java.util.ArrayList<>();
+        for (Negotiation negotiation : negotiationDao.getByRequest(idRequest)) {
+            Contract contract = contractDao.getByNegotiationId(negotiation.getIdNegotiation());
+            if (contract != null) {
+                contracts.add(contract);
+            }
+        }
+        return contracts;
     }
 }

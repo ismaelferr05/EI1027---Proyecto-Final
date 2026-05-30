@@ -80,6 +80,12 @@
 			</div>
 
 			<div class="mt-3 d-flex justify-content-end">
+				<a th:if="${isPapPati and chat.contract == null}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-success me-2">
+					<i class="bi bi-plus-circle"></i> Crear contrato
+				</a>
+				<a th:if="${isPapPati and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-outline-primary me-2">
+					<i class="bi bi-pencil-square"></i> Editar contrato
+				</a>
 				<a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${chat.negotiation.idNegotiation})}" class="btn btn-primary">
 					<i class="bi bi-chat-dots"></i> Abrir chat
 				</a>

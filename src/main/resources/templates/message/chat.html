@@ -40,6 +40,16 @@
 				<span class="info-label">Estado de negociación</span>
 				<span class="info-value"><span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span></span>
 				<div class="text-muted small" th:if="${chat.contract != null}" th:text="${'Contrato: ' + chat.contract.startDate + ' -> ' + chat.contract.endDate}"></div>
+				<div class="mt-2" th:if="${isPapPati and chat.contract == null}">
+					<a th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-sm btn-primary">
+						<i class="bi bi-plus-circle"></i> Crear contrato
+					</a>
+				</div>
+				<div class="mt-2" th:if="${isPapPati and chat.contract != null}">
+					<a th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-sm btn-outline-primary">
+						<i class="bi bi-pencil-square"></i> Editar contrato
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>

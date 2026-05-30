@@ -27,6 +27,53 @@
         </dl>
     </div>
 
+    <div class="panel-card">
+        <h2 class="section-title"><i class="bi bi-diagram-3" aria-hidden="true"></i> Estado de las negociaciones</h2>
+
+        <div th:if="${#lists.isEmpty(negotiations)}" class="text-muted">
+            Todavía no hay negociaciones para esta solicitud.
+        </div>
+
+        <div th:if="${!#lists.isEmpty(negotiations)}" class="list-group">
+            <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2" th:each="negotiation : ${negotiations}">
+                <div>
+                    <strong th:text="${'Negociación #' + negotiation.idNegotiation}"></strong>
+                    <div class="small text-muted">
+                        <span th:text="${'PAP/PATI #' + negotiation.idPapPati}"></span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span>
+                    <a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${negotiation.idNegotiation})}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-chat-dots"></i> Abrir chat
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card">
+        <h2 class="section-title"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contratos asociados</h2>
+
+        <div th:if="${#lists.isEmpty(associatedContracts)}" class="text-muted">
+            Esta solicitud aún no tiene contratos asociados.
+        </div>
+
+        <div th:if="${!#lists.isEmpty(associatedContracts)}" class="list-group">
+            <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2" th:each="contract : ${associatedContracts}">
+                <div>
+                    <strong th:text="${'Contrato #' + contract.idContract}"></strong>
+                    <div class="small text-muted" th:text="${'Salario: € ' + contract.wage + ' · ' + contract.startDate + ' → ' + contract.endDate}"></div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Ver contrato
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="panel-card" th:if="${request.status == 'APPROVED' or request.status == 'REJECTED'}">
         <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistente propuesto</h2>
 

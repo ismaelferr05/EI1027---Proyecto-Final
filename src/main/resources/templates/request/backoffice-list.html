@@ -32,7 +32,7 @@
                     <td th:text="${request.idRequest}"></td>
                     <td th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
                     <td th:text="${request.description}"></td>
-                    <td th:text="|${request.startDate} → ${request.endDate}|"></td>
+                    <td th:text="${request.startDate + ' -> ' + request.endDate}"></td>
                     <td><span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span></td>
                     <td>
                         <a class="btn btn-sm btn-success" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-check2-circle"></i> Aprobar y proponer asistente</a>
@@ -42,7 +42,7 @@
         </table>
     </div>
 
-    <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas</h2>
+    <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas sin contrato</h2>
     <div th:if="${!#lists.isEmpty(approvedRequests)}">
         <div class="list-group">
             <div class="list-group-item d-flex justify-content-between align-items-center" th:each="request : ${approvedRequests}">
@@ -52,10 +52,10 @@
                         · <span th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></span>
                         — <span th:text="${request.description}"></span>
                     </h6>
-                    <small class="text-muted" th:text="|Período: ${request.startDate} → ${request.endDate}|"></small>
+                    <small class="text-muted" th:text="${'Período: ' + request.startDate + ' -> ' + request.endDate}"></small>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver solicitud</a>
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver negociaciones</a>
                 </div>
             </div>
         </div>

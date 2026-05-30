@@ -22,7 +22,9 @@
 
                 <div class="col-md-6 mb-3">
                     <label for="idNegotiation" class="form-label">Negociación:</label>
-                    <select id="idNegotiation" th:field="*{idNegotiation}" class="form-select">
+                    <input th:if="${isPapPatiEditor}" id="idNegotiation" type="text" class="form-control" th:value="|Negociación #${contract.idNegotiation}|" readonly />
+                    <input th:if="${isPapPatiEditor}" type="hidden" th:field="*{idNegotiation}" />
+                    <select th:unless="${isPapPatiEditor}" id="idNegotiation" th:field="*{idNegotiation}" class="form-select">
                         <option value="">Sin negociación</option>
                         <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
                     </select>
@@ -52,7 +54,7 @@
 
             <div class="btn-group-custom">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar Cambios</button>
-                <a href="/contracts/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                <a th:href="${isPapPatiEditor} ? '/contracts/pappati/list' : '/contracts/list'" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
             </div>
         </form>
     </div>

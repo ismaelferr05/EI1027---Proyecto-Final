@@ -2,8 +2,13 @@ package es.uji.ei1027.sgovi.dao;
 
 import es.uji.ei1027.sgovi.model.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,10 +18,31 @@ public class ContractDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void add(Contract contract) {
+    public int add(Contract contract) {
         String sql = "INSERT INTO Contract (wage, startDate, endDate, url, negotiation_id) VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, contract.getWage(), Date.valueOf(contract.getStartDate()),
-                Date.valueOf(contract.getEndDate()), contract.getUrl(), contract.getIdNegotiation());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setBigDecimal(1, contract.getWage());
+            ps.setDate(2, Date.valueOf(contract.getStartDate()));
+            ps.setDate(3, Date.valueOf(contract.getEndDate()));
+            ps.setString(4, contract.getUrl());
+            if (contract.getIdNegotiation() != null) {
+                ps.setInt(5, contract.getIdNegotiation());
+            } else {
+                ps.setNull(5, java.sql.Types.INTEGER);
+            }
+            return ps;
+        }, keyHolder);
+        Number generatedKey = keyHolder.getKey();
+        int generatedId = generatedKey == null ? 0 : generatedKey.intValue();
+        contract.setIdContract(generatedId);
+        return generatedId;
+    }
+
+    public void updateUrl(int idContract, String url) {
+        String sql = "UPDATE Contract SET url=? WHERE contract_id=?";
+        jdbcTemplate.update(sql, url, idContract);
     }
 
     public void update(Contract contract) {

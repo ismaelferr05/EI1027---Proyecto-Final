@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/head :: head('Comunicaciones')}"></head>
 <body>
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
-<header th:replace="~{fragments/page-header :: pageHeader(title='Comunicaciones con técnico OVI', icon='bi-envelope-paper', subtitle='')}"></header>
+<header th:replace="~{fragments/page-header :: pageHeader(title='Comunicaciones con técnico OVI', icon='bi-envelope-paper', subtitle='Usuarios y Pappati')}"></header>
 <main class="container page-content mb-5">
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
@@ -15,13 +15,23 @@
             <div class="col-md-4" th:if="${isTechnician}">
                 <label for="recipientType" class="form-label">Tipo destinatario</label>
                 <select id="recipientType" th:field="*{recipientType}" class="form-select">
-                    <option value="OVIUSER">Usuario OVI</option>
-                    <option value="PAPPATI">PAP/PATI</option>
+                    <option value="OVIUSER">Usuarios</option>
+                    <option value="PAPPATI">Pappati</option>
                 </select>
             </div>
             <div class="col-md-4" th:if="${isTechnician}">
-                <label for="recipientId" class="form-label">ID destinatario</label>
-                <input id="recipientId" th:field="*{recipientId}" type="number" class="form-control" required>
+                <label for="recipientId" class="form-label">Destinatario</label>
+                <!-- Select por nombre para OVI users -->
+                <select id="recipientIdOvi" th:field="*{recipientId}" class="form-select" required>
+                    <option th:each="u : ${oviUsers}" th:value="${u.idOviUser}"
+                            th:text="${u.name + ' ' + u.lastName}"></option>
+                </select>
+
+                <!-- Select por nombre para PapPati -->
+                <select id="recipientIdPap" th:field="*{recipientId}" class="form-select" style="display:none" required>
+                    <option th:each="p : ${papPatis}" th:value="${p.idPapPati}"
+                            th:text="${p.name + ' ' + p.lastName}"></option>
+                </select>
             </div>
             <div class="col-md-8">
                 <label for="subject" class="form-label">Asunto</label>
@@ -37,20 +47,58 @@
 
     <div class="table-responsive sgovi-table-shell">
         <table class="table table-striped bg-white">
-            <thead><tr><th>Fecha</th><th>Emisor</th><th>Destinatario</th><th>Asunto</th><th>Texto</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Emisor</th>
+                    <th>Destinatario</th>
+                    <th>Asunto y texto</th>
+                </tr>
+            </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(communications)}"><td colspan="5">No hay comunicaciones registradas.</td></tr>
+            <tr th:if="${#lists.isEmpty(communications)}"><td colspan="4">No hay comunicaciones registradas.</td></tr>
             <tr th:each="item : ${communications}">
                 <td th:text="${item.communicationDateTime}"></td>
                 <td th:text="${@nameMaps.roleLabel(item.senderRole)}"></td>
                 <td th:text="${@nameMaps.recipientLabel(item.recipientType, item.recipientId)}"></td>
-                <td th:text="${item.subject}"></td>
-                <td th:text="${item.text}"></td>
+                <td>
+                    <strong th:text="${item.subject}"></strong>
+                    <div class="text-muted small mt-1" th:text="${item.text.length() > 120} ? ${item.text.substring(0,120) + '...'} : ${item.text}"></div>
+                    <details class="mt-2">
+                        <summary class="small">Ver texto completo</summary>
+                        <div class="mt-2" th:utext="${#strings.escapeXml(item.text).replaceAll('\n','<br/>')}"></div>
+                    </details>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
 </main>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        var recipientType = document.getElementById('recipientType');
+        if (!recipientType) return;
+        var selectOvi = document.getElementById('recipientIdOvi');
+        var selectPap = document.getElementById('recipientIdPap');
+        function update() {
+            if (recipientType.value === 'OVIUSER') {
+                selectOvi.style.display = '';
+                selectOvi.disabled = false;
+                selectPap.style.display = 'none';
+                selectPap.disabled = true;
+            } else {
+                selectPap.style.display = '';
+                selectPap.disabled = false;
+                selectOvi.style.display = 'none';
+                selectOvi.disabled = true;
+            }
+        }
+        update();
+        recipientType.addEventListener('change', update);
+    });
+    /*]]>*/
+    </script>
+    <script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

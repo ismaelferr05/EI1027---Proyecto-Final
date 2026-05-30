@@ -11,6 +11,19 @@
 
     <div class="form-section">
         <form class="form-horizontal" th:action="@{/contracts/add}" th:object="${contract}" method="post">
+            <div class="alert alert-info" th:if="${requestBasedContract}">
+                <strong>Alta desde chat:</strong> los datos del contrato se toman de la solicitud vinculada. Solo debes indicar el salario.
+                <div class="small mt-2" th:if="${selectedRequest != null}">
+                    <div><strong>Solicitud:</strong> <span th:text="${selectedRequest.description}"></span></div>
+                    <div><strong>Fechas:</strong> <span th:text="${selectedRequest.startDate}"></span> → <span th:text="${selectedRequest.endDate}"></span></div>
+                </div>
+            </div>
+
+            <input type="hidden" th:if="${requestBasedContract}" th:field="*{idNegotiation}" />
+            <input type="hidden" th:if="${requestBasedContract}" th:field="*{startDate}" />
+            <input type="hidden" th:if="${requestBasedContract}" th:field="*{endDate}" />
+            <input type="hidden" th:if="${requestBasedContract}" th:field="*{url}" />
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="wage" class="form-label">Salario (€):</label>
@@ -18,7 +31,7 @@
                     <div th:if="${#fields.hasErrors('wage')}" th:errors="*{wage}" class="text-danger small mt-2"></div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" th:unless="${requestBasedContract}">
                     <label for="idNegotiation" class="form-label">Negociación:</label>
                     <select id="idNegotiation" th:field="*{idNegotiation}" class="form-select">
                         <option value="">Sin negociación</option>
@@ -26,9 +39,13 @@
                     </select>
                     <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger small mt-2"></div>
                 </div>
+                <div class="col-md-6 mb-3" th:if="${requestBasedContract}">
+                    <label class="form-label">Negociación:</label>
+                    <input type="text" class="form-control" th:value="${'Negociación #' + selectedNegotiation.idNegotiation}" readonly />
+                </div>
             </div>
 
-            <div class="row">
+            <div class="row" th:unless="${requestBasedContract}">
                 <div class="col-md-6 mb-3">
                     <label for="startDate" class="form-label">Fecha inicio:</label>
                     <input id="startDate" type="date" th:field="*{startDate}" class="form-control">
@@ -42,7 +59,7 @@
                 </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" th:unless="${requestBasedContract}">
                 <label for="url" class="form-label">URL del Documento:</label>
                 <input id="url" type="text" th:field="*{url}" class="form-control" maxlength="255">
                 <div th:if="${#fields.hasErrors('url')}" th:errors="*{url}" class="text-danger small mt-2"></div>
@@ -50,7 +67,8 @@
 
             <div class="btn-group-custom">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar Contrato</button>
-                <a href="/contracts/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                <a th:if="${requestBasedContract}" th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${selectedNegotiation.idNegotiation})}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver al chat</a>
+                <a th:unless="${requestBasedContract}" href="/contracts/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
             </div>
         </form>
     </div>

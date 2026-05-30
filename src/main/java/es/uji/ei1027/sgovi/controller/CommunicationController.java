@@ -33,8 +33,9 @@ public class CommunicationController {
     public String list(HttpSession session, Model model) {
         if (sessionUserService.isTechnician(session)) {
             model.addAttribute("communications", communicationDao.getAll());
-            model.addAttribute("oviUsers", oviUserDao.getAll());
-            model.addAttribute("papPatis", papPatiDao.getAll());
+            // Sólo usuarios aceptados deben aparecer en el selector
+            model.addAttribute("oviUsers", oviUserDao.getByStatus("ACCEPTED"));
+            model.addAttribute("papPatis", papPatiDao.getByStatus("ACCEPTED"));
             model.addAttribute("communication", new TechnicianCommunication());
             model.addAttribute("isTechnician", true);
             return "communications/list";

@@ -100,42 +100,103 @@ public class ContractController {
 
     @GetMapping("/add")
     public String addForm(@RequestParam(value = "negotiationId", required = false) Integer negotiationId, HttpSession session, Model model) {
-        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
+        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
             return "redirect:/dashboard";
         }
 
         Contract contract = new Contract();
-        contract.setIdNegotiation(negotiationId);
+        Negotiation negotiation = null;
+        Request request = null;
+
+        if (negotiationId != null) {
+            negotiation = negotiationDao.get(negotiationId);
+            if (negotiation == null || !canCreateContractForNegotiation(session, negotiation)) {
+                return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
+            }
+
+            request = requestDao.get(negotiation.getIdRequest());
+            if (request != null) {
+                contract.setIdNegotiation(negotiation.getIdNegotiation());
+                contract.setStartDate(request.getStartDate());
+                contract.setEndDate(request.getEndDate());
+                contract.setUrl(buildAutoContractUrl(negotiation.getIdNegotiation()));
+            }
+        }
+
         model.addAttribute("contract", contract);
         model.addAttribute("negotiations", availableNegotiations(session));
+        model.addAttribute("requestBasedContract", request != null);
+        model.addAttribute("selectedNegotiation", negotiation);
+        model.addAttribute("selectedRequest", request);
+        model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
         return "contracts/add";
     }
 
     @PostMapping("/add")
     public String add(@ModelAttribute("contract") Contract contract, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
+        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
             return "redirect:/dashboard";
         }
+
+        boolean requestBasedContract = false;
+        Negotiation negotiation = null;
+        Request request = null;
+        if (!sessionUserService.isTechnician(session)) {
+            if (contract.getIdNegotiation() == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Debes abrir el contrato desde un chat para usar esta opción.");
+                return sessionUserService.isPapPati(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
+            }
+
+            negotiation = negotiationDao.get(contract.getIdNegotiation());
+            if (negotiation == null || !canCreateContractForNegotiation(session, negotiation)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No puedes crear este contrato.");
+                return sessionUserService.isPapPati(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
+            }
+
+            request = requestDao.get(negotiation.getIdRequest());
+            if (request != null) {
+                requestBasedContract = true;
+                contract.setStartDate(request.getStartDate());
+                contract.setEndDate(request.getEndDate());
+                if (contract.getUrl() == null || contract.getUrl().isBlank()) {
+                    contract.setUrl(buildAutoContractUrl(negotiation.getIdNegotiation()));
+                }
+            }
+        }
+
         validateContract(contract, bindingResult, session);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("requestBasedContract", requestBasedContract);
+            model.addAttribute("selectedRequest", request);
+            model.addAttribute("selectedNegotiation", negotiation);
+            model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
             model.addAttribute("negotiations", availableNegotiations(session));
             return "contracts/add";
         }
 
-        contractDao.add(contract);
+        int createdContractId = contractDao.add(contract);
+        if (requestBasedContract) {
+            String finalUrl = "/contracts/view/" + createdContractId;
+            contract.setUrl(finalUrl);
+            contractDao.updateUrl(createdContractId, finalUrl);
+        }
         markRequestByContract(contract);
         redirectAttributes.addFlashAttribute("successMessage", "Contrato registrado correctamente.");
+        if (sessionUserService.isPapPati(session)) {
+            return "redirect:/contracts/pappati/list";
+        }
         return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable int id, HttpSession session, Model model) {
+    public String editForm(@PathVariable("id") int id, HttpSession session, Model model) {
         if (!canManageContract(id, session)) {
             return "redirect:/dashboard";
         }
 
         model.addAttribute("contract", contractDao.get(id));
         model.addAttribute("negotiations", availableNegotiations(session));
+        model.addAttribute("isPapPatiEditor", sessionUserService.isPapPati(session));
         return "contracts/edit";
     }
 
@@ -144,15 +205,26 @@ public class ContractController {
         if (!canManageContract(contract.getIdContract(), session)) {
             return "redirect:/dashboard";
         }
+
+        if (sessionUserService.isPapPati(session)) {
+            Contract persisted = contractDao.get(contract.getIdContract());
+            // PapPati solo puede editar datos del contrato, no reasignar la negociación.
+            contract.setIdNegotiation(persisted.getIdNegotiation());
+        }
+
         validateContract(contract, bindingResult, session);
         if (bindingResult.hasErrors()) {
             model.addAttribute("negotiations", availableNegotiations(session));
+            model.addAttribute("isPapPatiEditor", sessionUserService.isPapPati(session));
             return "contracts/edit";
         }
 
         contractDao.update(contract);
         markRequestByContract(contract);
         redirectAttributes.addFlashAttribute("successMessage", "Contrato actualizado correctamente.");
+        if (sessionUserService.isPapPati(session)) {
+            return "redirect:/contracts/pappati/list";
+        }
         return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
     }
 
@@ -226,6 +298,10 @@ public class ContractController {
         if (sessionUserService.isTechnician(session)) {
             return true;
         }
+        Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+        if (idPapPati != null && contractDao.belongsToPapPati(idContract, idPapPati)) {
+            return true;
+        }
         Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
         return idOviUser != null && contractDao.belongsToOviUser(idContract, idOviUser);
     }
@@ -247,6 +323,29 @@ public class ContractController {
         return negotiations;
     }
 
+    private boolean canCreateContractForNegotiation(HttpSession session, Negotiation negotiation) {
+        if (sessionUserService.isTechnician(session)) {
+            return true;
+        }
+
+        if (sessionUserService.isPapPati(session)) {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            return idPapPati != null && idPapPati.equals(negotiation.getIdPapPati());
+        }
+
+        if (sessionUserService.isOviUser(session) && negotiation.getIdRequest() != null) {
+            Request request = requestDao.get(negotiation.getIdRequest());
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            return request != null && idOviUser != null && idOviUser.equals(request.getIdOviUser());
+        }
+
+        return false;
+    }
+
+    private String buildAutoContractUrl(int idNegotiation) {
+        return "AUTO_CONTRACT_NEGOTIATION_" + idNegotiation;
+    }
+
     private void validateContract(Contract contract, BindingResult bindingResult, HttpSession session) {
         if (contract.getWage() == null || contract.getWage().compareTo(BigDecimal.ZERO) <= 0) {
             bindingResult.rejectValue("wage", "invalid", "El salario debe ser mayor que 0");
@@ -265,7 +364,7 @@ public class ContractController {
         }
         if (contract.getIdNegotiation() == null) {
             bindingResult.rejectValue("idNegotiation", "required", "Debes seleccionar una negociación");
-        } else if (!sessionUserService.isTechnician(session)) {
+        } else if (sessionUserService.isOviUser(session)) {
             boolean allowed = availableNegotiations(session).stream()
                     .anyMatch(n -> n.getIdNegotiation() == contract.getIdNegotiation());
             if (!allowed) {
