@@ -119,12 +119,14 @@
             <a href="/requests/list" class="btn btn-outline-secondary">
                 <i class="bi bi-list"></i> Ver listado general
             </a>
-            <a href="/dashboard" class="btn btn-primary">
-                <i class="bi bi-house"></i> Ir al dashboard
+            <a href="/requests/list" class="btn btn-primary" th:if="${isTechnician}">
+                <i class="bi bi-inbox"></i> Solicitudes
+            </a>
+            <a href="/requests/frontoffice/track" class="btn btn-primary" th:if="${isOviUser}">
+                <i class="bi bi-search"></i> Mis solicitudes
             </a>
         </div>
     </div>
 </main>
 </body>
 </html>
-

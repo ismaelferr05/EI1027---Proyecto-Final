@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <body>
-<nav th:fragment="topbar" th:if="${topbarMode != 'none'}" class="app-topbar">
-    <div class="container app-topbar-inner">
+<nav th:fragment="topbar"
+     th:if="${topbarMode != 'none'}"
+     class="app-nav"
+     th:classappend="${topbarMode == 'app'} ? ' app-sidebar' : ' app-topbar'">
+    <div class="container app-topbar-inner" th:if="${topbarMode != 'app'}">
         <a th:replace="~{fragments/brand :: brandLink('app-brand')}"></a>
 
         <div class="app-topbar-menu">
             <div class="app-nav-links">
-                <!-- Invitado -->
                 <a class="app-nav-link" th:if="${topbarMode.startsWith('guest')}" th:href="@{/}" href="/index.html">
                     <i class="bi bi-house" aria-hidden="true"></i><span>Inicio</span>
                 </a>
@@ -24,26 +26,134 @@
                    th:href="@{/pap-patis/register}" href="/pap-patis/register">
                     <i class="bi bi-person-badge" aria-hidden="true"></i><span>Alta PAP/PATI</span>
                 </a>
-
-                <!-- Sesión iniciada -->
-                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/dashboard}" href="/dashboard">
-                    <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Dashboard</span>
-                </a>
-                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/messages/list}" href="/messages/list">
-                    <i class="bi bi-chat-left-text" aria-hidden="true"></i><span>Mensajes</span>
-                </a>
-                <a class="app-nav-link" th:if="${topbarMode == 'app'}" th:href="@{/communications/list}" href="/communications/list">
-                    <i class="bi bi-envelope-paper" aria-hidden="true"></i><span>Comunicaciones</span>
-                </a>
-            </div>
-
-            <div class="app-nav-session" th:if="${topbarMode == 'app'}">
-                <span class="app-user-email" th:text="${currentUser.email}">usuario@uji.es</span>
-                <a class="app-nav-link app-nav-muted" th:href="@{/logout}" href="/logout">
-                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i><span>Salir</span>
-                </a>
             </div>
         </div>
+    </div>
+
+    <div class="app-sidebar-shell" th:if="${topbarMode == 'app'}">
+        <a th:replace="~{fragments/brand :: brandLink('app-brand app-sidebar-brand')}"></a>
+
+        <div class="app-sidebar-user">
+            <span class="app-sidebar-avatar" aria-hidden="true">
+                <i th:class="${isTechnician ? 'bi bi-shield-check' : (isOviUser ? 'bi bi-person' : 'bi bi-person-badge')}"></i>
+            </span>
+            <span class="app-sidebar-user-body">
+                <strong th:text="${currentUser.email}">usuario@uji.es</strong>
+                <small th:text="${currentRole}">ROL</small>
+            </span>
+        </div>
+
+        <div class="app-sidebar-scroll">
+            <section class="app-sidebar-section" th:if="${isTechnician}">
+                <span class="app-sidebar-label">Operaciones</span>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/requests')} ? ' is-active' : ''"
+                   th:href="@{/requests/list}" href="/requests/list">
+                    <i class="bi bi-inbox" aria-hidden="true"></i><span>Solicitudes</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/negotiations')} ? ' is-active' : ''"
+                   th:href="@{/negotiations/list}" href="/negotiations/list">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i><span>Negociaciones</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/contracts')} ? ' is-active' : ''"
+                   th:href="@{/contracts/list}" href="/contracts/list">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i><span>Contratos</span>
+                </a>
+            </section>
+
+            <section class="app-sidebar-section" th:if="${isTechnician}">
+                <span class="app-sidebar-label">Administración</span>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/trainers')} ? ' is-active' : ''"
+                   th:href="@{/trainers/list}" href="/trainers/list">
+                    <i class="bi bi-person-badge" aria-hidden="true"></i><span>Formadores</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/activities')} ? ' is-active' : ''"
+                   th:href="@{/activities/list}" href="/activities/list">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i><span>Actividades</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/participant-lists')} ? ' is-active' : ''"
+                   th:href="@{/participant-lists/list}" href="/participant-lists/list">
+                    <i class="bi bi-list-check" aria-hidden="true"></i><span>Participantes</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/ovi-users')} ? ' is-active' : ''"
+                   th:href="@{/ovi-users/list}" href="/ovi-users/list">
+                    <i class="bi bi-people" aria-hidden="true"></i><span>Usuarios OVI</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/pap-patis')} ? ' is-active' : ''"
+                   th:href="@{/pap-patis/list}" href="/pap-patis/list">
+                    <i class="bi bi-person-arms-up" aria-hidden="true"></i><span>PAP/PATI</span>
+                </a>
+            </section>
+
+            <section class="app-sidebar-section" th:if="${isOviUser}">
+                <span class="app-sidebar-label">Solicitudes</span>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/requests/frontoffice/track')} ? ' is-active' : ''"
+                   th:href="@{/requests/frontoffice/track}" href="/requests/frontoffice/track">
+                    <i class="bi bi-search" aria-hidden="true"></i><span>Mis solicitudes</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/requests/frontoffice/add')} ? ' is-active' : ''"
+                   th:href="@{/requests/frontoffice/add}" href="/requests/frontoffice/add">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i><span>Nueva solicitud</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/contracts/oviuser')} ? ' is-active' : ''"
+                   th:href="@{/contracts/oviuser/list}" href="/contracts/oviuser/list">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i><span>Mis contratos</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/ovi-users/profile')} ? ' is-active' : ''"
+                   th:href="@{/ovi-users/profile}" href="/ovi-users/profile">
+                    <i class="bi bi-person" aria-hidden="true"></i><span>Perfil OVI</span>
+                </a>
+            </section>
+
+            <section class="app-sidebar-section" th:if="${isPapPati}">
+                <span class="app-sidebar-label">Mi espacio</span>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/messages')} ? ' is-active' : ''"
+                   th:href="@{/messages/list}" href="/messages/list">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i><span>Negociaciones</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/contracts/pappati')} ? ' is-active' : ''"
+                   th:href="@{/contracts/pappati/list}" href="/contracts/pappati/list">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i><span>Mis contratos</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/pap-patis/profile')} ? ' is-active' : ''"
+                   th:href="@{/pap-patis/profile}" href="/pap-patis/profile">
+                    <i class="bi bi-person" aria-hidden="true"></i><span>Perfil PAP/PATI</span>
+                </a>
+            </section>
+
+            <section class="app-sidebar-section">
+                <span class="app-sidebar-label">Comunicación</span>
+                <a class="app-sidebar-link"
+                   th:if="${not isPapPati}"
+                   th:classappend="${currentPath.startsWith('/messages') and not isPapPati} ? ' is-active' : ''"
+                   th:href="@{/messages/list}" href="/messages/list">
+                    <i class="bi bi-chat-left-text" aria-hidden="true"></i><span>Mensajes</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/communications')} ? ' is-active' : ''"
+                   th:href="@{/communications/list}" href="/communications/list">
+                    <i class="bi bi-envelope-paper" aria-hidden="true"></i><span>Comunicaciones</span>
+                </a>
+            </section>
+        </div>
+
+        <a class="app-sidebar-logout" th:href="@{/logout}" href="/logout">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i><span>Salir</span>
+        </a>
     </div>
 </nav>
 </body>

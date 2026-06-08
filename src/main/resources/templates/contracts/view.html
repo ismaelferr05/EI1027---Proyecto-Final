@@ -10,7 +10,6 @@
         <a th:if="${isTechnician}" href="/contracts/list" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a contratos</a>
         <a th:if="${isPapPati}" th:href="@{/contracts/pappati/list}" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a mis contratos</a>
         <a th:if="${isOviUser}" th:href="@{/contracts/oviuser/list}" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a mis contratos</a>
-        <a th:unless="${isTechnician or isPapPati or isOviUser}" th:href="@{/dashboard}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
     </div>
 
     <div class="panel-card">

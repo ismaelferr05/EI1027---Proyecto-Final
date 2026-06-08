@@ -31,6 +31,7 @@ public class ViewAttributesAdvice {
         model.addAttribute("isOviUser", "OVIUSER".equals(currentRole));
         model.addAttribute("isPapPati", "PAPPATI".equals(currentRole));
         model.addAttribute("topbarMode", resolveTopbarMode(request, loggedIn));
+        model.addAttribute("currentPath", request.getRequestURI());
         model.addAttribute("today", LocalDate.now());
     }
 

@@ -7,7 +7,6 @@
 <main class="container page-content mb-5">
     
     <div class="action-bar">
-        <a th:if="${isLoggedIn}" th:href="@{/dashboard}" class="action-link btn-outline-custom"><i class="bi bi-grid-1x2"></i> Volver al dashboard</a>
         <a th:unless="${isLoggedIn}" th:href="@{/}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al inicio</a>
     </div>
 <form th:action="@{/pap-patis/track}" method="post" class="d-flex gap-2 my-4">

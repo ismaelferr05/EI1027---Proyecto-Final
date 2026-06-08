@@ -13,7 +13,6 @@
     </div>
 
     <div class="action-bar">
-        <a th:href="@{/dashboard}" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <span th:if="${isOviUser}">
             <a th:href="@{/requests/frontoffice/add}" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Crear solicitud</a>
             <a th:href="@{/requests/frontoffice/track}" class="action-link btn-outline-custom"><i class="bi bi-search"></i> Mis solicitudes</a>

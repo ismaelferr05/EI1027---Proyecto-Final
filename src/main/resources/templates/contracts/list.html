@@ -7,7 +7,6 @@
 
 <main class="container page-content mb-5">
     <div class="action-bar">
-        <a href="/dashboard" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <a href="/contracts/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Nuevo contrato</a>
     </div>
     <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>

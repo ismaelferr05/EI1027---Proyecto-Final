@@ -28,13 +28,14 @@ public class LoginController {
 
     @GetMapping("/")
     public String home(HttpSession session) {
-        return session.getAttribute("user") != null ? "redirect:/dashboard" : "redirect:/index.html";
+        UserDetails user = (UserDetails) session.getAttribute("user");
+        return user != null ? redirectToWorkspace(user) : "redirect:/index.html";
     }
 
     @GetMapping("/login")
     public String login(HttpSession session, Model model) {
         if (session.getAttribute("user") != null) {
-            return "redirect:/dashboard";
+            return redirectToWorkspace((UserDetails) session.getAttribute("user"));
         }
         model.addAttribute("user", new UserDetails());
         return "login";
@@ -54,7 +55,7 @@ public class LoginController {
                 return "login";
             }
             session.setAttribute("user", userDetails);
-            return "redirect:/dashboard";
+            return redirectToWorkspace(userDetails);
         } catch (Exception ex) {
             log.error("Error inesperado durante el login para {}", user.getEmail(), ex);
             bindingResult.rejectValue("email", "error.user", "No se pudo iniciar sesión. Revisa los datos o inténtalo de nuevo.");
@@ -68,6 +69,9 @@ public class LoginController {
             return "redirect:/login";
         }
         UserDetails user = (UserDetails) session.getAttribute("user");
+        if (user.getRole() != null) {
+            return redirectToWorkspace(user);
+        }
         model.addAttribute("currentUser", user);
         model.addAttribute("currentRole", user.getRole());
         model.addAttribute("isTechnician", "TECNICO".equals(user.getRole()));
@@ -80,5 +84,16 @@ public class LoginController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    private String redirectToWorkspace(UserDetails user) {
+        String role = user.getRole();
+        if ("TECNICO".equals(role)) {
+            return "redirect:/requests/list";
+        }
+        if ("OVIUSER".equals(role)) {
+            return "redirect:/requests/frontoffice/track";
+        }
+        return "redirect:/messages/list";
     }
 }
