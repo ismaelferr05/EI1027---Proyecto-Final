@@ -913,6 +913,7 @@ textarea.form-control {
 
 .btn-outline-primary,
 .btn-outline-secondary,
+.btn-outline-danger,
 .btn-outline-custom,
 .action-link.btn-outline-custom,
 .action-bar a.btn-outline-custom {
@@ -936,6 +937,17 @@ textarea.form-control {
   color: var(--foreground) !important;
   background: var(--secondary) !important;
   border-color: var(--input) !important;
+}
+
+.btn-outline-danger {
+  color: var(--danger-on-soft) !important;
+  border-color: #fecaca !important;
+}
+
+.btn-outline-danger:hover {
+  color: #ffffff !important;
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
 }
 
 .action-link.btn-primary-custom:hover,
@@ -976,6 +988,11 @@ textarea.form-control {
   font-size: 0.84rem !important;
   font-weight: 600 !important;
   text-decoration: none !important;
+  white-space: nowrap;
+}
+
+td .action-btn {
+  min-width: 98px;
 }
 
 .action-btn.btn-edit,
@@ -1014,6 +1031,80 @@ textarea.form-control {
   color: #ffffff !important;
   background: var(--danger) !important;
   border-color: var(--danger) !important;
+}
+
+.decision-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.decision-actions form {
+  display: inline-flex;
+  margin: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.reject-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px !important;
+  background: #fff7f7 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+}
+
+.reject-panel-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.reject-panel-copy strong {
+  color: #7f1d1d;
+  font-size: 0.98rem;
+  font-weight: 720;
+}
+
+.reject-panel-copy span {
+  color: #7f1d1d;
+  font-size: 0.88rem;
+  opacity: 0.84;
+}
+
+.reject-panel .form-label {
+  margin-bottom: -4px !important;
+  color: #7f1d1d !important;
+}
+
+.maintenance-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.maintenance-actions > div {
+  display: grid;
+  gap: 2px;
+}
+
+.maintenance-actions strong {
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 720;
+}
+
+.maintenance-actions span {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .action-bar,

@@ -34,7 +34,7 @@
                     <th><i class="bi bi-person-fill"></i> Género</th>
                     <th><i class="bi bi-check-circle"></i> Estado</th>
                     <th><i class="bi bi-shield-check"></i> LOPD</th>
-                    <th><i class="bi bi-tools"></i> Acciones</th>
+                    <th><i class="bi bi-tools"></i> Gestión</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,18 +52,9 @@
                     <td><span th:replace="~{fragments/status-badge :: statusBadge(${oviUser.status})}"></span></td>
                     <td th:text="${oviUser.lopdConsent ? 'Sí' : 'No'}"></td>
                     <td>
-                        <a th:href="@{/ovi-users/view/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-edit" aria-label="Ver perfil"><i class="bi bi-eye" aria-hidden="true"></i></a>
-                        <a th:href="@{/ovi-users/edit/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-edit" aria-label="Editar"><i class="bi bi-pencil" aria-hidden="true"></i></a>
-                        <form th:if="${oviUser.status == 'PENDING'}" th:action="@{/ovi-users/accept}" method="post" style="display:inline-block;">
-                            <input type="hidden" name="idOviUser" th:value="${oviUser.idOviUser}">
-                            <button type="submit" class="action-btn btn-edit" aria-label="Aceptar"><i class="bi bi-check" aria-hidden="true"></i></button>
-                        </form>
-                        <form th:if="${oviUser.status != 'REJECTED'}" th:action="@{/ovi-users/reject}" method="post" style="display:inline-block;">
-                            <input type="hidden" name="idOviUser" th:value="${oviUser.idOviUser}">
-                            <input type="text" name="reason" th:id="|reject-reason-${oviUser.idOviUser}|" aria-label="Motivo del rechazo" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
-                            <button type="submit" class="action-btn btn-delete" aria-label="Rechazar"><i class="bi bi-x" aria-hidden="true"></i></button>
-                        </form>
-                        <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-delete" aria-label="Eliminar"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                        <a th:href="@{/ovi-users/view/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-view">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
+                        </a>
                     </td>
                 </tr>
             </tbody>

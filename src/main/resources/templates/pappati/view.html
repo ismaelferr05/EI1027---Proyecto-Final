@@ -13,6 +13,53 @@
         <p><strong>Estado:</strong> <span th:replace="~{fragments/status-badge :: statusBadge(${papPati.status})}"></span></p>
         <p th:if="${papPati.status == 'REJECTED'}"><strong>Motivo rechazo:</strong> <span th:text="${papPati.rejectionReason}"></span></p>
     </div>
+
+    <div class="panel-card">
+        <h2 class="section-title"><i class="bi bi-sliders" aria-hidden="true"></i> Gestión del perfil</h2>
+        <div class="decision-actions">
+            <a th:href="@{/pap-patis/edit/{id}(id=${papPati.idPapPati})}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Editar datos
+            </a>
+            <form th:if="${papPati.status == 'PENDING'}" th:action="@{/pap-patis/accept}" method="post">
+                <input type="hidden" name="idPapPati" th:value="${papPati.idPapPati}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check2-circle"></i> Aceptar alta
+                </button>
+            </form>
+        </div>
+
+        <form th:if="${papPati.status != 'REJECTED'}" th:action="@{/pap-patis/reject}" method="post" class="reject-panel mt-4">
+            <input type="hidden" name="idPapPati" th:value="${papPati.idPapPati}">
+            <div class="reject-panel-copy">
+                <strong>Rechazar alta</strong>
+                <span>Escribe el motivo que recibirá el PAP/PATI junto a la notificación.</span>
+            </div>
+            <label th:for="|reject-pap-${papPati.idPapPati}|" class="form-label">Motivo del rechazo</label>
+            <textarea th:id="|reject-pap-${papPati.idPapPati}|"
+                      name="reason"
+                      class="form-control"
+                      rows="3"
+                      maxlength="500"
+                      placeholder="Motivo del rechazo"
+                      required></textarea>
+            <div class="decision-actions mt-3">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-circle"></i> Rechazar alta
+                </button>
+            </div>
+        </form>
+
+        <div class="maintenance-actions mt-4">
+            <div>
+                <strong>Mantenimiento</strong>
+                <span>Acciones excepcionales sobre este registro.</span>
+            </div>
+            <a th:href="@{/pap-patis/delete/{id}(id=${papPati.idPapPati})}" class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> Eliminar registro
+            </a>
+        </div>
+    </div>
+
     <h2>Contratos</h2>
     <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
@@ -33,7 +80,7 @@
         </tbody>
     </table>
     </div>
-    <a href="/pap-patis/list" class="btn btn-outline-secondary">Volver</a>
+    <a href="/pap-patis/list" class="btn btn-outline-secondary">Volver al listado</a>
 </main>
 </body>
 </html>

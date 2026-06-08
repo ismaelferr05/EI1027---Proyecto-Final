@@ -17,8 +17,8 @@
         <div class="text-muted mt-1">Desde aquí puedes revisar, editar y eliminar mensajes.</div>
     </div>
 
-    <div class="action-bar">
-        <a th:if="${isTechnician}" href="/messages/add" class="action-link btn-primary-custom">
+    <div class="action-bar" th:if="${isTechnician}">
+        <a href="/messages/add" class="action-link btn-primary-custom">
             <i class="bi bi-plus-circle"></i> Nuevo mensaje
         </a>
     </div>
@@ -41,7 +41,7 @@
                 <th><i class="bi bi-person-check"></i> Destinatario</th>
                 <th><i class="bi bi-chat-left-text"></i> Texto</th>
                 <th><i class="bi bi-diagram-3"></i> Negociación</th>
-                <th th:if="${isTechnician}"><i class="bi bi-tools"></i> Acciones</th>
+                <th th:if="${isTechnician}"><i class="bi bi-tools"></i> Gestión</th>
             </tr>
             </thead>
             <tbody>
@@ -59,11 +59,8 @@
                           th:text="| · ${@nameMaps.oviUserNameById(req.idOviUser)} ↔ ${@nameMaps.papPatiNameById(neg.idPapPati)}|"></span>
                 </td>
                 <td th:if="${isTechnician}">
-                    <a th:href="@{/messages/edit/{id}(id=${message.idMessage})}" class="action-btn btn-edit">
+                    <a th:href="@{/messages/edit/{id}(id=${message.idMessage})}" class="action-btn btn-view">
                         <i class="bi bi-pencil"></i> Editar
-                    </a>
-                    <a th:href="@{/messages/delete/{id}(id=${message.idMessage})}" class="action-btn btn-delete">
-                        <i class="bi bi-trash"></i> Eliminar
                     </a>
                 </td>
             </tr>

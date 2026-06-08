@@ -22,7 +22,7 @@
             <th>Vigencia</th>
             <th>Estado</th>
             <th>Documento</th>
-            <th>Acciones</th>
+            <th>Gestión</th>
         </tr>
         </thead>
         <tbody>
@@ -38,8 +38,7 @@
             </td>
             <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer">Ver documento</a></td>
             <td>
-                <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="btn btn-sm btn-outline-primary">Detalle</a>
-                <a th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view">Detalle</a>
             </td>
         </tr>
         </tbody>

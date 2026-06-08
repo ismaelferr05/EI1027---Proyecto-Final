@@ -22,7 +22,7 @@
                     <th><i class="bi bi-blockquote"></i> Descripción</th>
                     <th><i class="bi bi-calendar-range"></i> Período</th>
                     <th><i class="bi bi-check-circle"></i> Estado</th>
-                    <th><i class="bi bi-tools"></i> Acción</th>
+                    <th><i class="bi bi-tools"></i> Gestión</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,9 @@
                     <td th:text="${request.startDate + ' -> ' + request.endDate}"></td>
                     <td><span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span></td>
                     <td>
-                        <a class="btn btn-sm btn-success" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-check2-circle"></i> Aprobar y proponer asistente</a>
+                        <a class="action-btn btn-view" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}">
+                            <i class="bi bi-arrow-right"></i> Revisar
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -65,4 +67,3 @@
 </main>
 </body>
 </html>
-

@@ -553,7 +553,10 @@ public class RequestController {
     }
 
     @PostMapping("/backoffice/reject")
-    public String backOfficeReject(@RequestParam("idRequest") int idRequest, HttpSession session, Model model) {
+    public String backOfficeReject(@RequestParam("idRequest") int idRequest,
+                                   @RequestParam(value = "reason", required = false) String reason,
+                                   HttpSession session,
+                                   Model model) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
@@ -563,8 +566,11 @@ public class RequestController {
             return "redirect:/requests/backoffice/list";
         }
 
+        String rejectionReason = reason != null && !reason.isBlank()
+                ? reason.trim()
+                : "No cumple los criterios de la asistencia solicitada.";
         request.setStatus("REJECTED");
-        request.setRejectionReason("No cumple los criterios de la asistencia solicitada.");
+        request.setRejectionReason(rejectionReason);
         OviUser oviUser = oviUserDao.get(request.getIdOviUser());
         requestDao.updateStatus(idRequest, "REJECTED", request.getRejectionReason());
         EmailContent email = emailService.sendRejectionEmail(request, oviUser);

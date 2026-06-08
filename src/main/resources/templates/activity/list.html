@@ -30,7 +30,7 @@
                     <th><i class="bi bi-tag"></i> Categoría</th>
                     <th><i class="bi bi-info-circle"></i> Descripción</th>
                     <th><i class="bi bi-person-badge"></i> Formador</th>
-                    <th><i class="bi bi-tools"></i> Acciones</th>
+                    <th><i class="bi bi-tools"></i> Gestión</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,8 +44,9 @@
                     <td th:text="${activity.description}"></td>
                     <td th:text="${@nameMaps.trainerNameById(activity.idTrainer)}"></td>
                     <td>
-                        <a th:href="@{/activities/edit/{id}(id=${activity.idActivity})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                        <a th:href="@{/activities/delete/{id}(id=${activity.idActivity})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
+                        <a th:href="@{/activities/edit/{id}(id=${activity.idActivity})}" class="action-btn btn-view">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
                     </td>
                 </tr>
             </tbody>

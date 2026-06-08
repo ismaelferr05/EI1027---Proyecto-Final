@@ -29,7 +29,7 @@
                 <th><i class="bi bi-envelope"></i> Email</th>
                 <th><i class="bi bi-telephone"></i> Teléfono</th>
                 <th><i class="bi bi-geo-alt"></i> Dirección</th>
-                <th><i class="bi bi-tools"></i> Acciones</th>
+                <th><i class="bi bi-tools"></i> Gestión</th>
             </tr>
         </thead>
         <tbody>
@@ -42,8 +42,9 @@
                 <td th:text="${trainer.phone}"></td>
                 <td th:text="${trainer.address}"></td>
                 <td>
-                    <a th:href="@{/trainers/edit/{id}(id=${trainer.idTrainer})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                    <a th:href="@{/trainers/delete/{id}(id=${trainer.idTrainer})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a th:href="@{/trainers/edit/{id}(id=${trainer.idTrainer})}" class="action-btn btn-view">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
                 </td>
             </tr>
         </tbody>

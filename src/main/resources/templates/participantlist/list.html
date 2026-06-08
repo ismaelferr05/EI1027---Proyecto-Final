@@ -27,7 +27,7 @@
                 <th><i class="bi bi-certificate"></i> Certificado</th>
                 <th><i class="bi bi-calendar-event"></i> Actividad</th>
                 <th><i class="bi bi-person"></i> Participante</th>
-                <th><i class="bi bi-tools"></i> Acciones</th>
+                <th><i class="bi bi-tools"></i> Gestión</th>
             </tr>
         </thead>
         <tbody>
@@ -45,8 +45,9 @@
                 </td>
                 <td th:text="${pl.idOviUser != null ? @nameMaps.oviUserNameById(pl.idOviUser) : @nameMaps.papPatiNameById(pl.idPapPati)}">Participante</td>
                 <td>
-                    <a th:href="@{/participant-lists/edit/{id}(id=${pl.idParticipantList})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                    <a th:href="@{/participant-lists/delete/{id}(id=${pl.idParticipantList})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a th:href="@{/participant-lists/edit/{id}(id=${pl.idParticipantList})}" class="action-btn btn-view">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
                 </td>
             </tr>
         </tbody>

@@ -27,7 +27,7 @@
                 <th><i class="bi bi-file-text"></i> Solicitud</th>
                 <th><i class="bi bi-people"></i> Usuario OVI</th>
                 <th><i class="bi bi-person-arms-up"></i> PAP/PATI</th>
-                <th><i class="bi bi-tools"></i> Acciones</th>
+                <th><i class="bi bi-tools"></i> Gestión</th>
             </tr>
         </thead>
         <tbody>
@@ -42,9 +42,9 @@
                 <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
                 <td th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}">PAP/PATI</td>
                 <td>
-                    <a th:href="@{/negotiations/edit/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                    <a th:href="@{/negotiations/delete/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
-                    <a th:href="@{/messages/negotiation/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-messages"><i class="bi bi-chat-dots"></i> Mensajes</a>
+                    <a th:href="@{/messages/negotiation/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-view">
+                        <i class="bi bi-chat-dots"></i> Abrir
+                    </a>
                 </td>
             </tr>
         </tbody>
