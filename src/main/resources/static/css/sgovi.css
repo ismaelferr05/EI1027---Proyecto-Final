@@ -820,6 +820,112 @@ textarea.form-control {
   gap: 10px !important;
 }
 
+.table-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-tools-form .form-label {
+  margin-bottom: 5px;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.table-tools-form .form-control,
+.table-tools-form .form-select,
+.table-tools-form .btn {
+  min-height: 40px;
+}
+
+.table-tools-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.table-page-summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  color: #334155;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.table-pager {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.table-pager .pagination {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.table-pager .page-item {
+  display: inline-flex;
+}
+
+.table-pager .page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 34px;
+  padding: 7px 11px;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 7px !important;
+  box-shadow: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.table-pager .page-link-step {
+  min-width: 86px;
+}
+
+.table-pager .page-link:hover {
+  color: var(--primary-on-soft);
+  background: var(--primary-soft);
+  border-color: #93c5fd;
+}
+
+.table-pager .page-item.active .page-link {
+  color: #ffffff;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.table-pager .page-item.disabled .page-link {
+  color: #94a3b8;
+  background: #f8fafc;
+  border-color: var(--border);
+  opacity: 1;
+  pointer-events: none;
+}
+
 .action-bar {
   display: flex !important;
   flex-wrap: wrap;
@@ -2023,5 +2129,29 @@ input[type="radio"] {
     margin-top: 36px;
     padding-top: 32px;
     gap: 36px !important;
+  }
+
+  .table-tools {
+    padding: 12px;
+  }
+
+  .table-tools-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .table-page-summary {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .table-pager,
+  .table-pager .pagination {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .table-pager .page-link-step {
+    min-width: 74px;
   }
 }

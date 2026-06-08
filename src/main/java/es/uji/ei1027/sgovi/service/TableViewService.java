@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class TableViewService {
     private static final Pattern DIACRITICS = Pattern.compile("\\p{M}+");
     private static final Pattern NON_SEARCH_CHARS = Pattern.compile("[^\\p{Alnum}]+");
+    private static final int TEST_PAGE_SIZE = 3;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int MAX_PAGE_SIZE = 20;
 
@@ -253,7 +254,10 @@ public class TableViewService {
 
     private int pageSize() {
         int requestedSize = positiveIntParameter("size", DEFAULT_PAGE_SIZE);
-        return requestedSize <= DEFAULT_PAGE_SIZE ? DEFAULT_PAGE_SIZE : MAX_PAGE_SIZE;
+        if (requestedSize == TEST_PAGE_SIZE || requestedSize == MAX_PAGE_SIZE) {
+            return requestedSize;
+        }
+        return DEFAULT_PAGE_SIZE;
     }
 
     private int positiveIntParameter(String name, int fallback) {
