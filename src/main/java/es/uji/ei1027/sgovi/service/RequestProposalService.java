@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.text.Normalizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class RequestProposalService {
@@ -24,6 +27,7 @@ public class RequestProposalService {
 	private static final int MAX_SCORE_EXPERIENCIA = 10;
 	private static final int MAX_SCORE_TIPO_EXPERIENCIA = 5;
 	private static final int MAX_SCORE_DISPONIBILIDAD = 25;
+	private static final Pattern FIRST_NUMBER = Pattern.compile("\\d+");
 
 	private record CriterionScore(int points, String detail, String label) {}
 
@@ -40,9 +44,7 @@ public class RequestProposalService {
 		}
 
 		for (PapPati papPati : papPatiDao.getByStatus("ACCEPTED")) {
-			if (!isAvailable(papPati, request)) {
-				continue;
-			}
+			boolean available = isAvailable(papPati, request);
 
 			int score = 0;
 			List<String> reasons = new ArrayList<>();
@@ -65,8 +67,7 @@ public class RequestProposalService {
 			CriterionScore experienceTypeScore = scoreExperienceTypeMatch(papPati, request);
 			score += addReason(reasons, experienceTypeScore, MAX_SCORE_TIPO_EXPERIENCIA);
 
-			// La disponibilidad es obligatoria: si pasa el filtro, suma el máximo de este criterio.
-			score += addReason(reasons, new CriterionScore(MAX_SCORE_DISPONIBILIDAD, "disponible en todo el periodo solicitado", "Disponibilidad"), MAX_SCORE_DISPONIBILIDAD);
+			score += addReason(reasons, scoreAvailability(available), MAX_SCORE_DISPONIBILIDAD);
 
 			String summary = score + "/" + MAX_SCORE_TOTAL;
 			proposals.add(new CandidateProposal(papPati, score, summary, List.copyOf(reasons)));
@@ -85,6 +86,13 @@ public class RequestProposalService {
 				request.getStartDate(),
 				request.getEndDate()
 		);
+	}
+
+	private CriterionScore scoreAvailability(boolean available) {
+		if (available) {
+			return new CriterionScore(MAX_SCORE_DISPONIBILIDAD, "disponible en todo el periodo solicitado", "Disponibilidad");
+		}
+		return new CriterionScore(0, "tiene un contrato que se solapa con el periodo solicitado", "Disponibilidad");
 	}
 
 	private CriterionScore scoreLocationMatch(PapPati papPati, Request request) {
@@ -142,12 +150,15 @@ public class RequestProposalService {
 			return new CriterionScore(0, "el PAP/PATI no indica formación", "Formación");
 		}
 
-		String reqTraining = request.getTraining().toLowerCase(Locale.ROOT);
-		String papTraining = papPati.getTraining().toLowerCase(Locale.ROOT);
-		if (papTraining.contains(reqTraining)) {
+		String reqTraining = normalizeText(request.getTraining());
+		String papTraining = normalizeText(papPati.getTraining());
+		if (papTraining.contains(reqTraining) || reqTraining.contains(papTraining)) {
 			return new CriterionScore(10, "la formación del PAP/PATI contiene la formación solicitada", "Formación");
 		}
-		return new CriterionScore(0, "la formación no coincide", "Formación");
+		if (sharesRelevantToken(reqTraining, papTraining)) {
+			return new CriterionScore(5, "formación relacionada parcialmente", "Formación");
+		}
+		return new CriterionScore(2, "formación distinta, pero se mantiene como candidato", "Formación");
 	}
 
 	private CriterionScore scoreExperienceMatch(PapPati papPati, Request request) {
@@ -177,10 +188,15 @@ public class RequestProposalService {
 			return new CriterionScore(0, "el PAP/PATI no indica tipo de experiencia", "Tipo de experiencia");
 		}
 
-		if (request.getExperienceType().trim().equalsIgnoreCase(papPati.getExperienceType().trim())) {
+		String requestType = normalizeText(request.getExperienceType());
+		String papType = normalizeText(papPati.getExperienceType());
+		if (requestType.equals(papType) || requestType.contains(papType) || papType.contains(requestType)) {
 			return new CriterionScore(5, "coincide el tipo de experiencia", "Tipo de experiencia");
 		}
-		return new CriterionScore(0, "el tipo de experiencia no coincide", "Tipo de experiencia");
+		if (sharesRelevantToken(requestType, papType)) {
+			return new CriterionScore(3, "tipo de experiencia relacionado parcialmente", "Tipo de experiencia");
+		}
+		return new CriterionScore(1, "tipo de experiencia distinto, pero se mantiene como candidato", "Tipo de experiencia");
 	}
 
 	private int addReason(List<String> reasons, CriterionScore score, int maxPuntos) {
@@ -192,11 +208,35 @@ public class RequestProposalService {
 		if (isBlank(value)) {
 			return null;
 		}
-		try {
-			return Integer.parseInt(value.trim());
-		} catch (NumberFormatException ignored) {
-			return null;
+		Matcher matcher = FIRST_NUMBER.matcher(value);
+		return matcher.find() ? Integer.parseInt(matcher.group()) : null;
+	}
+
+	private boolean sharesRelevantToken(String left, String right) {
+		if (isBlank(left) || isBlank(right)) {
+			return false;
 		}
+		for (String leftToken : left.split("\\s+")) {
+			if (leftToken.length() < 4) {
+				continue;
+			}
+			for (String rightToken : right.split("\\s+")) {
+				if (rightToken.length() >= 4 && (leftToken.contains(rightToken) || rightToken.contains(leftToken))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private String normalizeText(String value) {
+		if (isBlank(value)) {
+			return "";
+		}
+		String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+				.replaceAll("\\p{M}+", "")
+				.toLowerCase(Locale.ROOT);
+		return normalized.replaceAll("[^\\p{Alnum}]+", " ").trim().replaceAll("\\s+", " ");
 	}
 
 	private String normalizeGender(String value) {
@@ -218,4 +258,3 @@ public class RequestProposalService {
 		return value == null || value.trim().isEmpty();
 	}
 }
-

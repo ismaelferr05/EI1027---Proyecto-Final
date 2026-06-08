@@ -486,12 +486,13 @@ public class RequestController {
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
         tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
-                tableViewService.options("score", "Puntuación", "name", "PAP/PATI", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
+                tableViewService.options("id", "ID", "score", "Puntuación", "name", "PAP/PATI", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
         return "request/backoffice-review";
     }
 
     private List<CandidateProposal> sortedFilteredProposals(List<CandidateProposal> proposals, String q, String sort, String dir) {
         Map<String, Function<CandidateProposal, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", proposal -> proposal.getPapPati().getIdPapPati());
         sorters.put("score", CandidateProposal::getScore);
         sorters.put("name", proposal -> nameMaps.fullName(proposal.getPapPati().getName(), proposal.getPapPati().getLastName()));
         sorters.put("pc", proposal -> proposal.getPapPati().getPc());
@@ -501,6 +502,7 @@ public class RequestController {
 
         return tableViewService.apply(proposals, q, sort, dir, sorters,
                 tableViewService.fields(
+                        proposal -> proposal.getPapPati().getIdPapPati(),
                         CandidateProposal::getScore,
                         CandidateProposal::getMatchSummary,
                         proposal -> String.join(" ", proposal.getReasonDetails()),

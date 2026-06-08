@@ -114,6 +114,7 @@ public class MessageController {
 
     private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
         Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : null);
         sorters.put("last", this::chatSortKey);
         sorters.put("request", chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "");
         sorters.put("oviUser", chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "");
@@ -131,7 +132,7 @@ public class MessageController {
                         chat -> chat.isActive() ? "activo active" : "cerrado inactive"
                 )));
         tableViewService.addState(model, "/messages/list", q, sort, dir,
-                tableViewService.options("last", "Último mensaje", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "messages", "Mensajes"));
+                tableViewService.options("id", "ID", "last", "Último mensaje", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "messages", "Mensajes"));
     }
 
     @GetMapping("/add")

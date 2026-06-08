@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <body>
-<form th:fragment="tableTools" class="table-tools mb-3" method="get" th:action="${tableAction}">
+<section th:fragment="tableTools" class="table-tools mb-3">
+<form method="get" th:action="${tableAction}">
+    <input type="hidden" name="page" value="1">
     <div class="row g-2 align-items-end">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label for="table-q" class="form-label">Filtro</label>
             <input id="table-q" name="q" class="form-control" th:value="${tableQuery}" placeholder="Buscar por cualquier columna">
         </div>
@@ -23,11 +25,46 @@
                 <option value="desc" th:selected="${tableDir == 'desc'}">Descendente</option>
             </select>
         </div>
+        <div class="col-md-1">
+            <label for="table-size" class="form-label">Filas</label>
+            <select id="table-size" name="size" class="form-select">
+                <option value="10" th:selected="${tableSize == 10}">10</option>
+                <option value="20" th:selected="${tableSize == 20}">20</option>
+            </select>
+        </div>
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="btn btn-primary flex-fill">Aplicar</button>
             <a th:href="${tableAction}" class="btn btn-outline-secondary">Limpiar</a>
         </div>
     </div>
 </form>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mt-2">
+    <p class="text-muted mb-0">
+        <span th:text="${tablePageStart}">0</span>-<span th:text="${tablePageEnd}">0</span>
+        de <span th:text="${tableTotalRows}">0</span>
+    </p>
+    <nav th:if="${tableTotalPages > 1}" aria-label="Paginación de tabla">
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" th:classappend="${!tableHasPrevious} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasPrevious ? tablePage - 1 : tablePage)}"
+                   th:attr="aria-disabled=${!tableHasPrevious}"
+                   aria-label="Anterior">Anterior</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${tablePages}" th:classappend="${pageNumber == tablePage} ? 'active'">
+                <a class="page-link"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + pageNumber}"
+                   th:text="${pageNumber}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${!tableHasNext} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasNext ? tablePage + 1 : tablePage)}"
+                   th:attr="aria-disabled=${!tableHasNext}"
+                   aria-label="Siguiente">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</section>
 </body>
 </html>

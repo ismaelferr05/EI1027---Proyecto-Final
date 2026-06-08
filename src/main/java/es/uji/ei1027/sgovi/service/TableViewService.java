@@ -1,8 +1,12 @@
 package es.uji.ei1027.sgovi.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -14,11 +18,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class TableViewService {
     private static final Pattern DIACRITICS = Pattern.compile("\\p{M}+");
     private static final Pattern NON_SEARCH_CHARS = Pattern.compile("[^\\p{Alnum}]+");
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int MAX_PAGE_SIZE = 20;
 
     public <T> List<T> apply(List<T> rows,
                              String query,
@@ -28,7 +35,7 @@ public class TableViewService {
                              List<Function<T, ?>> searchableFields) {
         List<T> result = filter(rows, query, searchableFields);
         sort(result, sort, direction, sorters);
-        return result;
+        return paginate(result);
     }
 
     public void addState(Model model,
@@ -39,9 +46,19 @@ public class TableViewService {
                          Map<String, String> sortOptions) {
         model.addAttribute("tableAction", action);
         model.addAttribute("tableQuery", clean(query));
-        model.addAttribute("tableSort", clean(sort));
+        model.addAttribute("tableSort", selectedSort(sort, sortOptions));
         model.addAttribute("tableDir", "desc".equalsIgnoreCase(direction) ? "desc" : "asc");
         model.addAttribute("tableSortOptions", sortOptions);
+        model.addAttribute("tableQueryEncoded", encode(clean(query)));
+        model.addAttribute("tablePage", requestAttribute("tablePage", 1));
+        model.addAttribute("tableSize", requestAttribute("tableSize", DEFAULT_PAGE_SIZE));
+        model.addAttribute("tableTotalRows", requestAttribute("tableTotalRows", 0));
+        model.addAttribute("tableTotalPages", requestAttribute("tableTotalPages", 1));
+        model.addAttribute("tablePageStart", requestAttribute("tablePageStart", 0));
+        model.addAttribute("tablePageEnd", requestAttribute("tablePageEnd", 0));
+        model.addAttribute("tablePages", requestAttribute("tablePages", List.of(1)));
+        model.addAttribute("tableHasPrevious", requestAttribute("tableHasPrevious", false));
+        model.addAttribute("tableHasNext", requestAttribute("tableHasNext", false));
     }
 
     public Map<String, String> options(String... keyLabels) {
@@ -119,7 +136,7 @@ public class TableViewService {
         String[] terms = normalizedQuery.split("\\s+");
         return rows.stream()
                 .filter(row -> matches(row, fields, terms))
-                .toList();
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
     }
 
     private <T> boolean matches(T row, List<Function<T, ?>> fields, String[] terms) {
@@ -194,6 +211,90 @@ public class TableViewService {
         rows.sort(comparator);
     }
 
+    private <T> List<T> paginate(List<T> rows) {
+        int totalRows = rows.size();
+        int size = pageSize();
+        int totalPages = Math.max(1, (int) Math.ceil((double) totalRows / size));
+        int page = Math.min(Math.max(1, pageNumber()), totalPages);
+        int from = Math.min((page - 1) * size, totalRows);
+        int to = Math.min(from + size, totalRows);
+
+        setRequestAttribute("tablePage", page);
+        setRequestAttribute("tableSize", size);
+        setRequestAttribute("tableTotalRows", totalRows);
+        setRequestAttribute("tableTotalPages", totalPages);
+        setRequestAttribute("tablePageStart", totalRows == 0 ? 0 : from + 1);
+        setRequestAttribute("tablePageEnd", to);
+        setRequestAttribute("tablePages", pageWindow(page, totalPages));
+        setRequestAttribute("tableHasPrevious", page > 1);
+        setRequestAttribute("tableHasNext", page < totalPages);
+
+        return new ArrayList<>(rows.subList(from, to));
+    }
+
+    private List<Integer> pageWindow(int page, int totalPages) {
+        int start = Math.max(1, page - 2);
+        int end = Math.min(totalPages, page + 2);
+        if (end - start < 4) {
+            start = Math.max(1, end - 4);
+            end = Math.min(totalPages, start + 4);
+        }
+
+        List<Integer> pages = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            pages.add(i);
+        }
+        return pages;
+    }
+
+    private int pageNumber() {
+        return positiveIntParameter("page", 1);
+    }
+
+    private int pageSize() {
+        int requestedSize = positiveIntParameter("size", DEFAULT_PAGE_SIZE);
+        return requestedSize <= DEFAULT_PAGE_SIZE ? DEFAULT_PAGE_SIZE : MAX_PAGE_SIZE;
+    }
+
+    private int positiveIntParameter(String name, int fallback) {
+        HttpServletRequest request = currentRequest();
+        if (request == null) {
+            return fallback;
+        }
+        String value = request.getParameter(name);
+        if (value == null || value.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Math.max(1, Integer.parseInt(value));
+        } catch (NumberFormatException ignored) {
+            return fallback;
+        }
+    }
+
+    private HttpServletRequest currentRequest() {
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {
+            return attributes.getRequest();
+        }
+        return null;
+    }
+
+    private void setRequestAttribute(String name, Object value) {
+        HttpServletRequest request = currentRequest();
+        if (request != null) {
+            request.setAttribute(name, value);
+        }
+    }
+
+    private Object requestAttribute(String name, Object fallback) {
+        HttpServletRequest request = currentRequest();
+        if (request == null) {
+            return fallback;
+        }
+        Object value = request.getAttribute(name);
+        return value == null ? fallback : value;
+    }
+
     private Object safeApply(Function<?, ?> extractor, Object row) {
         try {
             @SuppressWarnings("unchecked")
@@ -223,5 +324,17 @@ public class TableViewService {
 
     private String clean(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String selectedSort(String sort, Map<String, String> sortOptions) {
+        String cleaned = clean(sort);
+        if (!cleaned.isEmpty() && sortOptions.containsKey(cleaned)) {
+            return cleaned;
+        }
+        return sortOptions.keySet().stream().findFirst().orElse("");
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }
