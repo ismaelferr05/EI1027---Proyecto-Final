@@ -2,10 +2,12 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.ContractDao;
+import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.EmailContent;
 import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.service.EmailService;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/pap-patis")
@@ -33,9 +41,36 @@ public class PapPatiController {
     @Autowired
     private SessionUserService sessionUserService;
 
+    @Autowired
+    private TableViewService tableViewService;
+
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("papPatis", papPatiDao.getAll());
+    public String list(Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
+        Map<String, Function<PapPati, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", PapPati::getIdPapPati);
+        sorters.put("name", PapPati::getName);
+        sorters.put("lastName", PapPati::getLastName);
+        sorters.put("email", PapPati::getEmail);
+        sorters.put("phone", PapPati::getPhone);
+        sorters.put("province", PapPati::getProvince);
+        sorters.put("town", PapPati::getTown);
+        sorters.put("pc", PapPati::getPc);
+        sorters.put("age", PapPati::getAge);
+        sorters.put("gender", PapPati::getGender);
+        sorters.put("training", PapPati::getTraining);
+        sorters.put("experience", PapPati::getExperience);
+        sorters.put("status", PapPati::getStatus);
+
+        model.addAttribute("papPatis", tableViewService.apply(papPatiDao.getAll(), q, sort, dir, sorters,
+                tableViewService.fields(PapPati::getIdPapPati, PapPati::getName, PapPati::getLastName,
+                        PapPati::getEmail, PapPati::getPhone, PapPati::getProvince, PapPati::getTown,
+                        PapPati::getPc, PapPati::getAge, PapPati::getGender, PapPati::getTraining,
+                        PapPati::getExperience, PapPati::getExperienceType, PapPati::getStatus)));
+        tableViewService.addState(model, "/pap-patis/list", q, sort, dir,
+                tableViewService.options("id", "ID", "name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "training", "Formación", "experience", "Experiencia", "status", "Estado"));
         return "pappati/list";
     }
 
@@ -162,11 +197,34 @@ public class PapPatiController {
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable int id, Model model) {
+    public String view(@PathVariable int id, Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         PapPati papPati = papPatiDao.get(id);
         model.addAttribute("papPati", papPati);
-        model.addAttribute("contracts", contractDao.getByPapPatiId(id));
+        addContractsTable(model, "/pap-patis/view/" + id, contractDao.getByPapPatiId(id), q, sort, dir);
         return "pappati/view";
+    }
+
+    private void addContractsTable(Model model, String action, List<Contract> contracts, String q, String sort, String dir) {
+        Map<String, Function<Contract, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Contract::getIdContract);
+        sorters.put("startDate", Contract::getStartDate);
+        sorters.put("endDate", Contract::getEndDate);
+        sorters.put("status", contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO");
+        sorters.put("document", Contract::getUrl);
+
+        model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
+                tableViewService.fields(
+                        Contract::getIdContract,
+                        Contract::getStartDate,
+                        Contract::getEndDate,
+                        Contract::getUrl,
+                        contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
+                )));
+        tableViewService.addState(model, action, q, sort, dir,
+                tableViewService.options("id", "ID", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "document", "Documento"));
     }
 
     @PostMapping("/accept")

@@ -16,6 +16,8 @@
         <a href="/dashboard" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <a href="/participant-lists/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar Participante</a>
     </div>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
 
     <div class="table-responsive sgovi-table-shell">
     <table class="table table-hover">
@@ -45,15 +47,12 @@
                 <td th:text="${pl.idOviUser != null ? @nameMaps.oviUserNameById(pl.idOviUser) : @nameMaps.papPatiNameById(pl.idPapPati)}">Participante</td>
                 <td>
                     <a th:href="@{/participant-lists/edit/{id}(id=${pl.idParticipantList})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                    <a th:href="@{/participant-lists/delete/{id}(id=${pl.idParticipantList})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a th:href="@{/participant-lists/delete/{id}(id=${pl.idParticipantList})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
                 </td>
             </tr>
         </tbody>
     </table>
     </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

@@ -14,8 +14,10 @@ import es.uji.ei1027.sgovi.model.OviUser;
 import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.model.UserDetails;
 import es.uji.ei1027.sgovi.service.EmailService;
+import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.RequestProposalService;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +29,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,10 +65,20 @@ public class RequestController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TableViewService tableViewService;
+
+    @Autowired
+    private NameMaps nameMaps;
+
     @GetMapping("/list")
     public String list(HttpSession session, Model model,
                        @RequestParam(value = "status", required = false) String status,
-                       @RequestParam(value = "type", required = false) String type) {
+                       @RequestParam(value = "type", required = false) String type,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         UserDetails currentUser = sessionUserService.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/login";
@@ -91,13 +106,13 @@ public class RequestController {
                     .collect(Collectors.toList());
         }
         if (type != null && !type.isBlank()) {
-            String tp = type.trim();
+            String tp = tableViewService.normalize(type);
             requests = requests.stream()
-                    .filter(r -> tp.equals(r.getTraining()))
+                    .filter(r -> tableViewService.normalize(r.getTraining()).contains(tp))
                     .collect(Collectors.toList());
         }
 
-        model.addAttribute("requests", requests);
+        addRequestsTable(model, "requests", "/requests/list", requests, q, sort, dir);
 
         model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
@@ -282,7 +297,10 @@ public class RequestController {
     }
 
     @GetMapping("/frontoffice/track")
-    public String frontOfficeTrack(HttpSession session, Model model) {
+    public String frontOfficeTrack(HttpSession session, Model model,
+                                   @RequestParam(value = "q", required = false) String q,
+                                   @RequestParam(value = "sort", required = false) String sort,
+                                   @RequestParam(value = "dir", required = false) String dir) {
         if (!sessionUserService.isOviUser(session) && !sessionUserService.isTechnician(session)) {
             return "redirect:/login";
         }
@@ -292,13 +310,13 @@ public class RequestController {
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
 
         if (sessionUserService.isTechnician(session)) {
-            model.addAttribute("requests", requestDao.getAll());
+            addRequestsTable(model, "requests", "/requests/frontoffice/track", requestDao.getAll(), q, sort, dir);
         } else {
             Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
             if (idOviUser == null) {
                 return "redirect:/login";
             }
-            model.addAttribute("requests", requestDao.getByOviUser(idOviUser));
+            addRequestsTable(model, "requests", "/requests/frontoffice/track", requestDao.getByOviUser(idOviUser), q, sort, dir);
             model.addAttribute("currentOviUser", sessionUserService.getCurrentOviUser(session));
         }
 
@@ -374,7 +392,10 @@ public class RequestController {
     }
 
     @GetMapping("/backoffice/list")
-    public String backOfficeList(HttpSession session, Model model) {
+    public String backOfficeList(HttpSession session, Model model,
+                                 @RequestParam(value = "q", required = false) String q,
+                                 @RequestParam(value = "sort", required = false) String sort,
+                                 @RequestParam(value = "dir", required = false) String dir) {
         boolean isTech = sessionUserService.isTechnician(session);
         log.info("backOfficeList called - isTechnician={}", isTech);
         if (!isTech) {
@@ -382,20 +403,60 @@ public class RequestController {
             return "redirect:/dashboard";
         }
 
-        var pending = requestDao.getByStatus("IN_REVIEW");
-        var approvedWithoutContract = requestDao.getByStatus("APPROVED").stream()
+        List<Request> pending = requestDao.getByStatus("IN_REVIEW");
+        List<Request> approvedWithoutContract = requestDao.getByStatus("APPROVED").stream()
                 .filter(request -> !hasAnyContractForRequest(request.getIdRequest()))
                 .collect(Collectors.toList());
         log.info("pendingRequests size={}, approvedWithoutContract size={}", pending.size(), approvedWithoutContract.size());
 
-        model.addAttribute("pendingRequests", pending);
-        model.addAttribute("approvedRequests", approvedWithoutContract);
+        addRequestsTable(model, "pendingRequests", "/requests/backoffice/list", pending, q, sort, dir);
+        model.addAttribute("approvedRequests", sortedFilteredRequests(approvedWithoutContract, q, sort, dir));
         return "request/backoffice-list";
+    }
+
+    private void addRequestsTable(Model model, String attribute, String action, List<Request> requests, String q, String sort, String dir) {
+        model.addAttribute(attribute, sortedFilteredRequests(requests, q, sort, dir));
+        tableViewService.addState(model, action, q, sort, dir,
+                tableViewService.options("id", "ID", "description", "Descripción", "oviUser", "Usuario OVI", "training", "Formación", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "experience", "Experiencia", "preferredAge", "Edad preferida", "preferredPc", "CP preferido"));
+    }
+
+    private List<Request> sortedFilteredRequests(List<Request> requests, String q, String sort, String dir) {
+        Map<String, Function<Request, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Request::getIdRequest);
+        sorters.put("description", Request::getDescription);
+        sorters.put("oviUser", request -> nameMaps.oviUserNameById(request.getIdOviUser()));
+        sorters.put("training", Request::getTraining);
+        sorters.put("startDate", Request::getStartDate);
+        sorters.put("endDate", Request::getEndDate);
+        sorters.put("status", Request::getStatus);
+        sorters.put("experience", Request::getExperience);
+        sorters.put("preferredAge", Request::getPreferredAge);
+        sorters.put("preferredPc", Request::getPreferredPc);
+
+        return tableViewService.apply(requests, q, sort, dir, sorters,
+                tableViewService.fields(
+                        Request::getIdRequest,
+                        Request::getDescription,
+                        request -> nameMaps.oviUserNameById(request.getIdOviUser()),
+                        Request::getTraining,
+                        Request::getStartDate,
+                        Request::getEndDate,
+                        Request::getStatus,
+                        Request::getExperience,
+                        Request::getExperienceType,
+                        Request::getPreferredGender,
+                        Request::getPreferredPc,
+                        Request::getPreferredAge,
+                        Request::getRejectionReason
+                ));
     }
 
     @GetMapping("/backoffice/review/{id}")
     public String backOfficeReview(@PathVariable("id") int id,
                                    @RequestParam(value = "msg", required = false) String msg,
+                                   @RequestParam(value = "q", required = false) String q,
+                                   @RequestParam(value = "sort", required = false) String sort,
+                                   @RequestParam(value = "dir", required = false) String dir,
                                    HttpSession session,
                                    Model model) {
         if (!sessionUserService.isTechnician(session)) {
@@ -418,13 +479,39 @@ public class RequestController {
         }
 
         model.addAttribute("request", request);
-        model.addAttribute("proposals", proposals);
+        model.addAttribute("proposals", sortedFilteredProposals(proposals, q, sort, dir));
         model.addAttribute("negotiations", negotiations);
         model.addAttribute("associatedContracts", associatedContracts);
         model.addAttribute("existingPapPatis", existingPapPatis);
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
+        tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
+                tableViewService.options("score", "Puntuación", "name", "PAP/PATI", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
         return "request/backoffice-review";
+    }
+
+    private List<CandidateProposal> sortedFilteredProposals(List<CandidateProposal> proposals, String q, String sort, String dir) {
+        Map<String, Function<CandidateProposal, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("score", CandidateProposal::getScore);
+        sorters.put("name", proposal -> nameMaps.fullName(proposal.getPapPati().getName(), proposal.getPapPati().getLastName()));
+        sorters.put("pc", proposal -> proposal.getPapPati().getPc());
+        sorters.put("gender", proposal -> proposal.getPapPati().getGender());
+        sorters.put("age", proposal -> proposal.getPapPati().getAge());
+        sorters.put("detail", CandidateProposal::getMatchSummary);
+
+        return tableViewService.apply(proposals, q, sort, dir, sorters,
+                tableViewService.fields(
+                        CandidateProposal::getScore,
+                        CandidateProposal::getMatchSummary,
+                        proposal -> String.join(" ", proposal.getReasonDetails()),
+                        proposal -> nameMaps.fullName(proposal.getPapPati().getName(), proposal.getPapPati().getLastName()),
+                        proposal -> proposal.getPapPati().getPc(),
+                        proposal -> proposal.getPapPati().getGender(),
+                        proposal -> proposal.getPapPati().getAge(),
+                        proposal -> proposal.getPapPati().getTraining(),
+                        proposal -> proposal.getPapPati().getExperience(),
+                        proposal -> proposal.getPapPati().getExperienceType()
+                ));
     }
 
     @PostMapping("/backoffice/approve")

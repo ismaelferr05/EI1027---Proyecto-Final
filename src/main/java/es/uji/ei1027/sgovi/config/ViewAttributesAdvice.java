@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.LocalDate;
+
 @ControllerAdvice
 public class ViewAttributesAdvice {
 
@@ -29,6 +31,7 @@ public class ViewAttributesAdvice {
         model.addAttribute("isOviUser", "OVIUSER".equals(currentRole));
         model.addAttribute("isPapPati", "PAPPATI".equals(currentRole));
         model.addAttribute("topbarMode", resolveTopbarMode(request, loggedIn));
+        model.addAttribute("today", LocalDate.now());
     }
 
     private String resolveTopbarMode(HttpServletRequest request, boolean loggedIn) {

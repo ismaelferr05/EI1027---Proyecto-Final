@@ -3,7 +3,9 @@ package es.uji.ei1027.sgovi.controller;
 import es.uji.ei1027.sgovi.dao.ActivityDao;
 import es.uji.ei1027.sgovi.dao.TrainerDao;
 import es.uji.ei1027.sgovi.model.Activity;
+import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/activities")
@@ -24,13 +30,44 @@ public class ActivityController {
 
     @Autowired
     private SessionUserService sessionUserService;
+
+    @Autowired
+    private TableViewService tableViewService;
+
+    @Autowired
+    private NameMaps nameMaps;
+
     @GetMapping("/list")
-    public String list(HttpSession session, Model model) {
+    public String list(HttpSession session, Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         if (!sessionUserService.isTechnician(session)) {
             return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
         }
 
-        model.addAttribute("activities", activityDao.getAll());
+        Map<String, Function<Activity, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Activity::getIdActivity);
+        sorters.put("name", Activity::getName);
+        sorters.put("date", Activity::getDate);
+        sorters.put("duration", Activity::getDuration);
+        sorters.put("location", Activity::getLocation);
+        sorters.put("category", Activity::getCategory);
+        sorters.put("trainer", activity -> nameMaps.trainerNameById(activity.getIdTrainer()));
+
+        model.addAttribute("activities", tableViewService.apply(activityDao.getAll(), q, sort, dir, sorters,
+                tableViewService.fields(
+                        Activity::getIdActivity,
+                        Activity::getName,
+                        Activity::getDate,
+                        Activity::getDuration,
+                        Activity::getLocation,
+                        Activity::getCategory,
+                        Activity::getDescription,
+                        activity -> nameMaps.trainerNameById(activity.getIdTrainer())
+                )));
+        tableViewService.addState(model, "/activities/list", q, sort, dir,
+                tableViewService.options("id", "ID", "name", "Nombre", "date", "Fecha", "duration", "Duración", "location", "Localización", "category", "Categoría", "trainer", "Formador"));
         return "activity/list";
     }
 

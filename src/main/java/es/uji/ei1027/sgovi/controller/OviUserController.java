@@ -2,10 +2,12 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.dao.ContractDao;
+import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.OviUser;
 import es.uji.ei1027.sgovi.model.EmailContent;
 import es.uji.ei1027.sgovi.service.EmailService;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/ovi-users")
@@ -33,9 +41,35 @@ public class OviUserController {
     @Autowired
     private SessionUserService sessionUserService;
 
+    @Autowired
+    private TableViewService tableViewService;
+
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("oviUsers", oviUserDao.getAll());
+    public String list(Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
+        Map<String, Function<OviUser, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", OviUser::getIdOviUser);
+        sorters.put("name", OviUser::getName);
+        sorters.put("lastName", OviUser::getLastName);
+        sorters.put("email", OviUser::getEmail);
+        sorters.put("phone", OviUser::getPhone);
+        sorters.put("province", OviUser::getProvince);
+        sorters.put("town", OviUser::getTown);
+        sorters.put("pc", OviUser::getPc);
+        sorters.put("age", OviUser::getAge);
+        sorters.put("gender", OviUser::getGender);
+        sorters.put("status", OviUser::getStatus);
+        sorters.put("lopd", OviUser::isLopdConsent);
+
+        model.addAttribute("oviUsers", tableViewService.apply(oviUserDao.getAll(), q, sort, dir, sorters,
+                tableViewService.fields(OviUser::getIdOviUser, OviUser::getName, OviUser::getLastName,
+                        OviUser::getEmail, OviUser::getPhone, OviUser::getProvince, OviUser::getTown,
+                        OviUser::getPc, OviUser::getAge, OviUser::getGender, OviUser::getStatus,
+                        user -> user.isLopdConsent() ? "Sí LOPD aceptada true" : "No LOPD pendiente false")));
+        tableViewService.addState(model, "/ovi-users/list", q, sort, dir,
+                tableViewService.options("id", "ID", "name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "status", "Estado", "lopd", "LOPD"));
         return "oviuser/list";
     }
 
@@ -165,11 +199,34 @@ public class OviUserController {
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable int id, Model model) {
+    public String view(@PathVariable int id, Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         OviUser user = oviUserDao.get(id);
         model.addAttribute("oviUser", user);
-        model.addAttribute("contracts", contractDao.getByOviUserId(id));
+        addContractsTable(model, "/ovi-users/view/" + id, contractDao.getByOviUserId(id), q, sort, dir);
         return "oviuser/view";
+    }
+
+    private void addContractsTable(Model model, String action, List<Contract> contracts, String q, String sort, String dir) {
+        Map<String, Function<Contract, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Contract::getIdContract);
+        sorters.put("startDate", Contract::getStartDate);
+        sorters.put("endDate", Contract::getEndDate);
+        sorters.put("status", contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO");
+        sorters.put("document", Contract::getUrl);
+
+        model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
+                tableViewService.fields(
+                        Contract::getIdContract,
+                        Contract::getStartDate,
+                        Contract::getEndDate,
+                        Contract::getUrl,
+                        contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
+                )));
+        tableViewService.addState(model, action, q, sort, dir,
+                tableViewService.options("id", "ID", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "document", "Documento"));
     }
 
     @PostMapping("/accept")

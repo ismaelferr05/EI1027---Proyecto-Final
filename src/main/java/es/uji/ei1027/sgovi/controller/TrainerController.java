@@ -2,12 +2,17 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.TrainerDao;
 import es.uji.ei1027.sgovi.model.Trainer;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/trainers")
@@ -16,9 +21,28 @@ public class TrainerController {
     @Autowired
     private TrainerDao trainerDao;
 
+    @Autowired
+    private TableViewService tableViewService;
+
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("trainers", trainerDao.getAll());
+    public String list(Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
+        Map<String, Function<Trainer, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Trainer::getIdTrainer);
+        sorters.put("name", Trainer::getName);
+        sorters.put("lastName", Trainer::getLastName);
+        sorters.put("occupation", Trainer::getOccupation);
+        sorters.put("email", Trainer::getEmail);
+        sorters.put("phone", Trainer::getPhone);
+        sorters.put("address", Trainer::getAddress);
+
+        model.addAttribute("trainers", tableViewService.apply(trainerDao.getAll(), q, sort, dir, sorters,
+                tableViewService.fields(Trainer::getIdTrainer, Trainer::getName, Trainer::getLastName,
+                        Trainer::getOccupation, Trainer::getEmail, Trainer::getPhone, Trainer::getAddress)));
+        tableViewService.addState(model, "/trainers/list", q, sort, dir,
+                tableViewService.options("id", "ID", "name", "Nombre", "lastName", "Apellido", "occupation", "Ocupación", "email", "Email", "phone", "Teléfono", "address", "Dirección"));
         return "trainer/list";
     }
 
@@ -69,4 +93,3 @@ public class TrainerController {
         return "redirect:/trainers/list";
     }
 }
-

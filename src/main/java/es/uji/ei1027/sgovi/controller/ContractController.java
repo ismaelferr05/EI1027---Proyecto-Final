@@ -6,7 +6,9 @@ import es.uji.ei1027.sgovi.dao.RequestDao;
 import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.Negotiation;
 import es.uji.ei1027.sgovi.model.Request;
+import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/contracts")
@@ -37,10 +42,19 @@ public class ContractController {
     @Autowired
     private SessionUserService sessionUserService;
 
+    @Autowired
+    private TableViewService tableViewService;
+
+    @Autowired
+    private NameMaps nameMaps;
+
     @GetMapping("/list")
-    public String list(HttpSession session, Model model) {
+    public String list(HttpSession session, Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         if (sessionUserService.isTechnician(session)) {
-            model.addAttribute("contracts", contractDao.getAll());
+            addContractsTable(model, "/contracts/list", contractDao.getAll(), q, sort, dir);
             return "contracts/list";
         }
 
@@ -60,7 +74,10 @@ public class ContractController {
     }
 
     @GetMapping("/pappati/list")
-    public String papPatiList(HttpSession session, Model model) {
+    public String papPatiList(HttpSession session, Model model,
+                              @RequestParam(value = "q", required = false) String q,
+                              @RequestParam(value = "sort", required = false) String sort,
+                              @RequestParam(value = "dir", required = false) String dir) {
         if (!sessionUserService.isPapPati(session)) {
             return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
         }
@@ -76,7 +93,7 @@ public class ContractController {
                 .filter(contract -> !contract.getEndDate().isBefore(today))
                 .count();
 
-        model.addAttribute("contracts", contracts);
+        addContractsTable(model, "/contracts/pappati/list", contracts, q, sort, dir);
         model.addAttribute("contractCount", contracts.size());
         model.addAttribute("activeContractCount", activeContractCount);
         model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
@@ -84,7 +101,10 @@ public class ContractController {
     }
 
     @GetMapping("/oviuser/list")
-    public String oviUserList(HttpSession session, Model model) {
+    public String oviUserList(HttpSession session, Model model,
+                              @RequestParam(value = "q", required = false) String q,
+                              @RequestParam(value = "sort", required = false) String sort,
+                              @RequestParam(value = "dir", required = false) String dir) {
         if (!sessionUserService.isOviUser(session)) {
             return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
         }
@@ -94,9 +114,53 @@ public class ContractController {
             return "redirect:/login";
         }
 
-        model.addAttribute("contracts", contractDao.getByOviUserId(idOviUser));
+        addContractsTable(model, "/contracts/oviuser/list", contractDao.getByOviUserId(idOviUser), q, sort, dir);
         model.addAttribute("currentOviUser", sessionUserService.getCurrentOviUser(session));
         return "contracts/oviuser-list";
+    }
+
+    private void addContractsTable(Model model, String action, List<Contract> contracts, String q, String sort, String dir) {
+        Map<String, Function<Contract, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Contract::getIdContract);
+        sorters.put("wage", Contract::getWage);
+        sorters.put("startDate", Contract::getStartDate);
+        sorters.put("endDate", Contract::getEndDate);
+        sorters.put("negotiation", Contract::getIdNegotiation);
+        sorters.put("oviUser", contract -> {
+            Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+            Request request = negotiation != null ? nameMaps.requestById(negotiation.getIdRequest()) : null;
+            return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
+        });
+        sorters.put("papPati", contract -> {
+            Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+            return negotiation != null ? nameMaps.papPatiNameById(negotiation.getIdPapPati()) : "";
+        });
+
+        model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
+                tableViewService.fields(
+                        Contract::getIdContract,
+                        Contract::getWage,
+                        Contract::getStartDate,
+                        Contract::getEndDate,
+                        Contract::getUrl,
+                        Contract::getIdNegotiation,
+                        contract -> {
+                            Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+                            Request request = negotiation != null ? nameMaps.requestById(negotiation.getIdRequest()) : null;
+                            return request != null ? request.getDescription() : "";
+                        },
+                        contract -> {
+                            Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+                            Request request = negotiation != null ? nameMaps.requestById(negotiation.getIdRequest()) : null;
+                            return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
+                        },
+                        contract -> {
+                            Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+                            return negotiation != null ? nameMaps.papPatiNameById(negotiation.getIdPapPati()) : "";
+                        }
+                )));
+        tableViewService.addState(model, action, q, sort, dir,
+                tableViewService.options("id", "ID", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "negotiation", "Negociación"));
     }
 
     @GetMapping("/add")

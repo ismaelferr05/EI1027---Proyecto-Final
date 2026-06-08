@@ -16,6 +16,8 @@
         <a href="/dashboard" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <a href="/negotiations/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar Negociación</a>
     </div>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
 
     <div class="table-responsive sgovi-table-shell">
     <table class="table table-hover">
@@ -42,7 +44,7 @@
                 <td th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}">PAP/PATI</td>
                 <td>
                     <a th:href="@{/negotiations/edit/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-edit"><i class="bi bi-pencil"></i> Editar</a>
-                    <a th:href="@{/negotiations/delete/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-delete" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a th:href="@{/negotiations/delete/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-delete"><i class="bi bi-trash"></i> Eliminar</a>
                     <a th:href="@{/messages/negotiation/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-messages"><i class="bi bi-chat-dots"></i> Mensajes</a>
                 </td>
             </tr>
@@ -50,8 +52,5 @@
     </table>
     </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

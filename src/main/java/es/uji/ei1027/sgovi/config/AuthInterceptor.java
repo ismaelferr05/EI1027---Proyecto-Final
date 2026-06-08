@@ -46,7 +46,6 @@ public class AuthInterceptor implements HandlerInterceptor {
                 || "/logout".equals(path)
                 || "/error".equals(path)
                 || path.startsWith("/css/")
-                || path.startsWith("/js/")
                 || path.startsWith("/images/")
                 || path.startsWith("/webjars/")
                 || "/favicon.ico".equals(path)

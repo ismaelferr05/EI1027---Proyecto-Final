@@ -10,29 +10,8 @@
 
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
-    <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm mb-4">
+    <form th:if="${!isTechnician}" th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm mb-4">
         <div class="row g-3">
-            <div class="col-md-4" th:if="${isTechnician}">
-                <label for="recipientType" class="form-label">Tipo destinatario</label>
-                <select id="recipientType" th:field="*{recipientType}" class="form-select">
-                    <option value="OVIUSER">Usuarios</option>
-                    <option value="PAPPATI">Pappati</option>
-                </select>
-            </div>
-            <div class="col-md-4" th:if="${isTechnician}">
-                <label for="recipientId" class="form-label">Destinatario</label>
-                <!-- Select por nombre para OVI users -->
-                <select id="recipientIdOvi" th:field="*{recipientId}" class="form-select" required>
-                    <option th:each="u : ${oviUsers}" th:value="${u.idOviUser}"
-                            th:text="${u.name + ' ' + u.lastName}"></option>
-                </select>
-
-                <!-- Select por nombre para PapPati -->
-                <select id="recipientIdPap" th:field="*{recipientId}" class="form-select" style="display:none" required>
-                    <option th:each="p : ${papPatis}" th:value="${p.idPapPati}"
-                            th:text="${p.name + ' ' + p.lastName}"></option>
-                </select>
-            </div>
             <div class="col-md-8">
                 <label for="subject" class="form-label">Asunto</label>
                 <input id="subject" th:field="*{subject}" class="form-control" maxlength="120" required>
@@ -44,6 +23,60 @@
         </div>
         <button class="btn btn-primary mt-3">Registrar comunicación</button>
     </form>
+
+    <div th:if="${isTechnician}" class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
+                <input type="hidden" name="recipientType" value="OVIUSER">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="recipientIdOvi" class="form-label">Usuario OVI destinatario</label>
+                        <select id="recipientIdOvi" name="recipientId" class="form-select" required>
+                            <option value="">Selecciona un usuario OVI</option>
+                            <option th:each="u : ${oviUsers}" th:value="${u.idOviUser}"
+                                    th:text="${u.name + ' ' + u.lastName}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="subjectOvi" class="form-label">Asunto</label>
+                        <input id="subjectOvi" name="subject" class="form-control" maxlength="120" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="textOvi" class="form-label">Texto</label>
+                        <textarea id="textOvi" name="text" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3">Enviar a usuario OVI</button>
+            </form>
+        </div>
+
+        <div class="col-lg-6">
+            <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
+                <input type="hidden" name="recipientType" value="PAPPATI">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="recipientIdPap" class="form-label">PAP/PATI destinatario</label>
+                        <select id="recipientIdPap" name="recipientId" class="form-select" required>
+                            <option value="">Selecciona un PAP/PATI</option>
+                            <option th:each="p : ${papPatis}" th:value="${p.idPapPati}"
+                                    th:text="${p.name + ' ' + p.lastName}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="subjectPap" class="form-label">Asunto</label>
+                        <input id="subjectPap" name="subject" class="form-control" maxlength="120" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="textPap" class="form-label">Texto</label>
+                        <textarea id="textPap" name="text" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3">Enviar a PAP/PATI</button>
+            </form>
+        </div>
+    </div>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
 
     <div class="table-responsive sgovi-table-shell">
         <table class="table table-striped bg-white">
@@ -74,31 +107,5 @@
         </table>
     </div>
 </main>
-    <script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
-        var recipientType = document.getElementById('recipientType');
-        if (!recipientType) return;
-        var selectOvi = document.getElementById('recipientIdOvi');
-        var selectPap = document.getElementById('recipientIdPap');
-        function update() {
-            if (recipientType.value === 'OVIUSER') {
-                selectOvi.style.display = '';
-                selectOvi.disabled = false;
-                selectPap.style.display = 'none';
-                selectPap.disabled = true;
-            } else {
-                selectPap.style.display = '';
-                selectPap.disabled = false;
-                selectOvi.style.display = 'none';
-                selectOvi.disabled = true;
-            }
-        }
-        update();
-        recipientType.addEventListener('change', update);
-    });
-    /*]]>*/
-    </script>
-    <script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

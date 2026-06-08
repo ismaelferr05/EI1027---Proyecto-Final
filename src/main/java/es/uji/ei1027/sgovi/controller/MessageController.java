@@ -14,7 +14,9 @@ import es.uji.ei1027.sgovi.model.OviUser;
 import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.model.Request;
 import es.uji.ei1027.sgovi.model.UserDetails;
+import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/messages")
@@ -55,15 +60,25 @@ public class MessageController {
 
     @Autowired
     private SessionUserService sessionUserService;
+
+    @Autowired
+    private TableViewService tableViewService;
+
+    @Autowired
+    private NameMaps nameMaps;
+
     @GetMapping("/list")
-    public String list(HttpSession session, Model model) {
+    public String list(HttpSession session, Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
         UserDetails currentUser = sessionUserService.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/login";
         }
 
         if (sessionUserService.isTechnician(session)) {
-            model.addAttribute("messages", messageDao.getAll());
+            addMessagesTable(model, messageDao.getAll(), q, sort, dir);
             model.addAttribute("isTechnician", true);
             model.addAttribute("isOviUser", false);
             model.addAttribute("isPapPati", false);
@@ -71,7 +86,7 @@ public class MessageController {
         }
 
         List<ChatThreadSummary> chats = buildChats(session);
-        model.addAttribute("chats", chats);
+        addChatsTable(model, chats, q, sort, dir);
         model.addAttribute("currentUserRole", currentUser.getRole());
         model.addAttribute("currentOviUser", sessionUserService.getCurrentOviUser(session));
         model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
@@ -79,6 +94,44 @@ public class MessageController {
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
         return "message/chats";
+    }
+
+    private void addMessagesTable(Model model, List<Message> messages, String q, String sort, String dir) {
+        Map<String, Function<Message, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Message::getIdMessage);
+        sorters.put("date", Message::getMessageDateTime);
+        sorters.put("sender", Message::getSender);
+        sorters.put("receiver", Message::getReceiver);
+        sorters.put("text", Message::getText);
+        sorters.put("negotiation", Message::getIdNegotiation);
+
+        model.addAttribute("messages", tableViewService.apply(messages, q, sort, dir, sorters,
+                tableViewService.fields(Message::getIdMessage, Message::getMessageDateTime, Message::getSender,
+                        Message::getReceiver, Message::getText, Message::getIdNegotiation)));
+        tableViewService.addState(model, "/messages/list", q, sort, dir,
+                tableViewService.options("id", "ID", "date", "Fecha/Hora", "sender", "Remitente", "receiver", "Destinatario", "text", "Texto", "negotiation", "Negociación"));
+    }
+
+    private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
+        Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("last", this::chatSortKey);
+        sorters.put("request", chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "");
+        sorters.put("oviUser", chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "");
+        sorters.put("papPati", chat -> chat.getPapPati() != null ? nameMaps.fullName(chat.getPapPati().getName(), chat.getPapPati().getLastName()) : "");
+        sorters.put("messages", ChatThreadSummary::getMessageCount);
+
+        model.addAttribute("chats", tableViewService.apply(chats, q, sort, dir, sorters,
+                tableViewService.fields(
+                        chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : "",
+                        chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "",
+                        chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "",
+                        chat -> chat.getPapPati() != null ? nameMaps.fullName(chat.getPapPati().getName(), chat.getPapPati().getLastName()) : "",
+                        chat -> chat.getLastMessage() != null ? chat.getLastMessage().getText() : "",
+                        ChatThreadSummary::getMessageCount,
+                        chat -> chat.isActive() ? "activo active" : "cerrado inactive"
+                )));
+        tableViewService.addState(model, "/messages/list", q, sort, dir,
+                tableViewService.options("last", "Último mensaje", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "messages", "Mensajes"));
     }
 
     @GetMapping("/add")

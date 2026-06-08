@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+<form th:fragment="tableTools" class="table-tools mb-3" method="get" th:action="${tableAction}">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label for="table-q" class="form-label">Filtro</label>
+            <input id="table-q" name="q" class="form-control" th:value="${tableQuery}" placeholder="Buscar por cualquier columna">
+        </div>
+        <div class="col-md-3">
+            <label for="table-sort" class="form-label">Ordenar por</label>
+            <select id="table-sort" name="sort" class="form-select">
+                <option th:each="option : ${tableSortOptions}"
+                        th:value="${option.key}"
+                        th:text="${option.value}"
+                        th:selected="${option.key == tableSort}"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="table-dir" class="form-label">Dirección</label>
+            <select id="table-dir" name="dir" class="form-select">
+                <option value="asc" th:selected="${tableDir != 'desc'}">Ascendente</option>
+                <option value="desc" th:selected="${tableDir == 'desc'}">Descendente</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">Aplicar</button>
+            <a th:href="${tableAction}" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </div>
+</form>
+</body>
+</html>

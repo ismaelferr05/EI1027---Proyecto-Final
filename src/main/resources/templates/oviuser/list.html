@@ -16,6 +16,8 @@
         <a href="/dashboard" class="action-link btn-outline-custom"><i class="bi bi-house"></i> Volver al dashboard</a>
         <a href="/ovi-users/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Agregar usuario</a>
     </div>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
 
     <div class="table-responsive">
         <table class="table table-hover">
@@ -62,15 +64,12 @@
                             <input type="text" name="reason" th:id="|reject-reason-${oviUser.idOviUser}|" aria-label="Motivo del rechazo" placeholder="Motivo" required class="form-control form-control-sm d-inline-block" style="width:120px;">
                             <button type="submit" class="action-btn btn-delete" aria-label="Rechazar"><i class="bi bi-x" aria-hidden="true"></i></button>
                         </form>
-                        <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-delete" aria-label="Eliminar" onclick="return confirm('¿Confirmar eliminación?')"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                        <a th:href="@{/ovi-users/delete/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-delete" aria-label="Eliminar"><i class="bi bi-trash" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

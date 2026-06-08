@@ -14,6 +14,8 @@
         <p th:if="${papPati.status == 'REJECTED'}"><strong>Motivo rechazo:</strong> <span th:text="${papPati.rejectionReason}"></span></p>
     </div>
     <h2>Contratos</h2>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
     <div class="table-responsive sgovi-table-shell">
     <table class="table table-striped bg-white">
         <thead><tr><th>ID</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Documento</th></tr></thead>
@@ -33,6 +35,5 @@
     </div>
     <a href="/pap-patis/list" class="btn btn-outline-secondary">Volver</a>
 </main>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

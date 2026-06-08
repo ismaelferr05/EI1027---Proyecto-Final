@@ -26,6 +26,8 @@
         <a th:if="${isTechnician}" href="/requests/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Nueva solicitud</a>
         <a th:if="${isOviUser}" href="/requests/frontoffice/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Nueva solicitud</a>
     </div>
+    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
 
     <div class="table-responsive sgovi-table-shell mt-4">
         <table class="table table-striped align-middle">
@@ -56,8 +58,5 @@
         </table>
     </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/sgovi.js}" src="/js/sgovi.js"></script>
 </body>
 </html>

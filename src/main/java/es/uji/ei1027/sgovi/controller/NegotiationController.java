@@ -4,12 +4,18 @@ import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.dao.RequestDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.model.Negotiation;
+import es.uji.ei1027.sgovi.service.NameMaps;
+import es.uji.ei1027.sgovi.service.TableViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/negotiations")
@@ -24,9 +30,44 @@ public class NegotiationController {
     @Autowired
     private PapPatiDao papPatiDao;
 
+    @Autowired
+    private TableViewService tableViewService;
+
+    @Autowired
+    private NameMaps nameMaps;
+
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("negotiations", negotiationDao.getAll());
+    public String list(Model model,
+                       @RequestParam(value = "q", required = false) String q,
+                       @RequestParam(value = "sort", required = false) String sort,
+                       @RequestParam(value = "dir", required = false) String dir) {
+        Map<String, Function<Negotiation, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("id", Negotiation::getIdNegotiation);
+        sorters.put("state", Negotiation::getStateOfApproval);
+        sorters.put("request", Negotiation::getIdRequest);
+        sorters.put("oviUser", negotiation -> {
+            var request = nameMaps.requestById(negotiation.getIdRequest());
+            return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
+        });
+        sorters.put("papPati", negotiation -> nameMaps.papPatiNameById(negotiation.getIdPapPati()));
+
+        model.addAttribute("negotiations", tableViewService.apply(negotiationDao.getAll(), q, sort, dir, sorters,
+                tableViewService.fields(
+                        Negotiation::getIdNegotiation,
+                        Negotiation::getStateOfApproval,
+                        Negotiation::getIdRequest,
+                        negotiation -> {
+                            var request = nameMaps.requestById(negotiation.getIdRequest());
+                            return request != null ? request.getDescription() : "";
+                        },
+                        negotiation -> {
+                            var request = nameMaps.requestById(negotiation.getIdRequest());
+                            return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
+                        },
+                        negotiation -> nameMaps.papPatiNameById(negotiation.getIdPapPati())
+                )));
+        tableViewService.addState(model, "/negotiations/list", q, sort, dir,
+                tableViewService.options("id", "ID", "state", "Estado", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI"));
         return "negotiation/list";
     }
 
