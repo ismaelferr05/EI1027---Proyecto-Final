@@ -19,6 +19,12 @@
 			 th:with="counterpartName=${isPapPati ? chat.oviUser.name + ' ' + chat.oviUser.lastName : chat.papPati.name + ' ' + chat.papPati.lastName},
 					  counterpartEmail=${isPapPati ? chat.oviUser.email : chat.papPati.email},
 					  counterpartRole=${isPapPati ? 'Usuario OVI' : 'PAP/PATI'}">
+		<div class="chat-back-row">
+			<a th:href="${chatBackUrl}" class="btn btn-outline-secondary">
+				<i class="bi bi-arrow-left"></i> Volver
+			</a>
+		</div>
+
 		<div class="chat-context">
 			<div class="chat-context-main">
 				<span class="eyebrow-label" th:text="${counterpartRole}">Contacto</span>

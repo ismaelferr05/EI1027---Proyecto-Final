@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="endDate" class="form-label">Fecha fin:</label>
-                    <input id="endDate" type="date" th:field="*{endDate}" class="form-control">
+                    <input id="endDate" type="date" th:field="*{endDate}" th:attr="min=${today}" class="form-control">
                     <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger small mt-2"></div>
                 </div>
                 <div class="col-md-4 mb-3">

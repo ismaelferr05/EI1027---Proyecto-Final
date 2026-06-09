@@ -17,6 +17,7 @@ import es.uji.ei1027.sgovi.model.UserDetails;
 import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import es.uji.ei1027.sgovi.service.TableViewService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -113,26 +116,7 @@ public class MessageController {
     }
 
     private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
-        Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("papPati", chat -> chat.getPapPati() != null ? nameMaps.fullName(chat.getPapPati().getName(), chat.getPapPati().getLastName()) : "");
-        sorters.put("oviUser", chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "");
-        sorters.put("request", chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "");
-        sorters.put("last", this::chatSortKey);
-        sorters.put("messages", ChatThreadSummary::getMessageCount);
-        sorters.put("id", chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : null);
-
-        model.addAttribute("chats", tableViewService.apply(chats, q, sort, dir, sorters,
-                tableViewService.fields(
-                        chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : "",
-                        chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "",
-                        chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "",
-                        chat -> chat.getPapPati() != null ? nameMaps.fullName(chat.getPapPati().getName(), chat.getPapPati().getLastName()) : "",
-                        chat -> chat.getLastMessage() != null ? chat.getLastMessage().getText() : "",
-                        ChatThreadSummary::getMessageCount,
-                        chat -> chat.isActive() ? "activo active" : "cerrado inactive"
-                )));
-        tableViewService.addState(model, "/messages/list", q, sort, dir,
-                tableViewService.options("papPati", "PAP/PATI", "oviUser", "Usuario OVI", "request", "Solicitud", "last", "Último mensaje", "messages", "Mensajes", "id", "ID"));
+        model.addAttribute("chats", chats);
     }
 
     @GetMapping("/add")
@@ -207,7 +191,7 @@ public class MessageController {
     }
 
     @GetMapping("/chat/{idNegotiation}")
-    public String chat(@PathVariable int idNegotiation, HttpSession session, Model model) {
+    public String chat(@PathVariable int idNegotiation, HttpSession session, HttpServletRequest servletRequest, Model model) {
         UserDetails currentUser = sessionUserService.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/login";
@@ -242,6 +226,7 @@ public class MessageController {
         model.addAttribute("papPatiLabel", compactLabel(chat.getPapPati().getName(), chat.getPapPati().getLastName()));
         model.addAttribute("oviUserLabel", compactLabel(chat.getOviUser().getName(), chat.getOviUser().getLastName()));
         model.addAttribute("counterpartLabel", getCounterpartLabel(session, chat));
+        model.addAttribute("chatBackUrl", resolveChatBackUrl(servletRequest, idNegotiation));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
         return "message/chat";
@@ -412,6 +397,32 @@ public class MessageController {
             return compactLabel(chat.getOviUser().getName(), chat.getOviUser().getLastName());
         }
         return "destinatario";
+    }
+
+    private String resolveChatBackUrl(HttpServletRequest request, int idNegotiation) {
+        String fallback = "/messages/list";
+        String referer = request.getHeader("Referer");
+        if (referer == null || referer.isBlank()) {
+            return fallback;
+        }
+        try {
+            URI uri = new URI(referer);
+            if (uri.getHost() != null && !uri.getHost().equalsIgnoreCase(request.getServerName())) {
+                return fallback;
+            }
+            String path = uri.getPath();
+            if (path == null || path.isBlank() || !path.startsWith("/")) {
+                return fallback;
+            }
+            String currentPath = request.getContextPath() + "/messages/chat/" + idNegotiation;
+            if (path.equals(currentPath) || path.equals("/messages/chat/" + idNegotiation)) {
+                return fallback;
+            }
+            String query = uri.getRawQuery();
+            return query == null || query.isBlank() ? path : path + "?" + query;
+        } catch (URISyntaxException e) {
+            return fallback;
+        }
     }
 
     private String compactLabel(String name, String lastName) {

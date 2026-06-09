@@ -53,6 +53,7 @@ public class ActivityController {
         sorters.put("trainer", activity -> nameMaps.trainerNameById(activity.getIdTrainer()));
         sorters.put("location", Activity::getLocation);
         sorters.put("duration", Activity::getDuration);
+        sorters.put("description", Activity::getDescription);
         sorters.put("id", Activity::getIdActivity);
 
         model.addAttribute("activities", tableViewService.apply(activityDao.getAll(), q, sort, dir, sorters,
@@ -67,7 +68,7 @@ public class ActivityController {
                         activity -> nameMaps.trainerNameById(activity.getIdTrainer())
                 )));
         tableViewService.addState(model, "/activities/list", q, sort, dir,
-                tableViewService.options("name", "Nombre", "date", "Fecha", "category", "Categoría", "trainer", "Formador", "location", "Localización", "duration", "Duración", "id", "ID"));
+                tableViewService.options("name", "Nombre", "date", "Fecha", "category", "Categoría", "trainer", "Formador", "location", "Localización", "duration", "Duración", "description", "Descripción", "id", "ID"));
         return "activity/list";
     }
 

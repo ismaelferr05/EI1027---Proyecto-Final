@@ -34,6 +34,8 @@ public class RequestValidator implements Validator {
 
         if (request.getEndDate() == null) {
             errors.rejectValue("endDate", "obligatorio", "La fecha de fin es obligatoria");
+        } else if (request.getEndDate().isBefore(LocalDate.now())) {
+            errors.rejectValue("endDate", "pasada", "La fecha de fin no puede ser anterior a hoy");
         }
 
         if (request.getStartDate() != null && request.getEndDate() != null && request.getEndDate().isBefore(request.getStartDate())) {
@@ -83,4 +85,3 @@ public class RequestValidator implements Validator {
                 || "CONTRACT_FINISHED".equals(status);
     }
 }
-

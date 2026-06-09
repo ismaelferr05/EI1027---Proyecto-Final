@@ -67,9 +67,11 @@ public class OviUserController {
                 tableViewService.fields(OviUser::getIdOviUser, OviUser::getName, OviUser::getLastName,
                         OviUser::getEmail, OviUser::getPhone, OviUser::getProvince, OviUser::getTown,
                         OviUser::getPc, OviUser::getAge, OviUser::getGender, OviUser::getStatus,
-                        user -> user.isLopdConsent() ? "Sí LOPD aceptada true" : "No LOPD pendiente false")));
+                        user -> user.isLopdConsent() ? "Sí LOPD aceptada true" : "No LOPD pendiente false"),
+                OviUser::getStatus));
         tableViewService.addState(model, "/ovi-users/list", q, sort, dir,
-                tableViewService.options("name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "status", "Estado", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "lopd", "LOPD", "id", "ID"));
+                tableViewService.options("name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "status", "Estado", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "lopd", "LOPD", "id", "ID"),
+                tableViewService.userStatusOptions());
         return "oviuser/list";
     }
 
@@ -224,9 +226,11 @@ public class OviUserController {
                         Contract::getEndDate,
                         Contract::getUrl,
                         contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
-                )));
+                ),
+                contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO"));
         tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"));
+                tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"),
+                tableViewService.contractStatusOptions());
     }
 
     @PostMapping("/accept")

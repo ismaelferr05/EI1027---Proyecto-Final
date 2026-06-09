@@ -68,9 +68,11 @@ public class PapPatiController {
                 tableViewService.fields(PapPati::getIdPapPati, PapPati::getName, PapPati::getLastName,
                         PapPati::getEmail, PapPati::getPhone, PapPati::getProvince, PapPati::getTown,
                         PapPati::getPc, PapPati::getAge, PapPati::getGender, PapPati::getTraining,
-                        PapPati::getExperience, PapPati::getExperienceType, PapPati::getStatus)));
+                        PapPati::getExperience, PapPati::getExperienceType, PapPati::getStatus),
+                PapPati::getStatus));
         tableViewService.addState(model, "/pap-patis/list", q, sort, dir,
-                tableViewService.options("name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "status", "Estado", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "training", "Formación", "experience", "Experiencia", "id", "ID"));
+                tableViewService.options("name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "status", "Estado", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "training", "Formación", "experience", "Experiencia", "id", "ID"),
+                tableViewService.userStatusOptions());
         return "pappati/list";
     }
 
@@ -222,9 +224,11 @@ public class PapPatiController {
                         Contract::getEndDate,
                         Contract::getUrl,
                         contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
-                )));
+                ),
+                contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO"));
         tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"));
+                tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"),
+                tableViewService.contractStatusOptions());
     }
 
     @PostMapping("/accept")

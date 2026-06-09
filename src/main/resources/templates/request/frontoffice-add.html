@@ -6,21 +6,6 @@
 <header th:replace="~{fragments/page-header :: pageHeader(title='Nueva Solicitud de Asistencia Personal', icon='bi-file-text', subtitle='')}"></header>
 
 <main class="container page-content mb-5">
-    
-    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
-
-    <div class="user-info-card" th:if="${currentOviUser != null}">
-        <i class="bi bi-person-circle"></i> Solicitud de <strong th:text="|${currentOviUser.name} ${currentOviUser.lastName}|"></strong>
-        <br>
-        <small th:text="|Email: ${currentOviUser.email}|"></small>
-    </div>
-
-<div class="context-actions">
-    <a href="/requests/frontoffice/track" class="btn btn-outline-secondary">
-        <i class="bi bi-search"></i> Ver mis solicitudes
-    </a>
-</div>
-
     <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post">
         <input type="hidden" th:field="*{status}" />
         <input type="hidden" th:field="*{idOviUser}" />
@@ -46,7 +31,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="endDate" class="form-label">Fecha de fin</label>
-                    <input id="endDate" type="date" th:field="*{endDate}" class="form-control" required>
+                    <input id="endDate" type="date" th:field="*{endDate}" th:attr="min=${today}" class="form-control" required>
                     <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger small mt-2"></div>
                 </div>
             </div>

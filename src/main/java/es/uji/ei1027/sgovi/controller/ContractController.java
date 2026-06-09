@@ -93,7 +93,7 @@ public class ContractController {
                 .filter(contract -> !contract.getEndDate().isBefore(today))
                 .count();
 
-        addContractsTable(model, "/contracts/pappati/list", contracts, q, sort, dir);
+        model.addAttribute("contracts", contracts);
         model.addAttribute("contractCount", contracts.size());
         model.addAttribute("activeContractCount", activeContractCount);
         model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
@@ -133,7 +133,9 @@ public class ContractController {
         sorters.put("wage", Contract::getWage);
         sorters.put("startDate", Contract::getStartDate);
         sorters.put("endDate", Contract::getEndDate);
+        sorters.put("status", contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO");
         sorters.put("negotiation", Contract::getIdNegotiation);
+        sorters.put("document", Contract::getUrl);
         sorters.put("id", Contract::getIdContract);
 
         model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
@@ -157,10 +159,26 @@ public class ContractController {
                         contract -> {
                             Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
                             return negotiation != null ? nameMaps.papPatiNameById(negotiation.getIdPapPati()) : "";
-                        }
-                )));
-        tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "negotiation", "Negociación", "id", "ID"));
+                        },
+                        contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
+                ),
+                contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO"));
+        if ("/contracts/list".equals(action)) {
+            tableViewService.addState(model, action, q, sort, dir,
+                    tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"));
+        } else if ("/contracts/oviuser/list".equals(action)) {
+            tableViewService.addState(model, action, q, sort, dir,
+                    tableViewService.options("papPati", "PAP/PATI", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "document", "Documento", "id", "ID"),
+                    tableViewService.contractStatusOptions());
+        } else if ("/contracts/pappati/list".equals(action)) {
+            tableViewService.addState(model, action, q, sort, dir,
+                    tableViewService.options("oviUser", "Usuario OVI", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "document", "Documento", "id", "ID"),
+                    tableViewService.contractStatusOptions());
+        } else {
+            tableViewService.addState(model, action, q, sort, dir,
+                    tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"),
+                    tableViewService.contractStatusOptions());
+        }
     }
 
     @GetMapping("/add")

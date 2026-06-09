@@ -1216,20 +1216,6 @@ td .action-btn {
   border-top: 1px solid var(--border);
 }
 
-.table-page-summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 6px 10px;
-  color: #334155;
-  background: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  font-size: 0.86rem;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
 .table-pager {
   display: flex;
   justify-content: flex-end;
@@ -2380,7 +2366,13 @@ input[type="radio"] {
 
 .chat-shell {
   display: grid;
-  gap: 28px;
+  gap: 24px;
+}
+
+.chat-back-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: -4px;
 }
 
 .chat-context {
@@ -2933,11 +2925,6 @@ input[type="radio"] {
   .table-tools-footer {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .table-page-summary {
-    justify-content: center;
-    width: 100%;
   }
 
   .table-pager,

@@ -34,7 +34,18 @@ public class TableViewService {
                              String direction,
                              Map<String, Function<T, ?>> sorters,
                              List<Function<T, ?>> searchableFields) {
-        List<T> result = filter(rows, query, searchableFields);
+        return apply(rows, query, sort, direction, sorters, searchableFields, null);
+    }
+
+    public <T> List<T> apply(List<T> rows,
+                             String query,
+                             String sort,
+                             String direction,
+                             Map<String, Function<T, ?>> sorters,
+                             List<Function<T, ?>> searchableFields,
+                             Function<T, ?> statusField) {
+        List<T> result = filterByStatus(rows, statusField);
+        result = filter(result, query, searchableFields);
         sort(result, sort, direction, sorters);
         return paginate(result);
     }
@@ -45,11 +56,24 @@ public class TableViewService {
                          String sort,
                          String direction,
                          Map<String, String> sortOptions) {
+        addState(model, action, query, sort, direction, sortOptions, Map.of());
+    }
+
+    public void addState(Model model,
+                         String action,
+                         String query,
+                         String sort,
+                         String direction,
+                         Map<String, String> sortOptions,
+                         Map<String, String> statusOptions) {
         model.addAttribute("tableAction", action);
         model.addAttribute("tableQuery", clean(query));
         model.addAttribute("tableSort", selectedSort(sort, sortOptions));
         model.addAttribute("tableDir", "desc".equalsIgnoreCase(direction) ? "desc" : "asc");
         model.addAttribute("tableSortOptions", sortOptions);
+        model.addAttribute("tableStatus", selectedStatus(statusOptions));
+        model.addAttribute("tableStatusOptions", statusOptions);
+        model.addAttribute("tableStatusEncoded", encode(selectedStatus(statusOptions)));
         model.addAttribute("tableQueryEncoded", encode(clean(query)));
         model.addAttribute("tablePage", requestAttribute("tablePage", 1));
         model.addAttribute("tableSize", requestAttribute("tableSize", DEFAULT_PAGE_SIZE));
@@ -68,6 +92,22 @@ public class TableViewService {
             options.put(keyLabels[i], keyLabels[i + 1]);
         }
         return options;
+    }
+
+    public Map<String, String> userStatusOptions() {
+        return options("PENDING", "Pendiente", "ACCEPTED", "Aceptado", "REJECTED", "Rechazado");
+    }
+
+    public Map<String, String> requestStatusOptions() {
+        return options("PENDING", "Pendiente", "IN_REVIEW", "En revisión", "APPROVED", "Aprobada", "REJECTED", "Rechazada");
+    }
+
+    public Map<String, String> negotiationStatusOptions() {
+        return options("IN_PROGRESS", "En progreso", "ACCEPTED", "Aceptada", "REJECTED", "Rechazada", "CANCELLED", "Cancelada");
+    }
+
+    public Map<String, String> contractStatusOptions() {
+        return options("ACTIVO", "Activo", "FINALIZADO", "Finalizado");
     }
 
     public <T> Map<String, Function<T, ?>> sorters(Object... keyExtractors) {
@@ -137,6 +177,17 @@ public class TableViewService {
         String[] terms = normalizedQuery.split("\\s+");
         return rows.stream()
                 .filter(row -> matches(row, fields, terms))
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+    }
+
+    private <T> List<T> filterByStatus(List<T> rows, Function<T, ?> statusField) {
+        String selectedStatus = currentStatusParameter();
+        if (statusField == null || selectedStatus.isBlank()) {
+            return new ArrayList<>(rows);
+        }
+        String normalizedStatus = normalize(selectedStatus);
+        return rows.stream()
+                .filter(row -> normalize(safeApply(statusField, row)).equals(normalizedStatus))
                 .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
     }
 
@@ -336,6 +387,22 @@ public class TableViewService {
             return cleaned;
         }
         return sortOptions.keySet().stream().findFirst().orElse("");
+    }
+
+    private String selectedStatus(Map<String, String> statusOptions) {
+        String cleaned = currentStatusParameter();
+        if (cleaned.isEmpty()) {
+            return "";
+        }
+        if (statusOptions.isEmpty() || statusOptions.containsKey(cleaned)) {
+            return cleaned;
+        }
+        return "";
+    }
+
+    private String currentStatusParameter() {
+        HttpServletRequest request = currentRequest();
+        return request == null ? "" : clean(request.getParameter("status"));
     }
 
     private String encode(String value) {

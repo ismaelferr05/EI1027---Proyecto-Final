@@ -78,24 +78,7 @@ public class CommunicationController {
     }
 
     private void addCommunicationsTable(Model model, List<TechnicianCommunication> communications, String q, String sort, String dir) {
-        Map<String, Function<TechnicianCommunication, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("subject", TechnicianCommunication::getSubject);
-        sorters.put("recipient", item -> nameMaps.recipientLabel(item.getRecipientType(), item.getRecipientId()));
-        sorters.put("sender", item -> nameMaps.roleLabel(item.getSenderRole()));
-        sorters.put("date", TechnicianCommunication::getCommunicationDateTime);
-        sorters.put("id", TechnicianCommunication::getIdCommunication);
-
-        model.addAttribute("communications", tableViewService.apply(communications, q, sort, dir, sorters,
-                tableViewService.fields(
-                        TechnicianCommunication::getIdCommunication,
-                        TechnicianCommunication::getCommunicationDateTime,
-                        item -> nameMaps.roleLabel(item.getSenderRole()),
-                        item -> nameMaps.recipientLabel(item.getRecipientType(), item.getRecipientId()),
-                        TechnicianCommunication::getSubject,
-                        TechnicianCommunication::getText
-                )));
-        tableViewService.addState(model, "/communications/list", q, sort, dir,
-                tableViewService.options("subject", "Asunto", "recipient", "Destinatario", "sender", "Emisor", "date", "Fecha", "id", "ID"));
+        model.addAttribute("communications", communications);
     }
 
     @PostMapping("/send")

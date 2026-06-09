@@ -31,8 +31,6 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
-
     <div class="contract-list" th:if="${not #lists.isEmpty(contracts)}">
         <article class="contract-card" th:each="contract : ${contracts}"
                  th:with="neg=${@nameMaps.negotiationById(contract.idNegotiation)},

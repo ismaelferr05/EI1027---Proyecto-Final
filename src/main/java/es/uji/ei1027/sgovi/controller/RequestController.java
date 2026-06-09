@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.time.LocalDate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -130,6 +131,7 @@ public class RequestController {
         request.setStatus("IN_REVIEW");
         model.addAttribute("request", request);
         model.addAttribute("oviUsers", oviUserDao.getAll());
+        addRequestFormAttributes(model);
         return "request/add";
     }
 
@@ -144,6 +146,7 @@ public class RequestController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("oviUsers", oviUserDao.getAll());
+            addRequestFormAttributes(model);
             return "request/add";
         }
 
@@ -160,6 +163,7 @@ public class RequestController {
 
         model.addAttribute("request", requestDao.get(id));
         model.addAttribute("oviUsers", oviUserDao.getAll());
+        addRequestFormAttributes(model);
         return "request/edit";
     }
 
@@ -174,6 +178,7 @@ public class RequestController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("oviUsers", oviUserDao.getAll());
+            addRequestFormAttributes(model);
             return "request/edit";
         }
 
@@ -266,6 +271,7 @@ public class RequestController {
         request.setIdOviUser(currentOviUser.getIdOviUser());
         model.addAttribute("request", request);
         model.addAttribute("currentOviUser", currentOviUser);
+        addRequestFormAttributes(model);
         return "request/frontoffice-add";
     }
 
@@ -288,6 +294,7 @@ public class RequestController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("currentOviUser", currentOviUser);
+            addRequestFormAttributes(model);
             return "request/frontoffice-add";
         }
 
@@ -416,8 +423,17 @@ public class RequestController {
 
     private void addRequestsTable(Model model, String attribute, String action, List<Request> requests, String q, String sort, String dir) {
         model.addAttribute(attribute, sortedFilteredRequests(requests, q, sort, dir));
-        tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("oviUser", "Usuario OVI", "description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "training", "Formación", "status", "Estado", "experience", "Experiencia", "preferredAge", "Edad preferida", "preferredPc", "CP preferido", "id", "ID"));
+        Map<String, String> options;
+        if ("/requests/frontoffice/track".equals(action)) {
+            options = tableViewService.options("description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "status", "Estado");
+        } else {
+            options = tableViewService.options("oviUser", "Usuario OVI", "description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "id", "ID");
+        }
+        tableViewService.addState(model, action, q, sort, dir, options, tableViewService.requestStatusOptions());
+    }
+
+    private void addRequestFormAttributes(Model model) {
+        model.addAttribute("today", LocalDate.now());
     }
 
     private List<Request> sortedFilteredRequests(List<Request> requests, String q, String sort, String dir) {
@@ -448,7 +464,8 @@ public class RequestController {
                         Request::getPreferredPc,
                         Request::getPreferredAge,
                         Request::getRejectionReason
-                ));
+                ),
+                Request::getStatus);
     }
 
     @GetMapping("/backoffice/review/{id}")
@@ -486,7 +503,7 @@ public class RequestController {
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
         tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
-                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle", "id", "ID"));
+                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
         return "request/backoffice-review";
     }
 

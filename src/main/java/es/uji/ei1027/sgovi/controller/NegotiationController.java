@@ -65,9 +65,11 @@ public class NegotiationController {
                             return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
                         },
                         negotiation -> nameMaps.papPatiNameById(negotiation.getIdPapPati())
-                )));
+                ),
+                Negotiation::getStateOfApproval));
         tableViewService.addState(model, "/negotiations/list", q, sort, dir,
-                tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "request", "Solicitud", "state", "Estado", "id", "ID"));
+                tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "request", "Solicitud", "state", "Estado", "id", "ID"),
+                tableViewService.negotiationStatusOptions());
         return "negotiation/list";
     }
 

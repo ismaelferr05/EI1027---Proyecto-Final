@@ -5,11 +5,21 @@
 <form class="table-tools-form" method="get" th:action="${tableAction}">
     <input type="hidden" name="page" value="1">
     <div class="row g-2 align-items-end">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="table-q" class="form-label">Filtro</label>
             <input id="table-q" name="q" class="form-control" th:value="${tableQuery}" placeholder="Buscar por cualquier columna">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2" th:if="${tableStatusOptions != null and !tableStatusOptions.isEmpty()}">
+            <label for="table-status" class="form-label">Estado</label>
+            <select id="table-status" name="status" class="form-select">
+                <option value="" th:selected="${tableStatus == null or tableStatus.isBlank()}">Todos</option>
+                <option th:each="option : ${tableStatusOptions}"
+                        th:value="${option.key}"
+                        th:text="${option.value}"
+                        th:selected="${option.key == tableStatus}"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
             <label for="table-sort" class="form-label">Ordenar por</label>
             <select id="table-sort" name="sort" class="form-select">
                 <option th:each="option : ${tableSortOptions}"
@@ -39,27 +49,23 @@
         </div>
     </div>
 </form>
-<div class="table-tools-footer">
-    <p class="table-page-summary mb-0">
-        <span th:text="${tablePageStart}">0</span>-<span th:text="${tablePageEnd}">0</span>
-        de <span th:text="${tableTotalRows}">0</span>
-    </p>
-    <nav class="table-pager" th:if="${tableTotalPages > 1}" aria-label="Paginación de tabla">
+<div class="table-tools-footer" th:if="${tableTotalPages > 1}">
+    <nav class="table-pager" aria-label="Paginación de tabla">
         <ul class="pagination mb-0">
             <li class="page-item" th:classappend="${!tableHasPrevious} ? 'disabled'">
                 <a class="page-link page-link-step"
-                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasPrevious ? tablePage - 1 : tablePage)}"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&status=' + tableStatusEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasPrevious ? tablePage - 1 : tablePage)}"
                    th:attr="aria-disabled=${!tableHasPrevious}"
                    aria-label="Anterior">Anterior</a>
             </li>
             <li class="page-item" th:each="pageNumber : ${tablePages}" th:classappend="${pageNumber == tablePage} ? 'active'">
                 <a class="page-link page-link-number"
-                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + pageNumber}"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&status=' + tableStatusEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + pageNumber}"
                    th:text="${pageNumber}">1</a>
             </li>
             <li class="page-item" th:classappend="${!tableHasNext} ? 'disabled'">
                 <a class="page-link page-link-step"
-                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasNext ? tablePage + 1 : tablePage)}"
+                   th:href="${tableAction + '?q=' + tableQueryEncoded + '&status=' + tableStatusEncoded + '&sort=' + tableSort + '&dir=' + tableDir + '&size=' + tableSize + '&page=' + (tableHasNext ? tablePage + 1 : tablePage)}"
                    th:attr="aria-disabled=${!tableHasNext}"
                    aria-label="Siguiente">Siguiente</a>
             </li>
