@@ -37,7 +37,7 @@
 
        <div class="mb-3 col-md-4">
            <label for="idNegotiation" class="control-label col-sm-2">Negociación:</label>
-           <select id="idNegotiation" th:field="*{idNegotiation}" class="form-control col-sm-4">
+           <select id="idNegotiation" th:field="*{idNegotiation}" class="form-select col-sm-4">
                <option value="">Selecciona una negociación</option>
                <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
            </select>
@@ -49,4 +49,3 @@
 </main>
 </body>
 </html>
-

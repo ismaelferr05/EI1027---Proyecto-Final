@@ -663,13 +663,8 @@ body.login-page .login-card .form-control:-webkit-autofill:focus {
 }
 
 .login-card,
-.user-card,
 .module-card,
-.form-section,
-.panel-card,
-.card-panel,
 .card,
-.bg-white,
 .list-group-item,
 form.bg-white {
   background: rgba(255, 255, 255, 0.9) !important;
@@ -680,13 +675,43 @@ form.bg-white {
   box-shadow: var(--shadow-sm) !important;
 }
 
-.login-card,
-.user-card,
 .form-section,
 .panel-card,
 .card-panel,
+.user-card,
+.bg-white:not(table) {
+  background: transparent !important;
+  color: var(--card-foreground);
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.login-card,
 form.bg-white {
   padding: 24px !important;
+}
+
+.form-section,
+.panel-card,
+.card-panel,
+.user-card,
+.bg-white:not(table) {
+  padding: 0 !important;
+}
+
+.form-section,
+.panel-card,
+.card-panel {
+  margin-bottom: 34px !important;
+  padding-bottom: 28px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.form-section:last-child,
+.panel-card:last-child,
+.card-panel:last-child {
+  border-bottom: 0 !important;
 }
 
 main.container > form:not([style]),
@@ -694,11 +719,11 @@ main.container > form:not([style]),
 .container > form.bg-white,
 main.container > .mb-3 + form,
 main.container > form[action] {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 22px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 td form,
@@ -805,12 +830,33 @@ td form,
 .required-note,
 .user-info-card,
 .composer {
-  background: var(--muted) !important;
-  border: 1px solid var(--border) !important;
-  border-left: 1px solid var(--border) !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.76) !important;
+  border-left: 1px solid rgba(226, 232, 240, 0.76) !important;
   border-radius: var(--radius) !important;
   color: var(--foreground) !important;
   box-shadow: none !important;
+}
+
+.info-item,
+.request-item,
+.meta-item,
+.email-row,
+.email-body {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 2px 0 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.info-item:last-child,
+.request-item:last-child,
+.meta-item:last-child,
+.email-row:last-child,
+.email-body:last-child {
+  border-bottom: 0 !important;
 }
 
 .info-item,
@@ -819,6 +865,26 @@ td form,
 .required-note,
 .user-info-card {
   padding: 14px !important;
+}
+
+.user-info-card,
+.required-note,
+.empty-state,
+.profile-strip {
+  margin-bottom: 24px !important;
+}
+
+.context-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 34px;
+}
+
+.context-actions .btn,
+.context-actions .action-link {
+  min-height: 40px;
 }
 
 .info-label {
@@ -1037,7 +1103,8 @@ td .action-btn {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .decision-actions form {
@@ -1111,18 +1178,20 @@ td .action-btn {
 .table-wrapper,
 .btn-group-custom,
 .d-flex.gap-2 {
-  gap: 10px !important;
+  gap: 14px !important;
 }
 
 .table-tools {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  gap: 14px;
+  margin-bottom: 28px !important;
+  padding: 0 0 18px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .table-tools-form .form-label {
@@ -1143,7 +1212,7 @@ td .action-btn {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--border);
 }
 
@@ -1224,12 +1293,26 @@ td .action-btn {
   display: flex !important;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 24px !important;
-  padding: 16px !important;
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--radius) !important;
-  box-shadow: var(--shadow-sm) !important;
+  margin: 0 0 32px !important;
+  padding: 0 0 22px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.action-bar + .table-tools,
+.action-bar + .table-responsive,
+.action-bar + .sgovi-table-shell {
+  margin-top: 4px !important;
+}
+
+.btn-group-custom {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .action-bar > a,
@@ -1254,10 +1337,12 @@ td .action-btn {
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
-  background: #ffffff !important;
+  background: transparent !important;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  box-shadow: none;
   -webkit-overflow-scrolling: touch;
   scrollbar-color: #cbd5e1 transparent;
   scrollbar-width: thin;
@@ -1327,6 +1412,21 @@ main.container > table.table {
 
 .table tbody td {
   max-width: 360px;
+}
+
+.table-action-col {
+  width: 1%;
+  max-width: none !important;
+  white-space: nowrap;
+}
+
+.table-action-col .action-btn,
+.table-action-col .btn {
+  margin-left: 0 !important;
+}
+
+.table tbody td:first-child {
+  padding-left: 14px;
 }
 
 .table tbody td:not(:has(.btn)):not(:has(.action-btn)):not(:has(form)) {
@@ -1497,16 +1597,23 @@ td > a.btn-link:hover {
 .summary-card,
 .status-card,
 .detail-card,
-.contract-card,
-.candidate-card,
 .confirmation-card,
-.chat-card,
 .email-box,
 .table-wrapper {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-width: 0;
+}
+
+.contract-card,
+.candidate-card,
+.chat-card {
   background: rgba(255, 255, 255, 0.9) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
-  box-shadow: var(--shadow-sm) !important;
+  box-shadow: none !important;
   min-width: 0;
 }
 
@@ -1524,10 +1631,10 @@ td > a.btn-link:hover {
   gap: 14px;
   margin-bottom: 20px;
   padding: 16px 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .profile-strip-avatar {
@@ -1571,10 +1678,11 @@ td > a.btn-link:hover {
 
 .stat-chip {
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .stat-chip-label {
@@ -1625,7 +1733,8 @@ td > a.btn-link:hover {
 .contract-card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+  justify-content: flex-start;
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
@@ -1660,15 +1769,38 @@ td > a.btn-link:hover {
 .summary-card,
 .status-card,
 .detail-card,
-.contract-card,
 .candidate-card {
-  padding: 18px !important;
+  padding: 0 0 22px !important;
 }
 
 .confirmation-card,
 .chat-card {
-  padding: 22px !important;
+  padding: 0 0 22px !important;
   margin-bottom: 18px !important;
+}
+
+.contract-card,
+.candidate-card,
+.chat-card {
+  padding: 18px !important;
+}
+
+.chat-list {
+  display: grid;
+  gap: 18px;
+}
+
+.chat-card {
+  display: grid;
+  gap: 16px;
+}
+
+.chat-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  padding-bottom: 2px;
 }
 
 .request-grid,
@@ -1683,8 +1815,23 @@ td > a.btn-link:hover {
 .chat-preview,
 .email-row,
 .email-body {
+  padding: 2px 0 14px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.request-item:last-child,
+.meta-item:last-child,
+.email-row:last-child,
+.email-body:last-child {
+  border-bottom: 0;
+}
+
+.chat-preview {
   padding: 14px;
-  background: var(--muted);
+  background: #f8fafc;
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
@@ -1727,9 +1874,23 @@ td > a.btn-link:hover {
 .chat-title {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+}
+
+.chat-title h5 {
+  margin-bottom: 4px;
+  font-size: 1.08rem;
+  font-weight: 720;
+}
+
+.communication-compose-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
 }
 
 .action-buttons {
@@ -2136,12 +2297,15 @@ input[type="radio"] {
   }
 
   .login-card,
+  form.bg-white {
+    padding: 18px !important;
+  }
+
   .user-card,
   .form-section,
   .panel-card,
-  .card-panel,
-  form.bg-white {
-    padding: 18px !important;
+  .card-panel {
+    padding: 0 0 22px !important;
   }
 
   .btn,

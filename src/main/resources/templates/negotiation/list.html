@@ -22,30 +22,30 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th><i class="bi bi-hash"></i> ID</th>
-                <th><i class="bi bi-check-circle"></i> Estado</th>
-                <th><i class="bi bi-file-text"></i> Solicitud</th>
+                <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
                 <th><i class="bi bi-people"></i> Usuario OVI</th>
                 <th><i class="bi bi-person-arms-up"></i> PAP/PATI</th>
-                <th><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-file-text"></i> Solicitud</th>
+                <th><i class="bi bi-check-circle"></i> Estado</th>
+                <th><i class="bi bi-hash"></i> ID</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="negotiation : ${negotiations}"
                 th:with="req=${@nameMaps.requestById(negotiation.idRequest)}">
-                <td th:text="${negotiation.idNegotiation}"></td>
-                <td><span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span></td>
-                <td>
-                    <span th:text="|#${negotiation.idRequest}|">#1</span>
-                    <div class="text-muted small" th:if="${req != null}" th:text="${req.description}"></div>
-                </td>
-                <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
-                <td th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}">PAP/PATI</td>
-                <td>
+                <td class="table-action-col">
                     <a th:href="@{/messages/negotiation/{id}(id=${negotiation.idNegotiation})}" class="action-btn btn-view">
                         <i class="bi bi-chat-dots"></i> Abrir
                     </a>
                 </td>
+                <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
+                <td th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}">PAP/PATI</td>
+                <td>
+                    <span th:text="|#${negotiation.idRequest}|">#1</span>
+                    <div class="text-muted small" th:if="${req != null}" th:text="${req.description}"></div>
+                </td>
+                <td><span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span></td>
+                <td th:text="${negotiation.idNegotiation}"></td>
             </tr>
         </tbody>
     </table>

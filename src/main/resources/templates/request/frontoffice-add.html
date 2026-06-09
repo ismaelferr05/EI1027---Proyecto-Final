@@ -15,7 +15,7 @@
         <small th:text="|Email: ${currentOviUser.email}|"></small>
     </div>
 
-<div class="mb-3">
+<div class="context-actions">
     <a href="/requests/frontoffice/track" class="btn btn-outline-secondary">
         <i class="bi bi-search"></i> Ver mis solicitudes
     </a>
@@ -78,7 +78,12 @@
                 </div>
                 <div class="col-md-3">
                     <label for="experienceType" class="form-label">Tipo de experiencia</label>
-                    <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50" placeholder="ej: Formal">
+                    <select id="experienceType" th:field="*{experienceType}" class="form-select">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Formal">Formal</option>
+                        <option value="Informal">Informal</option>
+                        <option value="Mixta">Mixta</option>
+                    </select>
                     <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger small mt-2"></div>
                 </div>
             </div>
@@ -94,7 +99,7 @@
                         <option value="">Sin preferencia</option>
                         <option value="F">Femenino</option>
                         <option value="M">Masculino</option>
-                        <option value="O">Otro</option>
+                        <option value="Otro">Otro</option>
                     </select>
                     <div th:if="${#fields.hasErrors('preferredGender')}" th:errors="*{preferredGender}" class="text-danger small mt-2"></div>
                 </div>

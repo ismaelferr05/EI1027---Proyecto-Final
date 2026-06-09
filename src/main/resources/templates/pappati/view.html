@@ -65,17 +65,17 @@
 
     <div class="table-responsive sgovi-table-shell">
     <table class="table table-striped bg-white">
-        <thead><tr><th>ID</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Documento</th></tr></thead>
+        <thead><tr><th>Estado</th><th>Inicio</th><th>Fin</th><th>Documento</th><th>ID</th></tr></thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(contracts)}"><td colspan="5">No hay contratos asociados.</td></tr>
         <tr th:each="contract : ${contracts}">
-            <td th:text="${contract.idContract}"></td>
-            <td th:text="${contract.startDate}"></td>
-            <td th:text="${contract.endDate}"></td>
             <td th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}">
                 <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
             </td>
+            <td th:text="${contract.startDate}"></td>
+            <td th:text="${contract.endDate}"></td>
             <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer">Ver documento</a></td>
+            <td th:text="${contract.idContract}"></td>
         </tr>
         </tbody>
     </table>

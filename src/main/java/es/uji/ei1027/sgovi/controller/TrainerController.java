@@ -30,19 +30,19 @@ public class TrainerController {
                        @RequestParam(value = "sort", required = false) String sort,
                        @RequestParam(value = "dir", required = false) String dir) {
         Map<String, Function<Trainer, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Trainer::getIdTrainer);
         sorters.put("name", Trainer::getName);
         sorters.put("lastName", Trainer::getLastName);
         sorters.put("occupation", Trainer::getOccupation);
         sorters.put("email", Trainer::getEmail);
         sorters.put("phone", Trainer::getPhone);
         sorters.put("address", Trainer::getAddress);
+        sorters.put("id", Trainer::getIdTrainer);
 
         model.addAttribute("trainers", tableViewService.apply(trainerDao.getAll(), q, sort, dir, sorters,
                 tableViewService.fields(Trainer::getIdTrainer, Trainer::getName, Trainer::getLastName,
                         Trainer::getOccupation, Trainer::getEmail, Trainer::getPhone, Trainer::getAddress)));
         tableViewService.addState(model, "/trainers/list", q, sort, dir,
-                tableViewService.options("id", "ID", "name", "Nombre", "lastName", "Apellido", "occupation", "Ocupación", "email", "Email", "phone", "Teléfono", "address", "Dirección"));
+                tableViewService.options("name", "Nombre", "lastName", "Apellido", "occupation", "Ocupación", "email", "Email", "phone", "Teléfono", "address", "Dirección", "id", "ID"));
         return "trainer/list";
     }
 

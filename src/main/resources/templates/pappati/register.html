@@ -19,12 +19,29 @@
             <div class="col-md-6"><label for="province" class="form-label">Provincia</label><input th:field="*{province}" class="form-control"></div>
             <div class="col-md-4"><label for="town" class="form-label">Población</label><input th:field="*{town}" class="form-control"></div>
             <div class="col-md-4"><label for="pc" class="form-label">CP</label><input th:field="*{pc}" class="form-control"></div>
-            <div class="col-md-4"><label for="age" class="form-label">Edad</label><input th:field="*{age}" type="number" class="form-control"></div>
-            <div class="col-md-6"><label for="gender" class="form-label">Género</label><input th:field="*{gender}" class="form-control"></div>
+            <div class="col-md-4"><label for="age" class="form-label">Edad</label><input th:field="*{age}" type="number" class="form-control" min="0" step="1"></div>
+            <div class="col-md-6">
+                <label for="gender" class="form-label">Género</label>
+                <select id="gender" th:field="*{gender}" class="form-select">
+                    <option value="">Selecciona un género</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                <div th:errors="*{gender}" class="text-danger small"></div>
+            </div>
             <div class="col-md-6"><label for="cvUrl" class="form-label">URL CV</label><input th:field="*{cvUrl}" class="form-control"></div>
             <div class="col-md-4"><label for="training" class="form-label">Formación</label><input th:field="*{training}" class="form-control"></div>
             <div class="col-md-4"><label for="experience" class="form-label">Experiencia</label><input th:field="*{experience}" class="form-control"></div>
-            <div class="col-md-4"><label for="experienceType" class="form-label">Tipo experiencia</label><input th:field="*{experienceType}" class="form-control"></div>
+            <div class="col-md-4">
+                <label for="experienceType" class="form-label">Tipo experiencia</label>
+                <select id="experienceType" th:field="*{experienceType}" class="form-select">
+                    <option value="">Selecciona un tipo</option>
+                    <option value="Formal">Formal</option>
+                    <option value="Informal">Informal</option>
+                    <option value="Mixta">Mixta</option>
+                </select>
+            </div>
         </div>
         <input type="hidden" th:field="*{status}">
         <button class="btn btn-primary mt-4" type="submit">Enviar solicitud</button>

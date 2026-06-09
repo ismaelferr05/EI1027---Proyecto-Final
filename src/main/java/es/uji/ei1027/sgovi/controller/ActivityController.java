@@ -47,13 +47,13 @@ public class ActivityController {
         }
 
         Map<String, Function<Activity, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Activity::getIdActivity);
         sorters.put("name", Activity::getName);
         sorters.put("date", Activity::getDate);
-        sorters.put("duration", Activity::getDuration);
-        sorters.put("location", Activity::getLocation);
         sorters.put("category", Activity::getCategory);
         sorters.put("trainer", activity -> nameMaps.trainerNameById(activity.getIdTrainer()));
+        sorters.put("location", Activity::getLocation);
+        sorters.put("duration", Activity::getDuration);
+        sorters.put("id", Activity::getIdActivity);
 
         model.addAttribute("activities", tableViewService.apply(activityDao.getAll(), q, sort, dir, sorters,
                 tableViewService.fields(
@@ -67,7 +67,7 @@ public class ActivityController {
                         activity -> nameMaps.trainerNameById(activity.getIdTrainer())
                 )));
         tableViewService.addState(model, "/activities/list", q, sort, dir,
-                tableViewService.options("id", "ID", "name", "Nombre", "date", "Fecha", "duration", "Duración", "location", "Localización", "category", "Categoría", "trainer", "Formador"));
+                tableViewService.options("name", "Nombre", "date", "Fecha", "category", "Categoría", "trainer", "Formador", "location", "Localización", "duration", "Duración", "id", "ID"));
         return "activity/list";
     }
 

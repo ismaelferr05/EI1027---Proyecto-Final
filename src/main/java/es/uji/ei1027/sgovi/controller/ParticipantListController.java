@@ -46,16 +46,16 @@ public class ParticipantListController {
                        @RequestParam(value = "sort", required = false) String sort,
                        @RequestParam(value = "dir", required = false) String dir) {
         Map<String, Function<ParticipantList, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", ParticipantList::getIdParticipantList);
-        sorters.put("attendance", ParticipantList::isAttendance);
-        sorters.put("certificate", ParticipantList::getAttendanceCertificateUrl);
+        sorters.put("participant", participant -> participant.getIdOviUser() != null
+                ? nameMaps.oviUserNameById(participant.getIdOviUser())
+                : nameMaps.papPatiNameById(participant.getIdPapPati()));
         sorters.put("activity", participant -> {
             var activity = nameMaps.activityById(participant.getIdActivity());
             return activity != null ? activity.getName() : "";
         });
-        sorters.put("participant", participant -> participant.getIdOviUser() != null
-                ? nameMaps.oviUserNameById(participant.getIdOviUser())
-                : nameMaps.papPatiNameById(participant.getIdPapPati()));
+        sorters.put("attendance", ParticipantList::isAttendance);
+        sorters.put("certificate", ParticipantList::getAttendanceCertificateUrl);
+        sorters.put("id", ParticipantList::getIdParticipantList);
 
         model.addAttribute("participantLists", tableViewService.apply(participantListDao.getAll(), q, sort, dir, sorters,
                 tableViewService.fields(
@@ -70,7 +70,7 @@ public class ParticipantListController {
                         participant -> nameMaps.papPatiNameById(participant.getIdPapPati())
                 )));
         tableViewService.addState(model, "/participant-lists/list", q, sort, dir,
-                tableViewService.options("id", "ID", "attendance", "Asistencia", "certificate", "Certificado", "activity", "Actividad", "participant", "Participante"));
+                tableViewService.options("participant", "Participante", "activity", "Actividad", "attendance", "Asistencia", "certificate", "Certificado", "id", "ID"));
         return "participantlist/list";
     }
 

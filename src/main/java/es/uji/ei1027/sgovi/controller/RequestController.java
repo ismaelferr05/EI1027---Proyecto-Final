@@ -417,21 +417,21 @@ public class RequestController {
     private void addRequestsTable(Model model, String attribute, String action, List<Request> requests, String q, String sort, String dir) {
         model.addAttribute(attribute, sortedFilteredRequests(requests, q, sort, dir));
         tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("id", "ID", "description", "Descripción", "oviUser", "Usuario OVI", "training", "Formación", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "experience", "Experiencia", "preferredAge", "Edad preferida", "preferredPc", "CP preferido"));
+                tableViewService.options("oviUser", "Usuario OVI", "description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "training", "Formación", "status", "Estado", "experience", "Experiencia", "preferredAge", "Edad preferida", "preferredPc", "CP preferido", "id", "ID"));
     }
 
     private List<Request> sortedFilteredRequests(List<Request> requests, String q, String sort, String dir) {
         Map<String, Function<Request, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Request::getIdRequest);
-        sorters.put("description", Request::getDescription);
         sorters.put("oviUser", request -> nameMaps.oviUserNameById(request.getIdOviUser()));
-        sorters.put("training", Request::getTraining);
+        sorters.put("description", Request::getDescription);
         sorters.put("startDate", Request::getStartDate);
         sorters.put("endDate", Request::getEndDate);
+        sorters.put("training", Request::getTraining);
         sorters.put("status", Request::getStatus);
         sorters.put("experience", Request::getExperience);
         sorters.put("preferredAge", Request::getPreferredAge);
         sorters.put("preferredPc", Request::getPreferredPc);
+        sorters.put("id", Request::getIdRequest);
 
         return tableViewService.apply(requests, q, sort, dir, sorters,
                 tableViewService.fields(
@@ -486,19 +486,19 @@ public class RequestController {
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
         tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
-                tableViewService.options("id", "ID", "score", "Puntuación", "name", "PAP/PATI", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
+                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle", "id", "ID"));
         return "request/backoffice-review";
     }
 
     private List<CandidateProposal> sortedFilteredProposals(List<CandidateProposal> proposals, String q, String sort, String dir) {
         Map<String, Function<CandidateProposal, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", proposal -> proposal.getPapPati().getIdPapPati());
-        sorters.put("score", CandidateProposal::getScore);
         sorters.put("name", proposal -> nameMaps.fullName(proposal.getPapPati().getName(), proposal.getPapPati().getLastName()));
+        sorters.put("score", CandidateProposal::getScore);
         sorters.put("pc", proposal -> proposal.getPapPati().getPc());
         sorters.put("gender", proposal -> proposal.getPapPati().getGender());
         sorters.put("age", proposal -> proposal.getPapPati().getAge());
         sorters.put("detail", CandidateProposal::getMatchSummary);
+        sorters.put("id", proposal -> proposal.getPapPati().getIdPapPati());
 
         return tableViewService.apply(proposals, q, sort, dir, sorters,
                 tableViewService.fields(

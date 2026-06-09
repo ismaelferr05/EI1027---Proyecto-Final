@@ -22,33 +22,33 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th><i class="bi bi-hash"></i> ID</th>
+                <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-person"></i> Participante</th>
+                <th><i class="bi bi-calendar-event"></i> Actividad</th>
                 <th><i class="bi bi-check2"></i> Asistencia</th>
                 <th><i class="bi bi-certificate"></i> Certificado</th>
-                <th><i class="bi bi-calendar-event"></i> Actividad</th>
-                <th><i class="bi bi-person"></i> Participante</th>
-                <th><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-hash"></i> ID</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="pl : ${participantLists}"
                 th:with="act=${@nameMaps.activityById(pl.idActivity)}">
-                <td th:text="${pl.idParticipantList}"></td>
+                <td class="table-action-col">
+                    <a th:href="@{/participant-lists/edit/{id}(id=${pl.idParticipantList})}" class="action-btn btn-view">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </td>
+                <td th:text="${pl.idOviUser != null ? @nameMaps.oviUserNameById(pl.idOviUser) : @nameMaps.papPatiNameById(pl.idPapPati)}">Participante</td>
+                <td>
+                    <span th:text="${act != null ? act.name : '—'}">Actividad</span>
+                    <div class="text-muted small" th:if="${act != null}" th:text="${act.date}"></div>
+                </td>
                 <td><span class="badge" th:classappend="${pl.attendance ? 'bg-success' : 'bg-danger'}" th:text="${pl.attendance ? 'Sí' : 'No'}"></span></td>
                 <td>
                     <a th:href="${pl.attendanceCertificateUrl}" target="_blank" th:if="${pl.attendanceCertificateUrl != null}" class="action-btn btn-edit"><i class="bi bi-download"></i> Ver</a>
                     <span th:if="${pl.attendanceCertificateUrl == null}" class="text-muted">—</span>
                 </td>
-                <td>
-                    <span th:text="${act != null ? act.name : '—'}">Actividad</span>
-                    <div class="text-muted small" th:if="${act != null}" th:text="${act.date}"></div>
-                </td>
-                <td th:text="${pl.idOviUser != null ? @nameMaps.oviUserNameById(pl.idOviUser) : @nameMaps.papPatiNameById(pl.idPapPati)}">Participante</td>
-                <td>
-                    <a th:href="@{/participant-lists/edit/{id}(id=${pl.idParticipantList})}" class="action-btn btn-view">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                </td>
+                <td th:text="${pl.idParticipantList}"></td>
             </tr>
         </tbody>
     </table>

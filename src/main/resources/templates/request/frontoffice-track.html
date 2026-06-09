@@ -32,24 +32,28 @@
         <table class="table table-striped align-middle">
             <thead>
             <tr>
+                <th>Acción</th>
                 <th>Descripcion</th>
                 <th>Periodo</th>
                 <th>Estado</th>
-                <th>Acción</th>
+                <th>Motivo</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(requests)}">
-                <td colspan="4" class="text-center">No hay solicitudes para mostrar.</td>
+                <td colspan="5" class="text-center">No hay solicitudes para mostrar.</td>
             </tr>
             <tr th:each="request : ${requests}">
+                <td class="table-action-col">
+                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver resolución</a>
+                    <span th:if="${request.status != 'APPROVED'}" class="text-muted small">—</span>
+                </td>
                 <td th:text="${request.description}"></td>
                 <td th:text="|${request.startDate} -> ${request.endDate}|"></td>
                 <td>
                     <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
                 </td>
                 <td>
-                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver resolución</a>
                     <span th:if="${request.status == 'REJECTED'}" class="text-muted small" th:text="${request.rejectionReason != null ? request.rejectionReason : 'Rechazada'}"></span>
                 </td>
             </tr>

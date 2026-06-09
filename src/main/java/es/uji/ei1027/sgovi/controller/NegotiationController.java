@@ -42,14 +42,14 @@ public class NegotiationController {
                        @RequestParam(value = "sort", required = false) String sort,
                        @RequestParam(value = "dir", required = false) String dir) {
         Map<String, Function<Negotiation, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Negotiation::getIdNegotiation);
-        sorters.put("state", Negotiation::getStateOfApproval);
-        sorters.put("request", Negotiation::getIdRequest);
         sorters.put("oviUser", negotiation -> {
             var request = nameMaps.requestById(negotiation.getIdRequest());
             return request != null ? nameMaps.oviUserNameById(request.getIdOviUser()) : "";
         });
         sorters.put("papPati", negotiation -> nameMaps.papPatiNameById(negotiation.getIdPapPati()));
+        sorters.put("request", Negotiation::getIdRequest);
+        sorters.put("state", Negotiation::getStateOfApproval);
+        sorters.put("id", Negotiation::getIdNegotiation);
 
         model.addAttribute("negotiations", tableViewService.apply(negotiationDao.getAll(), q, sort, dir, sorters,
                 tableViewService.fields(
@@ -67,7 +67,7 @@ public class NegotiationController {
                         negotiation -> nameMaps.papPatiNameById(negotiation.getIdPapPati())
                 )));
         tableViewService.addState(model, "/negotiations/list", q, sort, dir,
-                tableViewService.options("id", "ID", "state", "Estado", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI"));
+                tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "request", "Solicitud", "state", "Estado", "id", "ID"));
         return "negotiation/list";
     }
 

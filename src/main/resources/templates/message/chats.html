@@ -29,8 +29,8 @@
 		<p class="mb-0 text-muted" th:if="${isPapPati}">Cuando el técnico te proponga para una solicitud, podrás conversar con el usuario OVI desde aquí.</p>
 	</div>
 
-	<div th:if="${!#lists.isEmpty(chats)}">
-		<div class="chat-card" th:each="chat : ${chats}">
+	<div class="chat-list" th:if="${!#lists.isEmpty(chats)}">
+		<article class="chat-card" th:each="chat : ${chats}">
 			<div class="chat-title">
 				<div>
 					<h5><i class="bi bi-person-lines-fill"></i> <span th:text="${chat.papPati.name + ' ' + chat.papPati.lastName}"></span></h5>
@@ -41,6 +41,18 @@
 					<span class="badge badge-soft text-bg-success" th:if="${chat.contract != null}">Contrato activo</span>
 					<span class="badge badge-soft text-bg-secondary" th:text="${chat.messageCount + ' mensajes'}"></span>
 				</div>
+			</div>
+
+			<div class="chat-card-actions">
+				<a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${chat.negotiation.idNegotiation})}" class="btn btn-primary">
+					<i class="bi bi-chat-dots"></i> Abrir chat
+				</a>
+				<a th:if="${isPapPati and chat.contract == null}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-outline-primary">
+					<i class="bi bi-plus-circle"></i> Crear contrato
+				</a>
+				<a th:if="${isPapPati and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-outline-primary">
+					<i class="bi bi-pencil-square"></i> Editar contrato
+				</a>
 			</div>
 
 			<div class="meta-grid">
@@ -79,21 +91,8 @@
 				</div>
 				<div th:if="${chat.lastMessage == null}" class="text-muted">Aún no hay mensajes en este chat. Puedes iniciar la conversación.</div>
 			</div>
-
-			<div class="mt-3 d-flex justify-content-end">
-				<a th:if="${isPapPati and chat.contract == null}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-success me-2">
-					<i class="bi bi-plus-circle"></i> Crear contrato
-				</a>
-				<a th:if="${isPapPati and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-outline-primary me-2">
-					<i class="bi bi-pencil-square"></i> Editar contrato
-				</a>
-				<a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${chat.negotiation.idNegotiation})}" class="btn btn-primary">
-					<i class="bi bi-chat-dots"></i> Abrir chat
-				</a>
-			</div>
-		</div>
+		</article>
 	</div>
 </main>
 </body>
 </html>
-

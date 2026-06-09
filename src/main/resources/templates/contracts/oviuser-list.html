@@ -16,20 +16,22 @@
     <table class="table table-striped bg-white">
         <thead>
         <tr>
-            <th>ID</th>
+            <th class="table-action-col">Gestión</th>
             <th>PAP/PATI</th>
             <th>Salario</th>
             <th>Vigencia</th>
             <th>Estado</th>
             <th>Documento</th>
-            <th>Gestión</th>
+            <th>ID</th>
         </tr>
         </thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(contracts)}"><td colspan="7">No tienes contratos registrados.</td></tr>
         <tr th:each="contract : ${contracts}"
             th:with="neg=${@nameMaps.negotiationById(contract.idNegotiation)}">
-            <td th:text="${contract.idContract}"></td>
+            <td class="table-action-col">
+                <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view">Detalle</a>
+            </td>
             <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>
             <td th:text="|€ ${contract.wage}|"></td>
             <td th:text="|${contract.startDate} → ${contract.endDate}|"></td>
@@ -37,9 +39,7 @@
                 <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
             </td>
             <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer">Ver documento</a></td>
-            <td>
-                <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view">Detalle</a>
-            </td>
+            <td th:text="${contract.idContract}"></td>
         </tr>
         </tbody>
     </table>

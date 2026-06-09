@@ -17,12 +17,12 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
                     <th><i class="bi bi-people"></i> Usuario OVI</th>
                     <th><i class="bi bi-blockquote"></i> Descripción</th>
                     <th><i class="bi bi-calendar-range"></i> Período</th>
                     <th><i class="bi bi-check-circle"></i> Estado</th>
-                    <th><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-hash"></i> ID</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,16 +30,16 @@
                     <td colspan="6" class="text-center text-muted py-4"><i class="bi bi-inbox"></i> No hay solicitudes en revisión</td>
                 </tr>
                 <tr th:each="request : ${pendingRequests}">
-                    <td th:text="${request.idRequest}"></td>
-                    <td th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
-                    <td th:text="${request.description}"></td>
-                    <td th:text="${request.startDate + ' -> ' + request.endDate}"></td>
-                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span></td>
-                    <td>
+                    <td class="table-action-col">
                         <a class="action-btn btn-view" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}">
                             <i class="bi bi-arrow-right"></i> Revisar
                         </a>
                     </td>
+                    <td th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
+                    <td th:text="${request.description}"></td>
+                    <td th:text="${request.startDate + ' -> ' + request.endDate}"></td>
+                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span></td>
+                    <td th:text="${request.idRequest}"></td>
                 </tr>
             </tbody>
         </table>
@@ -48,7 +48,8 @@
     <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas sin contrato</h2>
     <div th:if="${!#lists.isEmpty(approvedRequests)}">
         <div class="list-group">
-            <div class="list-group-item d-flex justify-content-between align-items-center" th:each="request : ${approvedRequests}">
+            <div class="list-group-item d-flex align-items-center flex-wrap gap-3" th:each="request : ${approvedRequests}">
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver negociaciones</a>
                 <div>
                     <h6 class="mb-1">
                         <strong>#<span th:text="${request.idRequest}"></span></strong>
@@ -56,9 +57,6 @@
                         — <span th:text="${request.description}"></span>
                     </h6>
                     <small class="text-muted" th:text="${'Período: ' + request.startDate + ' -> ' + request.endDate}"></small>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver negociaciones</a>
                 </div>
             </div>
         </div>

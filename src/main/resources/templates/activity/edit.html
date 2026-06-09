@@ -43,7 +43,14 @@
 
                 <div class="col-md-4 mb-3">
                     <label for="category" class="form-label">Categoría:</label>
-                    <input id="category" type="text" th:field="*{category}" class="form-control" maxlength="50" />
+                    <select id="category" th:field="*{category}" class="form-select">
+                        <option value="">Selecciona una categoría</option>
+                        <option value="Taller">Taller</option>
+                        <option value="Deporte">Deporte</option>
+                        <option value="Formación">Formación</option>
+                        <option value="Ocio">Ocio</option>
+                        <option value="Acompañamiento">Acompañamiento</option>
+                    </select>
                     <div th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="text-danger small mt-2"></div>
                 </div>
             </div>
@@ -72,4 +79,3 @@
 </main>
 </body>
 </html>
-

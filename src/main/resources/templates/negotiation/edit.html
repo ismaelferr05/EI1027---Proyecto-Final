@@ -14,7 +14,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="stateOfApproval" class="form-label">Estado:</label>
-            <select id="stateOfApproval" th:field="*{stateOfApproval}" class="form-control">
+            <select id="stateOfApproval" th:field="*{stateOfApproval}" class="form-select">
                 <option value="">Selecciona un estado</option>
                 <option value="PENDING">PENDING</option>
                 <option value="ACCEPTED">ACCEPTED</option>
@@ -27,7 +27,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="idRequest" class="form-label">Solicitud:</label>
-            <select id="idRequest" th:field="*{idRequest}" class="form-control">
+            <select id="idRequest" th:field="*{idRequest}" class="form-select">
                 <option value="">Selecciona una solicitud</option>
                 <option th:each="request : ${requests}" th:value="${request.idRequest}" th:text="|${request.idRequest} - ${request.training}|"></option>
             </select>
@@ -36,7 +36,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="idPapPati" class="form-label">PAP PATI:</label>
-            <select id="idPapPati" th:field="*{idPapPati}" class="form-control">
+            <select id="idPapPati" th:field="*{idPapPati}" class="form-select">
                 <option value="">Selecciona un PAP PATI</option>
                 <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
             </select>
@@ -48,4 +48,3 @@
 </main>
 </body>
 </html>
-

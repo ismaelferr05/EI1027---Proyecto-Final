@@ -35,34 +35,34 @@
         <table class="table table-hover align-middle">
             <thead>
             <tr>
-                <th><i class="bi bi-hash"></i> ID</th>
-                <th><i class="bi bi-calendar-event"></i> Fecha/Hora</th>
+                <th th:if="${isTechnician}" class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-chat-left-text"></i> Texto</th>
                 <th><i class="bi bi-person"></i> Remitente</th>
                 <th><i class="bi bi-person-check"></i> Destinatario</th>
-                <th><i class="bi bi-chat-left-text"></i> Texto</th>
                 <th><i class="bi bi-diagram-3"></i> Negociación</th>
-                <th th:if="${isTechnician}"><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-calendar-event"></i> Fecha/Hora</th>
+                <th><i class="bi bi-hash"></i> ID</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="message : ${messages}"
                 th:with="neg=${@nameMaps.negotiationById(message.idNegotiation)},
                          req=${neg != null ? @nameMaps.requestById(neg.idRequest) : null}">
-                <td th:text="${message.idMessage}"></td>
-                <td th:text="${message.messageDateTime}"></td>
+                <td th:if="${isTechnician}" class="table-action-col">
+                    <a th:href="@{/messages/edit/{id}(id=${message.idMessage})}" class="action-btn btn-view">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </td>
+                <td class="msg-text" th:text="${message.text}"></td>
                 <td><span class="badge-custom badge-tech" th:text="${message.sender}"></span></td>
                 <td><span class="badge-custom badge-user" th:text="${message.receiver}"></span></td>
-                <td class="msg-text" th:text="${message.text}"></td>
                 <td class="small">
                     <span th:text="|#${message.idNegotiation}|">#1</span>
                     <span th:if="${neg != null and req != null}" class="text-muted"
                           th:text="| · ${@nameMaps.oviUserNameById(req.idOviUser)} ↔ ${@nameMaps.papPatiNameById(neg.idPapPati)}|"></span>
                 </td>
-                <td th:if="${isTechnician}">
-                    <a th:href="@{/messages/edit/{id}(id=${message.idMessage})}" class="action-btn btn-view">
-                        <i class="bi bi-pencil"></i> Editar
-                    </a>
-                </td>
+                <td th:text="${message.messageDateTime}"></td>
+                <td th:text="${message.idMessage}"></td>
             </tr>
             </tbody>
         </table>

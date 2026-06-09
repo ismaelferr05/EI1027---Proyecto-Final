@@ -22,32 +22,32 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
                     <th><i class="bi bi-blockquote"></i> Nombre</th>
                     <th><i class="bi bi-calendar"></i> Fecha</th>
-                    <th><i class="bi bi-clock"></i> Duración</th>
-                    <th><i class="bi bi-geo-alt"></i> Localización</th>
                     <th><i class="bi bi-tag"></i> Categoría</th>
-                    <th><i class="bi bi-info-circle"></i> Descripción</th>
                     <th><i class="bi bi-person-badge"></i> Formador</th>
-                    <th><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-geo-alt"></i> Localización</th>
+                    <th><i class="bi bi-clock"></i> Duración</th>
+                    <th><i class="bi bi-info-circle"></i> Descripción</th>
+                    <th><i class="bi bi-hash"></i> ID</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="activity : ${activities}">
-                    <td th:text="${activity.idActivity}"></td>
-                    <td th:text="${activity.name}"></td>
-                    <td th:text="${activity.date}"></td>
-                    <td th:text="|${activity.duration} min|"></td>
-                    <td th:text="${activity.location}"></td>
-                    <td><span class="badge bg-info" th:text="${activity.category}"></span></td>
-                    <td th:text="${activity.description}"></td>
-                    <td th:text="${@nameMaps.trainerNameById(activity.idTrainer)}"></td>
-                    <td>
+                    <td class="table-action-col">
                         <a th:href="@{/activities/edit/{id}(id=${activity.idActivity})}" class="action-btn btn-view">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
                     </td>
+                    <td th:text="${activity.name}"></td>
+                    <td th:text="${activity.date}"></td>
+                    <td><span class="badge bg-info" th:text="${activity.category}"></span></td>
+                    <td th:text="${@nameMaps.trainerNameById(activity.idTrainer)}"></td>
+                    <td th:text="${activity.location}"></td>
+                    <td th:text="|${activity.duration} min|"></td>
+                    <td th:text="${activity.description}"></td>
+                    <td th:text="${activity.idActivity}"></td>
                 </tr>
             </tbody>
         </table>

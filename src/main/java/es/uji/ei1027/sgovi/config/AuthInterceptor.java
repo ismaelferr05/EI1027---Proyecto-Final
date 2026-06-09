@@ -17,6 +17,14 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws IOException {
         String path = request.getRequestURI().substring(request.getContextPath().length());
 
+        if (isGuestOnlyPath(path)) {
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getAttribute("user") != null) {
+                session.invalidate();
+            }
+            return true;
+        }
+
         if (isPublicPath(path)) {
             return true;
         }
@@ -39,10 +47,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private boolean isPublicPath(String path) {
         return "/".equals(path)
                 || "/login".equals(path)
-                || path.startsWith("/ovi-users/register")
-                || path.startsWith("/ovi-users/track")
-                || path.startsWith("/pap-patis/register")
-                || path.startsWith("/pap-patis/track")
+                || isGuestOnlyPath(path)
                 || "/logout".equals(path)
                 || "/error".equals(path)
                 || path.startsWith("/css/")
@@ -50,6 +55,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                 || path.startsWith("/webjars/")
                 || "/favicon.ico".equals(path)
                 || "/index.html".equals(path);
+    }
+
+    private boolean isGuestOnlyPath(String path) {
+        return path.startsWith("/ovi-users/register")
+                || path.startsWith("/ovi-users/track")
+                || path.startsWith("/pap-patis/register")
+                || path.startsWith("/pap-patis/track");
     }
 
     private boolean isAllowedForRole(String path, String role) {

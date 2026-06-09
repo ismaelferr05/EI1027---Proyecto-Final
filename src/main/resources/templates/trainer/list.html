@@ -22,30 +22,30 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th><i class="bi bi-hash"></i> ID</th>
-                <th><i class="bi bi-person"></i> Nombre</th>
-                <th><i class="bi bi-person"></i> Apellido</th>
+                <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-person"></i> Formador</th>
                 <th><i class="bi bi-briefcase"></i> Ocupación</th>
                 <th><i class="bi bi-envelope"></i> Email</th>
                 <th><i class="bi bi-telephone"></i> Teléfono</th>
                 <th><i class="bi bi-geo-alt"></i> Dirección</th>
-                <th><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-hash"></i> ID</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="trainer : ${trainers}">
-                <td th:text="${trainer.idTrainer}"></td>
-                <td th:text="${trainer.name}"></td>
-                <td th:text="${trainer.lastName}"></td>
-                <td th:text="${trainer.occupation}"></td>
-                <td th:text="${trainer.email}"></td>
-                <td th:text="${trainer.phone}"></td>
-                <td th:text="${trainer.address}"></td>
-                <td>
+                <td class="table-action-col">
                     <a th:href="@{/trainers/edit/{id}(id=${trainer.idTrainer})}" class="action-btn btn-view">
                         <i class="bi bi-pencil"></i> Editar
                     </a>
                 </td>
+                <td>
+                    <strong th:text="${trainer.name + ' ' + trainer.lastName}"></strong>
+                </td>
+                <td th:text="${trainer.occupation}"></td>
+                <td th:text="${trainer.email}"></td>
+                <td th:text="${trainer.phone}"></td>
+                <td th:text="${trainer.address}"></td>
+                <td th:text="${trainer.idTrainer}"></td>
             </tr>
         </tbody>
     </table>

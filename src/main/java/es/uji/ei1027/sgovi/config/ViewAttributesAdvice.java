@@ -36,10 +36,6 @@ public class ViewAttributesAdvice {
     }
 
     private String resolveTopbarMode(HttpServletRequest request, boolean loggedIn) {
-        if (loggedIn) {
-            return "app";
-        }
-
         String path = request.getRequestURI();
         if ("/login".equals(path)) {
             return "none";
@@ -50,8 +46,11 @@ public class ViewAttributesAdvice {
         if (path.startsWith("/pap-patis/register")) {
             return "guest-pappati-register";
         }
-        if (path.contains("/track")) {
+        if (path.startsWith("/ovi-users/track") || path.startsWith("/pap-patis/track")) {
             return "guest-minimal";
+        }
+        if (loggedIn) {
+            return "app";
         }
         return "guest-full";
     }

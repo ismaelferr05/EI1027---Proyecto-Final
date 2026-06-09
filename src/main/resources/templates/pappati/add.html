@@ -73,8 +73,8 @@
                     <label for="gender" class="form-label">Género:</label>
                     <select id="gender" th:field="*{gender}" class="form-select">
                         <option value="">Selecciona un género</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
                         <option value="Otro">Otro</option>
                     </select>
                     <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger small mt-2"></div>
@@ -109,7 +109,12 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="experienceType" class="form-label">Tipo experiencia:</label>
-                    <input id="experienceType" type="text" th:field="*{experienceType}" class="form-control" maxlength="50">
+                    <select id="experienceType" th:field="*{experienceType}" class="form-select">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Formal">Formal</option>
+                        <option value="Informal">Informal</option>
+                        <option value="Mixta">Mixta</option>
+                    </select>
                     <div th:if="${#fields.hasErrors('experienceType')}" th:errors="*{experienceType}" class="text-danger small mt-2"></div>
                 </div>
             </div>

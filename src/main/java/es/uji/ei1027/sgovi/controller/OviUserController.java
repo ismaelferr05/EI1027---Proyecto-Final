@@ -50,18 +50,18 @@ public class OviUserController {
                        @RequestParam(value = "sort", required = false) String sort,
                        @RequestParam(value = "dir", required = false) String dir) {
         Map<String, Function<OviUser, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", OviUser::getIdOviUser);
         sorters.put("name", OviUser::getName);
         sorters.put("lastName", OviUser::getLastName);
         sorters.put("email", OviUser::getEmail);
         sorters.put("phone", OviUser::getPhone);
+        sorters.put("status", OviUser::getStatus);
         sorters.put("province", OviUser::getProvince);
         sorters.put("town", OviUser::getTown);
         sorters.put("pc", OviUser::getPc);
         sorters.put("age", OviUser::getAge);
         sorters.put("gender", OviUser::getGender);
-        sorters.put("status", OviUser::getStatus);
         sorters.put("lopd", OviUser::isLopdConsent);
+        sorters.put("id", OviUser::getIdOviUser);
 
         model.addAttribute("oviUsers", tableViewService.apply(oviUserDao.getAll(), q, sort, dir, sorters,
                 tableViewService.fields(OviUser::getIdOviUser, OviUser::getName, OviUser::getLastName,
@@ -69,7 +69,7 @@ public class OviUserController {
                         OviUser::getPc, OviUser::getAge, OviUser::getGender, OviUser::getStatus,
                         user -> user.isLopdConsent() ? "Sí LOPD aceptada true" : "No LOPD pendiente false")));
         tableViewService.addState(model, "/ovi-users/list", q, sort, dir,
-                tableViewService.options("id", "ID", "name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "status", "Estado", "lopd", "LOPD"));
+                tableViewService.options("name", "Nombre", "lastName", "Apellidos", "email", "Email", "phone", "Teléfono", "status", "Estado", "province", "Provincia", "town", "Ciudad", "pc", "CP", "age", "Edad", "gender", "Género", "lopd", "LOPD", "id", "ID"));
         return "oviuser/list";
     }
 
@@ -211,11 +211,11 @@ public class OviUserController {
 
     private void addContractsTable(Model model, String action, List<Contract> contracts, String q, String sort, String dir) {
         Map<String, Function<Contract, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Contract::getIdContract);
+        sorters.put("status", contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO");
         sorters.put("startDate", Contract::getStartDate);
         sorters.put("endDate", Contract::getEndDate);
-        sorters.put("status", contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO" : "ACTIVO");
         sorters.put("document", Contract::getUrl);
+        sorters.put("id", Contract::getIdContract);
 
         model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
                 tableViewService.fields(
@@ -226,7 +226,7 @@ public class OviUserController {
                         contract -> contract.getEndDate().isBefore(LocalDate.now()) ? "FINALIZADO finalizado" : "ACTIVO activo"
                 )));
         tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("id", "ID", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "document", "Documento"));
+                tableViewService.options("status", "Estado", "startDate", "Inicio", "endDate", "Fin", "document", "Documento", "id", "ID"));
     }
 
     @PostMapping("/accept")

@@ -98,28 +98,28 @@ public class MessageController {
 
     private void addMessagesTable(Model model, List<Message> messages, String q, String sort, String dir) {
         Map<String, Function<Message, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Message::getIdMessage);
-        sorters.put("date", Message::getMessageDateTime);
+        sorters.put("text", Message::getText);
         sorters.put("sender", Message::getSender);
         sorters.put("receiver", Message::getReceiver);
-        sorters.put("text", Message::getText);
         sorters.put("negotiation", Message::getIdNegotiation);
+        sorters.put("date", Message::getMessageDateTime);
+        sorters.put("id", Message::getIdMessage);
 
         model.addAttribute("messages", tableViewService.apply(messages, q, sort, dir, sorters,
                 tableViewService.fields(Message::getIdMessage, Message::getMessageDateTime, Message::getSender,
                         Message::getReceiver, Message::getText, Message::getIdNegotiation)));
         tableViewService.addState(model, "/messages/list", q, sort, dir,
-                tableViewService.options("id", "ID", "date", "Fecha/Hora", "sender", "Remitente", "receiver", "Destinatario", "text", "Texto", "negotiation", "Negociación"));
+                tableViewService.options("text", "Texto", "sender", "Remitente", "receiver", "Destinatario", "negotiation", "Negociación", "date", "Fecha/Hora", "id", "ID"));
     }
 
     private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
         Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : null);
-        sorters.put("last", this::chatSortKey);
-        sorters.put("request", chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "");
-        sorters.put("oviUser", chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "");
         sorters.put("papPati", chat -> chat.getPapPati() != null ? nameMaps.fullName(chat.getPapPati().getName(), chat.getPapPati().getLastName()) : "");
+        sorters.put("oviUser", chat -> chat.getOviUser() != null ? nameMaps.fullName(chat.getOviUser().getName(), chat.getOviUser().getLastName()) : "");
+        sorters.put("request", chat -> chat.getRequest() != null ? chat.getRequest().getDescription() : "");
+        sorters.put("last", this::chatSortKey);
         sorters.put("messages", ChatThreadSummary::getMessageCount);
+        sorters.put("id", chat -> chat.getNegotiation() != null ? chat.getNegotiation().getIdNegotiation() : null);
 
         model.addAttribute("chats", tableViewService.apply(chats, q, sort, dir, sorters,
                 tableViewService.fields(
@@ -132,7 +132,7 @@ public class MessageController {
                         chat -> chat.isActive() ? "activo active" : "cerrado inactive"
                 )));
         tableViewService.addState(model, "/messages/list", q, sort, dir,
-                tableViewService.options("id", "ID", "last", "Último mensaje", "request", "Solicitud", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "messages", "Mensajes"));
+                tableViewService.options("papPati", "PAP/PATI", "oviUser", "Usuario OVI", "request", "Solicitud", "last", "Último mensaje", "messages", "Mensajes", "id", "ID"));
     }
 
     @GetMapping("/add")

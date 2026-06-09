@@ -26,7 +26,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="idActivity" class="form-label">Actividad:</label>
-            <select id="idActivity" th:field="*{idActivity}" class="form-control">
+            <select id="idActivity" th:field="*{idActivity}" class="form-select">
                 <option value="">Selecciona una actividad</option>
                 <option th:each="activity : ${activities}" th:value="${activity.idActivity}" th:text="${activity.name}"></option>
             </select>
@@ -35,7 +35,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="idOviUser" class="form-label">Usuario OVI:</label>
-            <select id="idOviUser" th:field="*{idOviUser}" class="form-control">
+            <select id="idOviUser" th:field="*{idOviUser}" class="form-select">
                 <option value="">Selecciona un usuario OVI</option>
                 <option th:each="oviUser : ${oviUsers}" th:value="${oviUser.idOviUser}" th:text="|${oviUser.name} ${oviUser.lastName}|"></option>
             </select>
@@ -44,7 +44,7 @@
 
         <div class="mb-3 col-md-4">
             <label for="idPapPati" class="form-label">PAP PATI:</label>
-            <select id="idPapPati" th:field="*{idPapPati}" class="form-control">
+            <select id="idPapPati" th:field="*{idPapPati}" class="form-select">
                 <option value="">Selecciona un PAP PATI</option>
                 <option th:each="papPati : ${papPatis}" th:value="${papPati.idPapPati}" th:text="|${papPati.name} ${papPati.lastName}|"></option>
             </select>
@@ -56,4 +56,3 @@
 </main>
 </body>
 </html>
-

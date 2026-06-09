@@ -22,11 +22,11 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
-                    <th><i class="bi bi-person"></i> Nombre</th>
-                    <th><i class="bi bi-person"></i> Apellidos</th>
+                    <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-person"></i> PAP/PATI</th>
                     <th><i class="bi bi-envelope"></i> Email</th>
                     <th><i class="bi bi-telephone"></i> Teléfono</th>
+                    <th><i class="bi bi-check-circle"></i> Estado</th>
                     <th><i class="bi bi-geo-alt"></i> Provincia</th>
                     <th><i class="bi bi-building"></i> Ciudad</th>
                     <th><i class="bi bi-mailbox"></i> CP</th>
@@ -34,17 +34,22 @@
                     <th><i class="bi bi-person-fill"></i> Género</th>
                     <th><i class="bi bi-book"></i> Formación</th>
                     <th><i class="bi bi-briefcase"></i> Experiencia</th>
-                    <th><i class="bi bi-check-circle"></i> Estado</th>
-                    <th><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-hash"></i> ID</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="papPati : ${papPatis}">
-                    <td th:text="${papPati.idPapPati}"></td>
-                    <td th:text="${papPati.name}"></td>
-                    <td th:text="${papPati.lastName}"></td>
+                    <td class="table-action-col">
+                        <a th:href="@{/pap-patis/view/{id}(id=${papPati.idPapPati})}" class="action-btn btn-view">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
+                        </a>
+                    </td>
+                    <td>
+                        <strong th:text="${papPati.name + ' ' + papPati.lastName}"></strong>
+                    </td>
                     <td th:text="${papPati.email}"></td>
                     <td th:text="${papPati.phone}"></td>
+                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${papPati.status})}"></span></td>
                     <td th:text="${papPati.province}"></td>
                     <td th:text="${papPati.town}"></td>
                     <td th:text="${papPati.pc}"></td>
@@ -52,12 +57,7 @@
                     <td th:text="${papPati.gender}"></td>
                     <td th:text="${papPati.training}"></td>
                     <td th:text="${papPati.experience}"></td>
-                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${papPati.status})}"></span></td>
-                    <td>
-                        <a th:href="@{/pap-patis/view/{id}(id=${papPati.idPapPati})}" class="action-btn btn-view">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
-                        </a>
-                    </td>
+                    <td th:text="${papPati.idPapPati}"></td>
                 </tr>
             </tbody>
         </table>

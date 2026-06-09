@@ -121,11 +121,6 @@ public class ContractController {
 
     private void addContractsTable(Model model, String action, List<Contract> contracts, String q, String sort, String dir) {
         Map<String, Function<Contract, ?>> sorters = new LinkedHashMap<>();
-        sorters.put("id", Contract::getIdContract);
-        sorters.put("wage", Contract::getWage);
-        sorters.put("startDate", Contract::getStartDate);
-        sorters.put("endDate", Contract::getEndDate);
-        sorters.put("negotiation", Contract::getIdNegotiation);
         sorters.put("oviUser", contract -> {
             Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
             Request request = negotiation != null ? nameMaps.requestById(negotiation.getIdRequest()) : null;
@@ -135,6 +130,11 @@ public class ContractController {
             Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
             return negotiation != null ? nameMaps.papPatiNameById(negotiation.getIdPapPati()) : "";
         });
+        sorters.put("wage", Contract::getWage);
+        sorters.put("startDate", Contract::getStartDate);
+        sorters.put("endDate", Contract::getEndDate);
+        sorters.put("negotiation", Contract::getIdNegotiation);
+        sorters.put("id", Contract::getIdContract);
 
         model.addAttribute("contracts", tableViewService.apply(contracts, q, sort, dir, sorters,
                 tableViewService.fields(
@@ -160,7 +160,7 @@ public class ContractController {
                         }
                 )));
         tableViewService.addState(model, action, q, sort, dir,
-                tableViewService.options("id", "ID", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "oviUser", "Usuario OVI", "papPati", "PAP/PATI", "negotiation", "Negociación"));
+                tableViewService.options("oviUser", "Usuario OVI", "papPati", "PAP/PATI", "wage", "Salario", "startDate", "Inicio", "endDate", "Fin", "negotiation", "Negociación", "id", "ID"));
     }
 
     @GetMapping("/add")

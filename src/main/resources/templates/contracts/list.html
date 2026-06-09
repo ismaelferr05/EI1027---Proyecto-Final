@@ -16,30 +16,30 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th><i class="bi bi-hash"></i> ID</th>
-                <th><i class="bi bi-cash-coin"></i> Salario</th>
-                <th><i class="bi bi-calendar-range"></i> Vigencia</th>
+                <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
                 <th><i class="bi bi-people"></i> Usuario OVI</th>
                 <th><i class="bi bi-person-arms-up"></i> PAP/PATI</th>
+                <th><i class="bi bi-cash-coin"></i> Salario</th>
+                <th><i class="bi bi-calendar-range"></i> Vigencia</th>
                 <th><i class="bi bi-link"></i> Documento</th>
-                <th><i class="bi bi-tools"></i> Gestión</th>
+                <th><i class="bi bi-hash"></i> ID</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="contract : ${contracts}"
                 th:with="neg=${@nameMaps.negotiationById(contract.idNegotiation)},
                          req=${neg != null ? @nameMaps.requestById(neg.idRequest) : null}">
-                <td th:text="${contract.idContract}"></td>
-                <td th:text="|€ ${contract.wage}|"></td>
-                <td th:text="|${contract.startDate} → ${contract.endDate}|"></td>
-                <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
-                <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>
-                <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer" class="action-btn btn-view"><i class="bi bi-download" aria-hidden="true"></i> Ver documento</a></td>
-                <td>
+                <td class="table-action-col">
                     <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view">
                         <i class="bi bi-arrow-right"></i> Gestionar
                     </a>
                 </td>
+                <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
+                <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>
+                <td th:text="|€ ${contract.wage}|"></td>
+                <td th:text="|${contract.startDate} → ${contract.endDate}|"></td>
+                <td><a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" target="_blank" rel="noopener noreferrer" class="action-btn btn-view"><i class="bi bi-download" aria-hidden="true"></i> Ver documento</a></td>
+                <td th:text="${contract.idContract}"></td>
             </tr>
         </tbody>
     </table>

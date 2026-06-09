@@ -22,40 +22,40 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
-                    <th><i class="bi bi-person"></i> Nombre</th>
-                    <th><i class="bi bi-person"></i> Apellidos</th>
+                    <th class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-person"></i> Usuario OVI</th>
                     <th><i class="bi bi-envelope"></i> Email</th>
                     <th><i class="bi bi-telephone"></i> Teléfono</th>
+                    <th><i class="bi bi-check-circle"></i> Estado</th>
                     <th><i class="bi bi-geo-alt"></i> Provincia</th>
                     <th><i class="bi bi-building"></i> Ciudad</th>
                     <th><i class="bi bi-mailbox"></i> CP</th>
                     <th><i class="bi bi-cake2"></i> Edad</th>
                     <th><i class="bi bi-person-fill"></i> Género</th>
-                    <th><i class="bi bi-check-circle"></i> Estado</th>
                     <th><i class="bi bi-shield-check"></i> LOPD</th>
-                    <th><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-hash"></i> ID</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="oviUser : ${oviUsers}">
-                    <td th:text="${oviUser.idOviUser}"></td>
-                    <td th:text="${oviUser.name}"></td>
-                    <td th:text="${oviUser.lastName}"></td>
+                    <td class="table-action-col">
+                        <a th:href="@{/ovi-users/view/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-view">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
+                        </a>
+                    </td>
+                    <td>
+                        <strong th:text="${oviUser.name + ' ' + oviUser.lastName}"></strong>
+                    </td>
                     <td th:text="${oviUser.email}"></td>
                     <td th:text="${oviUser.phone}"></td>
+                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${oviUser.status})}"></span></td>
                     <td th:text="${oviUser.province}"></td>
                     <td th:text="${oviUser.town}"></td>
                     <td th:text="${oviUser.pc}"></td>
                     <td th:text="${oviUser.age}"></td>
                     <td th:text="${oviUser.gender}"></td>
-                    <td><span th:replace="~{fragments/status-badge :: statusBadge(${oviUser.status})}"></span></td>
                     <td th:text="${oviUser.lopdConsent ? 'Sí' : 'No'}"></td>
-                    <td>
-                        <a th:href="@{/ovi-users/view/{id}(id=${oviUser.idOviUser})}" class="action-btn btn-view">
-                            <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
-                        </a>
-                    </td>
+                    <td th:text="${oviUser.idOviUser}"></td>
                 </tr>
             </tbody>
         </table>

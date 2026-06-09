@@ -25,32 +25,30 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><i class="bi bi-hash"></i> ID</th>
-                    <th><i class="bi bi-blockquote"></i> Descripción</th>
+                    <th th:if="${isTechnician}" class="table-action-col"><i class="bi bi-tools"></i> Gestión</th>
                     <th th:if="${isTechnician}"><i class="bi bi-people"></i> Usuario OVI</th>
+                    <th><i class="bi bi-blockquote"></i> Descripción</th>
+                    <th><i class="bi bi-calendar-range"></i> Periodo</th>
                     <th><i class="bi bi-book"></i> Formación</th>
-                    <th><i class="bi bi-calendar"></i> Inicio</th>
-                    <th><i class="bi bi-calendar"></i> Fin</th>
                     <th><i class="bi bi-briefcase"></i> Estado</th>
-                    <th th:if="${isTechnician}"><i class="bi bi-tools"></i> Gestión</th>
+                    <th><i class="bi bi-hash"></i> ID</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="request : ${requests}">
-                    <td th:text="${request.idRequest}"></td>
-                    <td th:text="${request.description}"></td>
-                    <td th:if="${isTechnician}" th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
-                    <td th:text="${request.training != null ? request.training : '—'}"></td>
-                    <td th:text="${request.startDate}"></td>
-                    <td th:text="${request.endDate}"></td>
-                    <td>
-                        <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
-                    </td>
-                    <td th:if="${isTechnician}">
+                    <td th:if="${isTechnician}" class="table-action-col">
                         <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-view">
                             <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
                         </a>
                     </td>
+                    <td th:if="${isTechnician}" th:text="${@nameMaps.oviUserNameById(request.idOviUser)}"></td>
+                    <td th:text="${request.description}"></td>
+                    <td th:text="${request.startDate + ' → ' + request.endDate}"></td>
+                    <td th:text="${request.training != null ? request.training : '—'}"></td>
+                    <td>
+                        <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
+                    </td>
+                    <td th:text="${request.idRequest}"></td>
                 </tr>
             </tbody>
         </table>

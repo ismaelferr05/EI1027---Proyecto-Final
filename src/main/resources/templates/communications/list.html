@@ -24,8 +24,8 @@
         <button class="btn btn-primary mt-3">Registrar comunicación</button>
     </form>
 
-    <div th:if="${isTechnician}" class="row g-4 mb-4">
-        <div class="col-lg-6">
+    <div th:if="${isTechnician}" class="communication-compose-grid mb-4">
+        <div>
             <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
                 <input type="hidden" name="recipientType" value="OVIUSER">
                 <div class="row g-3">
@@ -50,7 +50,7 @@
             </form>
         </div>
 
-        <div class="col-lg-6">
+        <div>
             <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
                 <input type="hidden" name="recipientType" value="PAPPATI">
                 <div class="row g-3">
@@ -82,18 +82,15 @@
         <table class="table table-striped bg-white">
             <thead>
                 <tr>
-                    <th>Fecha</th>
-                    <th>Emisor</th>
-                    <th>Destinatario</th>
                     <th>Asunto y texto</th>
+                    <th>Destinatario</th>
+                    <th>Emisor</th>
+                    <th>Fecha</th>
                 </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(communications)}"><td colspan="4">No hay comunicaciones registradas.</td></tr>
             <tr th:each="item : ${communications}">
-                <td th:text="${item.communicationDateTime}"></td>
-                <td th:text="${@nameMaps.roleLabel(item.senderRole)}"></td>
-                <td th:text="${@nameMaps.recipientLabel(item.recipientType, item.recipientId)}"></td>
                 <td>
                     <strong th:text="${item.subject}"></strong>
                     <div class="text-muted small mt-1" th:text="${item.text.length() > 120} ? ${item.text.substring(0,120) + '...'} : ${item.text}"></div>
@@ -102,6 +99,9 @@
                         <div class="mt-2" th:utext="${#strings.escapeXml(item.text).replaceAll('\n','<br/>')}"></div>
                     </details>
                 </td>
+                <td th:text="${@nameMaps.recipientLabel(item.recipientType, item.recipientId)}"></td>
+                <td th:text="${@nameMaps.roleLabel(item.senderRole)}"></td>
+                <td th:text="${item.communicationDateTime}"></td>
             </tr>
             </tbody>
         </table>
