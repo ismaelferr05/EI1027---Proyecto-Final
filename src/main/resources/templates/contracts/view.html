@@ -16,9 +16,8 @@
         <p><strong>Salario:</strong> <span th:text="|€ ${contract.wage}|"></span></p>
         <p><strong>Inicio:</strong> <span th:text="${contract.startDate}"></span></p>
         <p><strong>Fin:</strong> <span th:text="${contract.endDate}"></span></p>
-        <p><strong>Estado:</strong>
-            <span th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}"
-                  th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
+        <p th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}"><strong>Estado:</strong>
+            <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
         </p>
         <p><strong>Negociación:</strong> <span th:text="${contract.idNegotiation}"></span></p>
         <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="action-link btn-primary-custom mt-3" target="_blank" rel="noopener noreferrer">

@@ -165,8 +165,8 @@ public class ContractController {
 
     @GetMapping("/add")
     public String addForm(@RequestParam(value = "negotiationId", required = false) Integer negotiationId, HttpSession session, Model model) {
-        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
-            return "redirect:/dashboard";
+        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
+            return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
         }
 
         Contract contract = new Contract();
@@ -180,7 +180,7 @@ public class ContractController {
             }
 
             if (contractDao.getByNegotiationId(negotiation.getIdNegotiation()) != null) {
-                return sessionUserService.isPapPati(session) ? "redirect:/contracts/pappati/list" : "redirect:/contracts/list";
+                return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
             }
 
             request = requestDao.get(negotiation.getIdRequest());
@@ -197,14 +197,14 @@ public class ContractController {
         model.addAttribute("requestBasedContract", request != null);
         model.addAttribute("selectedNegotiation", negotiation);
         model.addAttribute("selectedRequest", request);
-        model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
+        model.addAttribute("isOviUserCreator", sessionUserService.isOviUser(session));
         return "contracts/add";
     }
 
     @PostMapping("/add")
     public String add(@ModelAttribute("contract") Contract contract, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
-            return "redirect:/dashboard";
+        if (!sessionUserService.isTechnician(session) && !sessionUserService.isOviUser(session)) {
+            return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
         }
 
         boolean requestBasedContract = false;
@@ -213,13 +213,13 @@ public class ContractController {
         if (!sessionUserService.isTechnician(session)) {
             if (contract.getIdNegotiation() == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Debes abrir el contrato desde un chat para usar esta opción.");
-                return sessionUserService.isPapPati(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
+                return sessionUserService.isOviUser(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
             }
 
             negotiation = negotiationDao.get(contract.getIdNegotiation());
             if (negotiation == null || !canCreateContractForNegotiation(session, negotiation)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "No puedes crear este contrato.");
-                return sessionUserService.isPapPati(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
+                return sessionUserService.isOviUser(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
             }
 
             request = requestDao.get(negotiation.getIdRequest());
@@ -238,7 +238,7 @@ public class ContractController {
             model.addAttribute("requestBasedContract", requestBasedContract);
             model.addAttribute("selectedRequest", request);
             model.addAttribute("selectedNegotiation", negotiation);
-            model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
+            model.addAttribute("isOviUserCreator", sessionUserService.isOviUser(session));
             model.addAttribute("negotiations", availableNegotiations(session));
             return "contracts/add";
         }
@@ -252,7 +252,7 @@ public class ContractController {
             model.addAttribute("requestBasedContract", requestBasedContract);
             model.addAttribute("selectedRequest", request);
             model.addAttribute("selectedNegotiation", negotiation);
-            model.addAttribute("isPapPatiCreator", sessionUserService.isPapPati(session));
+            model.addAttribute("isOviUserCreator", sessionUserService.isOviUser(session));
             model.addAttribute("negotiations", availableNegotiations(session));
             return "contracts/add";
         }
@@ -263,9 +263,6 @@ public class ContractController {
         }
         markRequestByContract(contract);
         redirectAttributes.addFlashAttribute("successMessage", "Contrato registrado correctamente.");
-        if (sessionUserService.isPapPati(session)) {
-            return "redirect:/contracts/pappati/list";
-        }
         return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
     }
 
@@ -277,7 +274,7 @@ public class ContractController {
 
         model.addAttribute("contract", contractDao.get(id));
         model.addAttribute("negotiations", availableNegotiations(session));
-        model.addAttribute("isPapPatiEditor", sessionUserService.isPapPati(session));
+        model.addAttribute("isOviUserEditor", sessionUserService.isOviUser(session));
         return "contracts/edit";
     }
 
@@ -292,24 +289,21 @@ public class ContractController {
         contract.setStartDate(persisted.getStartDate());
         contract.setEndDate(persisted.getEndDate());
 
-        if (sessionUserService.isPapPati(session)) {
-            // PapPati solo puede editar datos del contrato, no reasignar la negociación.
+        if (sessionUserService.isOviUser(session)) {
+            // El usuario OVI conserva la negociación original del contrato.
             contract.setIdNegotiation(persisted.getIdNegotiation());
         }
 
         validateContract(contract, bindingResult, session);
         if (bindingResult.hasErrors()) {
             model.addAttribute("negotiations", availableNegotiations(session));
-            model.addAttribute("isPapPatiEditor", sessionUserService.isPapPati(session));
+            model.addAttribute("isOviUserEditor", sessionUserService.isOviUser(session));
             return "contracts/edit";
         }
 
         contractDao.update(contract);
         markRequestByContract(contract);
         redirectAttributes.addFlashAttribute("successMessage", "Contrato actualizado correctamente.");
-        if (sessionUserService.isPapPati(session)) {
-            return "redirect:/contracts/pappati/list";
-        }
         return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
     }
 
@@ -383,10 +377,6 @@ public class ContractController {
         if (sessionUserService.isTechnician(session)) {
             return true;
         }
-        Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
-        if (idPapPati != null && contractDao.belongsToPapPati(idContract, idPapPati)) {
-            return true;
-        }
         Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
         return idOviUser != null && contractDao.belongsToOviUser(idContract, idOviUser);
     }
@@ -408,6 +398,7 @@ public class ContractController {
             }
         }
         return negotiations.stream()
+                .filter(this::isAcceptedNegotiation)
                 .filter(negotiation -> contractDao.getByNegotiationId(negotiation.getIdNegotiation()) == null)
                 .toList();
     }
@@ -417,9 +408,8 @@ public class ContractController {
             return true;
         }
 
-        if (sessionUserService.isPapPati(session)) {
-            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
-            return idPapPati != null && idPapPati.equals(negotiation.getIdPapPati());
+        if (!isAcceptedNegotiation(negotiation)) {
+            return false;
         }
 
         if (sessionUserService.isOviUser(session) && negotiation.getIdRequest() != null) {
@@ -429,6 +419,10 @@ public class ContractController {
         }
 
         return false;
+    }
+
+    private boolean isAcceptedNegotiation(Negotiation negotiation) {
+        return negotiation != null && "ACCEPTED".equals(negotiation.getStateOfApproval());
     }
 
     private String buildAutoContractUrl(int idNegotiation) {
@@ -456,6 +450,10 @@ public class ContractController {
         } else if (sessionUserService.isOviUser(session)) {
             boolean allowed = availableNegotiations(session).stream()
                     .anyMatch(n -> n.getIdNegotiation() == contract.getIdNegotiation());
+            if (!allowed && contract.getIdContract() > 0 && canManageContract(contract.getIdContract(), session)) {
+                Contract persisted = contractDao.get(contract.getIdContract());
+                allowed = persisted != null && contract.getIdNegotiation().equals(persisted.getIdNegotiation());
+            }
             if (!allowed) {
                 bindingResult.rejectValue("idNegotiation", "forbidden", "No puedes registrar contrato para esta negociación");
             }

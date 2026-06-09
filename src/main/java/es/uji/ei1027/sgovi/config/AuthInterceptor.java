@@ -89,9 +89,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                     || path.startsWith("/pap-patis/profile")
                     || path.startsWith("/pap-patis/track")
                     || path.startsWith("/communications")
-                    || path.startsWith("/contracts/add")
                     || path.startsWith("/contracts/pappati")
-                    || path.startsWith("/contracts/edit")
                     || path.startsWith("/contracts/view/")
                     || "/messages/list".equals(path)
                     || path.startsWith("/messages/chat/");

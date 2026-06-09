@@ -15,11 +15,6 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
 	</div>
 
-	<div class="action-bar">
-		<a href="/requests/frontoffice/track" class="action-link btn-outline-custom" th:if="${isOviUser}"><i class="bi bi-file-text"></i> Mis solicitudes</a>
-		<a href="/contracts/pappati/list" class="action-link btn-outline-custom" th:if="${isPapPati}"><i class="bi bi-file-earmark-text"></i> Mis contratos</a>
-	</div>
-
 	<div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
 	<div th:if="${#lists.isEmpty(chats)}" class="empty-state">
@@ -30,13 +25,17 @@
 	</div>
 
 	<div class="chat-list" th:if="${!#lists.isEmpty(chats)}">
-		<article class="chat-card" th:each="chat : ${chats}">
-			<div class="chat-title">
+		<article class="chat-card" th:each="chat : ${chats}"
+				 th:with="counterpartName=${isPapPati ? chat.oviUser.name + ' ' + chat.oviUser.lastName : chat.papPati.name + ' ' + chat.papPati.lastName},
+						  counterpartRole=${isPapPati ? 'Usuario OVI' : 'PAP/PATI'},
+						  counterpartEmail=${isPapPati ? chat.oviUser.email : chat.papPati.email}">
+			<div class="chat-card-topline">
 				<div>
-					<h5><i class="bi bi-person-lines-fill"></i> <span th:text="${chat.papPati.name + ' ' + chat.papPati.lastName}"></span></h5>
-					<div class="text-muted small" th:text="${'Solicitud #' + chat.request.idRequest + ' · ' + chat.request.description}"></div>
+					<span class="eyebrow-label" th:text="${counterpartRole}">Contacto</span>
+					<h2 class="chat-card-name" th:text="${counterpartName}">Nombre</h2>
+					<div class="chat-card-subtitle" th:text="${'Solicitud #' + chat.request.idRequest + ' · ' + chat.request.description}"></div>
 				</div>
-				<div class="d-flex gap-2 flex-wrap">
+				<div class="chat-card-badges">
 					<span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span>
 					<span class="badge badge-soft text-bg-success" th:if="${chat.contract != null}">Contrato activo</span>
 					<span class="badge badge-soft text-bg-secondary" th:text="${chat.messageCount + ' mensajes'}"></span>
@@ -47,19 +46,19 @@
 				<a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${chat.negotiation.idNegotiation})}" class="btn btn-primary">
 					<i class="bi bi-chat-dots"></i> Abrir chat
 				</a>
-				<a th:if="${isPapPati and chat.contract == null}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-outline-primary">
+				<a th:if="${isOviUser and chat.contract == null and chat.negotiation.stateOfApproval == 'ACCEPTED'}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-outline-primary">
 					<i class="bi bi-plus-circle"></i> Crear contrato
 				</a>
-				<a th:if="${isPapPati and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-outline-primary">
+				<a th:if="${isOviUser and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-outline-primary">
 					<i class="bi bi-pencil-square"></i> Editar contrato
 				</a>
 			</div>
 
 			<div class="meta-grid">
 				<div class="meta-item">
-					<span class="meta-label">PAP/PATI</span>
-					<span class="meta-value" th:text="${chat.papPati.name + ' ' + chat.papPati.lastName}"></span>
-					<div class="text-muted small" th:text="${chat.papPati.email}"></div>
+					<span class="meta-label">Contacto</span>
+					<span class="meta-value" th:text="${counterpartName}"></span>
+					<div class="text-muted small" th:text="${counterpartEmail}"></div>
 				</div>
 				<div class="meta-item">
 					<span class="meta-label">Solicitud origen</span>

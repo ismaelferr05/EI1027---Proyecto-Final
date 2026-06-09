@@ -15,47 +15,36 @@
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
 	</div>
 
-	
-    <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
-
-    <div class="card-panel">
-		<h2 class="section-title"><i class="bi bi-person-lines-fill" aria-hidden="true"></i> Información del chat</h2>
-		<div class="info-grid">
-			<div class="info-item">
-				<span class="info-label">PAP/PATI</span>
-				<span class="info-value" th:text="${chat.papPati.name + ' ' + chat.papPati.lastName}"></span>
-				<div class="text-muted small" th:text="${chat.papPati.email}"></div>
+	<section class="chat-shell"
+			 th:with="counterpartName=${isPapPati ? chat.oviUser.name + ' ' + chat.oviUser.lastName : chat.papPati.name + ' ' + chat.papPati.lastName},
+					  counterpartEmail=${isPapPati ? chat.oviUser.email : chat.papPati.email},
+					  counterpartRole=${isPapPati ? 'Usuario OVI' : 'PAP/PATI'}">
+		<div class="chat-context">
+			<div class="chat-context-main">
+				<span class="eyebrow-label" th:text="${counterpartRole}">Contacto</span>
+				<h2 th:text="${counterpartName}">Contacto</h2>
+				<p th:text="${counterpartEmail}">email@example.com</p>
 			</div>
-			<div class="info-item">
-				<span class="info-label">Usuario OVI</span>
-				<span class="info-value" th:text="${chat.oviUser.name + ' ' + chat.oviUser.lastName}"></span>
-				<div class="text-muted small" th:text="${chat.oviUser.email}"></div>
+			<div class="chat-context-detail">
+				<span class="eyebrow-label">Solicitud</span>
+				<strong th:text="${chat.request.description}">Solicitud</strong>
+				<span th:text="${chat.request.startDate + ' -> ' + chat.request.endDate}">Periodo</span>
 			</div>
-			<div class="info-item">
-				<span class="info-label">Solicitud origen</span>
-				<span class="info-value" th:text="${chat.request.description}"></span>
-				<div class="text-muted small" th:text="${chat.request.startDate + ' -> ' + chat.request.endDate}"></div>
-			</div>
-			<div class="info-item">
-				<span class="info-label">Estado de negociación</span>
-				<span class="info-value"><span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span></span>
-				<div class="text-muted small" th:if="${chat.contract != null}" th:text="${'Contrato: ' + chat.contract.startDate + ' -> ' + chat.contract.endDate}"></div>
-				<div class="mt-2" th:if="${isPapPati and chat.contract == null}">
-					<a th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-sm btn-primary">
-						<i class="bi bi-plus-circle"></i> Crear contrato
-					</a>
-				</div>
-				<div class="mt-2" th:if="${isPapPati and chat.contract != null}">
-					<a th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-sm btn-outline-primary">
-						<i class="bi bi-pencil-square"></i> Editar contrato
-					</a>
-				</div>
+			<div class="chat-context-status">
+				<span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span>
+				<span class="text-muted small" th:if="${chat.contract != null}" th:text="${'Contrato: ' + chat.contract.startDate + ' -> ' + chat.contract.endDate}"></span>
+				<a th:if="${isOviUser and chat.contract == null and chat.negotiation.stateOfApproval == 'ACCEPTED'}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-sm btn-primary">
+					<i class="bi bi-plus-circle"></i> Crear contrato
+				</a>
+				<a th:if="${isOviUser and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-sm btn-outline-primary">
+					<i class="bi bi-pencil-square"></i> Editar contrato
+				</a>
 			</div>
 		</div>
-	</div>
 
-	<div class="card-panel">
-		<h2 class="section-title"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Mensajes</h2>
+		<div class="chat-thread-title">
+			<h2><i class="bi bi-chat-left-text" aria-hidden="true"></i> Mensajes</h2>
+		</div>
 		<div th:if="${#lists.isEmpty(messages)}" class="empty-state mb-3">
 			<i class="bi bi-chat-square-dots" style="font-size: 2rem;"></i>
 			<h5 class="mt-3">Aún no hay mensajes</h5>
@@ -65,34 +54,26 @@
 		<div class="message-list mb-4" th:if="${!#lists.isEmpty(messages)}">
 			<div th:each="message : ${messages}"
 					 class="message-bubble"
-					 th:classappend="${message.sender == currentUserLabel} ? ' mine' : ' other'">
+					 th:with="isOwn=${message.sender == currentUserLabel
+					 	|| (isPapPati and (message.sender == papPatiLabel || message.sender == chat.papPati.name))
+					 	|| (isOviUser and (message.sender == oviUserLabel || message.sender == chat.oviUser.name))}"
+					 th:classappend="${isOwn} ? ' mine' : ' other'">
 				<div class="message-meta">
-					<span><strong th:text="${message.sender}"></strong> → <span th:text="${message.receiver}"></span></span>
+					<span th:text="${isOwn ? 'Tú' : message.sender}">Remitente</span>
 					<span th:text="${message.messageDateTime}"></span>
 				</div>
 				<div class="message-text" th:text="${message.text}"></div>
 			</div>
 		</div>
 
-		<div class="card composer border-0">
-			<div class="card-body p-0">
-				<form th:action="@{/messages/chat/{idNegotiation}/send(idNegotiation=${chat.negotiation.idNegotiation})}" method="post">
-					<div class="mb-3">
-						<label for="text" class="form-label fw-semibold">Escribe un mensaje</label>
-						<textarea id="text" name="text" class="form-control" placeholder="Escribe aquí tu mensaje..." required maxlength="300"></textarea>
-					</div>
-					<div class="d-flex gap-2 flex-wrap">
-						<button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Enviar</button>
-						<a href="/messages/list" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
-					</div>
-				</form>
+		<form class="chat-composer" th:action="@{/messages/chat/{idNegotiation}/send(idNegotiation=${chat.negotiation.idNegotiation})}" method="post">
+			<label for="text" class="form-label fw-semibold">Nuevo mensaje</label>
+			<textarea id="text" name="text" class="form-control" placeholder="Escribe aquí tu mensaje..." required maxlength="300"></textarea>
+			<div class="chat-composer-actions">
+				<button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Enviar</button>
 			</div>
-		</div>
-	</div>
+		</form>
+	</section>
 </main>
 </body>
 </html>
-
-
-
-
