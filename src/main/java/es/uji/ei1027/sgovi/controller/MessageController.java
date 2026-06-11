@@ -80,14 +80,6 @@ public class MessageController {
             return "redirect:/login";
         }
 
-        if (sessionUserService.isTechnician(session)) {
-            addMessagesTable(model, messageDao.getAll(), q, sort, dir);
-            model.addAttribute("isTechnician", true);
-            model.addAttribute("isOviUser", false);
-            model.addAttribute("isPapPati", false);
-            return "message/list";
-        }
-
         List<ChatThreadSummary> chats = buildChats(session);
         addChatsTable(model, chats, q, sort, dir);
         model.addAttribute("currentUserRole", currentUser.getRole());
@@ -116,7 +108,36 @@ public class MessageController {
     }
 
     private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
-        model.addAttribute("chats", chats);
+        String effectiveDir = dir == null || dir.isBlank() ? "desc" : dir;
+        Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("last", this::chatSortKey);
+        sorters.put("ovi", chat -> chat.getOviUser().getName() + " " + chat.getOviUser().getLastName());
+        sorters.put("pap", chat -> chat.getPapPati().getName() + " " + chat.getPapPati().getLastName());
+        sorters.put("request", chat -> chat.getRequest().getDescription());
+        sorters.put("state", chat -> chat.getNegotiation().getStateOfApproval());
+        sorters.put("messages", ChatThreadSummary::getMessageCount);
+        sorters.put("id", chat -> chat.getNegotiation().getIdNegotiation());
+
+        model.addAttribute("chats", tableViewService.apply(chats, q, sort, effectiveDir, sorters,
+                tableViewService.fields(
+                        chat -> chat.getNegotiation().getIdNegotiation(),
+                        chat -> chat.getNegotiation().getStateOfApproval(),
+                        chat -> chat.getRequest().getIdRequest(),
+                        chat -> chat.getRequest().getDescription(),
+                        chat -> chat.getOviUser().getName(),
+                        chat -> chat.getOviUser().getLastName(),
+                        chat -> chat.getOviUser().getEmail(),
+                        chat -> chat.getPapPati().getName(),
+                        chat -> chat.getPapPati().getLastName(),
+                        chat -> chat.getPapPati().getEmail(),
+                        chat -> chat.getMessageCount(),
+                        chat -> chat.getLastMessage() == null ? null : chat.getLastMessage().getSender(),
+                        chat -> chat.getLastMessage() == null ? null : chat.getLastMessage().getText()),
+                chat -> chat.getNegotiation().getStateOfApproval()));
+        tableViewService.addState(model, "/messages/list", q, sort, effectiveDir,
+                tableViewService.options("last", "Último mensaje", "ovi", "Usuario OVI", "pap", "PAP/PATI",
+                        "request", "Solicitud", "state", "Estado", "messages", "Mensajes", "id", "Negociación"),
+                tableViewService.negotiationStatusOptions());
     }
 
     @GetMapping("/add")
@@ -197,22 +218,20 @@ public class MessageController {
             return "redirect:/login";
         }
 
-        if (sessionUserService.isTechnician(session)) {
-            return "redirect:/messages/list";
-        }
-
         Negotiation negotiation = negotiationDao.get(idNegotiation);
         if (negotiation == null || !isNegotiationForCurrentUser(session, negotiation)) {
             model.addAttribute("errorMessage", "No se pudo abrir este chat.");
             model.addAttribute("chats", buildChats(session));
+            model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
             model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
             model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
             return "message/chats";
         }
 
-        ChatThreadSummary chat = buildChatSummary(negotiation);
+        ChatThreadSummary chat = buildChatSummary(negotiation, sessionUserService.isTechnician(session));
         if (chat == null) {
             model.addAttribute("errorMessage", "Todavía no hay información suficiente para abrir este chat.");
+            model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
             model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
             model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
             model.addAttribute("chats", buildChats(session));
@@ -229,6 +248,7 @@ public class MessageController {
         model.addAttribute("chatBackUrl", resolveChatBackUrl(servletRequest, idNegotiation));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+        model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         return "message/chat";
     }
 
@@ -237,11 +257,7 @@ public class MessageController {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
-        model.addAttribute("messages", messageDao.getByNegotiation(idNegotiation));
-        model.addAttribute("isTechnician", true);
-        model.addAttribute("isOviUser", false);
-        model.addAttribute("isPapPati", false);
-        return "message/list";
+        return "redirect:/messages/chat/" + idNegotiation;
     }
 
     @PostMapping("/chat/{idNegotiation}/send")
@@ -253,10 +269,6 @@ public class MessageController {
         if (currentUser == null) {
             return "redirect:/login";
         }
-        if (sessionUserService.isTechnician(session)) {
-            return "redirect:/messages/list";
-        }
-
         Negotiation negotiation = negotiationDao.get(idNegotiation);
         if (negotiation == null || !isNegotiationForCurrentUser(session, negotiation)) {
             redirectAttributes.addFlashAttribute("errorMessage", "No puedes enviar mensajes en esta conversación.");
@@ -269,7 +281,7 @@ public class MessageController {
             return "redirect:/messages/chat/" + idNegotiation;
         }
 
-        ChatThreadSummary chat = buildChatSummary(negotiation);
+        ChatThreadSummary chat = buildChatSummary(negotiation, sessionUserService.isTechnician(session));
 
         Message message = new Message();
         message.setMessageDateTime(LocalDateTime.now());
@@ -311,6 +323,13 @@ public class MessageController {
                     chats.add(chat);
                 }
             }
+        } else if (sessionUserService.isTechnician(session)) {
+            for (Negotiation negotiation : negotiationDao.getAll()) {
+                ChatThreadSummary chat = buildChatSummary(negotiation, true);
+                if (chat != null) {
+                    chats.add(chat);
+                }
+            }
         }
 
         chats.sort(Comparator.comparing(this::chatSortKey).reversed());
@@ -318,13 +337,17 @@ public class MessageController {
     }
 
     private ChatThreadSummary buildChatSummary(Negotiation negotiation) {
+        return buildChatSummary(negotiation, false);
+    }
+
+    private ChatThreadSummary buildChatSummary(Negotiation negotiation, boolean includeClosed) {
         if (negotiation == null || negotiation.getIdRequest() == null || negotiation.getIdPapPati() == null) {
             return null;
         }
 
         Request request = requestDao.get(negotiation.getIdRequest());
         PapPati papPati = papPatiDao.get(negotiation.getIdPapPati());
-        if (request == null || papPati == null || !isChatVisible(negotiation)) {
+        if (request == null || papPati == null || (!includeClosed && !isChatVisible(negotiation))) {
             return null;
         }
 
@@ -349,6 +372,10 @@ public class MessageController {
     }
 
     private boolean isNegotiationForCurrentUser(HttpSession session, Negotiation negotiation) {
+        if (sessionUserService.isTechnician(session)) {
+            return true;
+        }
+
         if (sessionUserService.isOviUser(session)) {
             Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
             if (idOviUser == null || negotiation.getIdRequest() == null) {
@@ -383,6 +410,9 @@ public class MessageController {
             PapPati user = sessionUserService.getCurrentPapPati(session);
             return user == null ? "PAP" : compactLabel(user.getName(), user.getLastName());
         }
+        if (sessionUserService.isTechnician(session)) {
+            return "Técnico";
+        }
         return "usuario";
     }
 
@@ -395,6 +425,9 @@ public class MessageController {
         }
         if (sessionUserService.isPapPati(session)) {
             return compactLabel(chat.getOviUser().getName(), chat.getOviUser().getLastName());
+        }
+        if (sessionUserService.isTechnician(session)) {
+            return "OVI/PAP";
         }
         return "destinatario";
     }

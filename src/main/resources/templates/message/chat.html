@@ -16,9 +16,9 @@
 	</div>
 
 	<section class="chat-shell"
-			 th:with="counterpartName=${isPapPati ? chat.oviUser.name + ' ' + chat.oviUser.lastName : chat.papPati.name + ' ' + chat.papPati.lastName},
-					  counterpartEmail=${isPapPati ? chat.oviUser.email : chat.papPati.email},
-					  counterpartRole=${isPapPati ? 'Usuario OVI' : 'PAP/PATI'}">
+			 th:with="counterpartName=${isTechnician ? chat.oviUser.name + ' ' + chat.oviUser.lastName + ' / ' + chat.papPati.name + ' ' + chat.papPati.lastName : (isPapPati ? chat.oviUser.name + ' ' + chat.oviUser.lastName : chat.papPati.name + ' ' + chat.papPati.lastName)},
+					  counterpartEmail=${isTechnician ? chat.oviUser.email + ' / ' + chat.papPati.email : (isPapPati ? chat.oviUser.email : chat.papPati.email)},
+					  counterpartRole=${isTechnician ? 'Usuario OVI / PAP/PATI' : (isPapPati ? 'Usuario OVI' : 'PAP/PATI')}">
 		<div class="chat-back-row">
 			<a th:href="${chatBackUrl}" class="btn btn-outline-secondary">
 				<i class="bi bi-arrow-left"></i> Volver
@@ -61,12 +61,13 @@
 			<div th:each="message : ${messages}"
 					 class="message-bubble"
 					 th:with="isOwn=${message.sender == currentUserLabel
+					 	|| (isTechnician and message.sender == currentUserLabel)
 					 	|| (isPapPati and (message.sender == papPatiLabel || message.sender == chat.papPati.name))
 					 	|| (isOviUser and (message.sender == oviUserLabel || message.sender == chat.oviUser.name))}"
 					 th:classappend="${isOwn} ? ' mine' : ' other'">
 				<div class="message-meta">
 					<span th:text="${isOwn ? 'Tú' : message.sender}">Remitente</span>
-					<span th:text="${message.messageDateTime}"></span>
+					<span th:text="${#temporals.format(message.messageDateTime, 'dd/MM/yyyy')}"></span>
 				</div>
 				<div class="message-text" th:text="${message.text}"></div>
 			</div>

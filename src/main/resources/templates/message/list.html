@@ -61,7 +61,7 @@
                     <span th:if="${neg != null and req != null}" class="text-muted"
                           th:text="| · ${@nameMaps.oviUserNameById(req.idOviUser)} ↔ ${@nameMaps.papPatiNameById(neg.idPapPati)}|"></span>
                 </td>
-                <td th:text="${message.messageDateTime}"></td>
+                <td th:text="${#temporals.format(message.messageDateTime, 'dd/MM/yyyy')}"></td>
                 <td th:text="${message.idMessage}"></td>
             </tr>
             </tbody>

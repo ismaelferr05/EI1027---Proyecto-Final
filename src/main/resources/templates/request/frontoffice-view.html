@@ -13,7 +13,7 @@
             <h2 class="section-title mb-0"><i class="bi bi-card-text" aria-hidden="true"></i> Solicitud</h2>
             <span th:replace="~{fragments/status-badge :: statusBadge(${request.status})}"></span>
         </div>
-        <p class="text-muted mb-3">Resumen completo de la petición y de los asistentes relacionados con ella.</p>
+        <p class="text-muted mb-3">Resumen de la petición y del estado real de sus propuestas.</p>
 
         <div class="info-grid">
             <div class="info-item">
@@ -49,12 +49,17 @@
             Los asistentes estarán visibles una vez la solicitud sea aprobada.
         </div>
         <div th:if="${request.status == 'APPROVED'}">
-            <div th:if="${#lists.isEmpty(assignedPapPatis)}" class="empty-state">No hay asistentes asignados todavía.</div>
-            <div th:each="pap : ${assignedPapPatis}">
+            <div th:if="${#lists.isEmpty(assignedChats)}" class="empty-state">Todavía no hay ningún asistente aceptado o con contrato.</div>
+            <div th:each="assignedChat : ${assignedChats}" th:with="pap=${assignedChat.papPati}">
                 <div class="pap-card">
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
                         <h5 th:text="${pap.name + ' ' + pap.lastName}"></h5>
-                        <span class="badge text-bg-success">Asignado</span>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <span class="badge text-bg-success">Asignado</span>
+                            <a class="btn btn-sm btn-outline-primary" th:href="@{/messages/chat/{id}(id=${assignedChat.negotiation.idNegotiation})}">
+                                <i class="bi bi-chat-dots"></i> Abrir chat
+                            </a>
+                        </div>
                     </div>
                     <div class="pap-meta">
                         <div class="row g-2">
@@ -94,5 +99,3 @@
 </main>
 </body>
 </html>
-
-

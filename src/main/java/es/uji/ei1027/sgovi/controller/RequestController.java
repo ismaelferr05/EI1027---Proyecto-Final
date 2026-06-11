@@ -6,6 +6,7 @@ import es.uji.ei1027.sgovi.dao.OviUserDao;
 import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
 import es.uji.ei1027.sgovi.model.CandidateProposal;
+import es.uji.ei1027.sgovi.model.ChatThreadSummary;
 import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.EmailContent;
 import es.uji.ei1027.sgovi.model.Negotiation;
@@ -350,20 +351,41 @@ public class RequestController {
             }
         }
 
-        // Propuestas calculadas (candidatos disponibles)
-        List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
+        List<Negotiation> negotiations = negotiationDao.getByRequest(id);
+        Set<Integer> negotiatedPapPatiIds = negotiations.stream()
+                .map(Negotiation::getIdPapPati)
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        // Asistentes ya propuestos/negociaciones
-        List<es.uji.ei1027.sgovi.model.PapPati> assigned = new java.util.ArrayList<>();
-        for (Negotiation n : negotiationDao.getByRequest(id)) {
-            if (n.getIdPapPati() != null) {
-                assigned.add(papPatiDao.get(n.getIdPapPati()));
+        // Propuestas calculadas, excluyendo PAP/PATI ya propuestos o negociados.
+        List<CandidateProposal> proposals = requestProposalService.buildProposals(request).stream()
+                .filter(proposal -> proposal.getPapPati() != null
+                        && !negotiatedPapPatiIds.contains(proposal.getPapPati().getIdPapPati()))
+                .toList();
+
+        // Asistentes asignados: solo si hay contrato o negociación aceptada.
+        List<ChatThreadSummary> assignedChats = new java.util.ArrayList<>();
+        for (Negotiation n : negotiations) {
+            boolean closedNegotiation = "REJECTED".equals(n.getStateOfApproval()) || "CANCELLED".equals(n.getStateOfApproval());
+            Contract contract = contractDao.getByNegotiationId(n.getIdNegotiation());
+            if (n.getIdPapPati() != null
+                    && !closedNegotiation
+                    && ("ACCEPTED".equals(n.getStateOfApproval()) || contract != null)) {
+                es.uji.ei1027.sgovi.model.PapPati papPati = papPatiDao.get(n.getIdPapPati());
+                if (papPati != null) {
+                    ChatThreadSummary assignedChat = new ChatThreadSummary();
+                    assignedChat.setNegotiation(n);
+                    assignedChat.setRequest(request);
+                    assignedChat.setPapPati(papPati);
+                    assignedChat.setContract(contract);
+                    assignedChats.add(assignedChat);
+                }
             }
         }
 
         model.addAttribute("request", request);
         model.addAttribute("proposals", proposals);
-        model.addAttribute("assignedPapPatis", assigned);
+        model.addAttribute("assignedChats", assignedChats);
         model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         return "request/frontoffice-view";
@@ -393,6 +415,9 @@ public class RequestController {
             negotiation.setIdPapPati(idPapPati);
             negotiationDao.add(negotiation);
             negotiation = negotiationDao.getByRequestAndPapPati(idRequest, idPapPati);
+        } else if ("REJECTED".equals(negotiation.getStateOfApproval()) || "CANCELLED".equals(negotiation.getStateOfApproval())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Esta propuesta ya no está disponible para iniciar conversación.");
+            return "redirect:/requests/frontoffice/view/" + idRequest;
         }
 
         return "redirect:/messages/chat/" + negotiation.getIdNegotiation();
