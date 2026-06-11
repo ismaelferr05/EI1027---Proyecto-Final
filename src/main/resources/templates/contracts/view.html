@@ -34,7 +34,8 @@
             </div>
         </div>
 
-        <div class="pap-card mb-3" th:if="${papPati != null and (isOviUser or isTechnician)}">
+        <div class="pap-card mb-3" th:if="${papPati != null and isOviUser}">
+            <span class="text-muted small d-block mb-1">Asistente contratado</span>
             <h5 class="mb-2" th:text="${papPati.name + ' ' + papPati.lastName}"></h5>
             <div class="text-muted small">
                 <span th:text="${papPati.phone}"></span>
@@ -43,7 +44,8 @@
             </div>
         </div>
 
-        <div class="pap-card mb-3" th:if="${oviUser != null and (isPapPati or isTechnician)}">
+        <div class="pap-card mb-3" th:if="${oviUser != null and isPapPati}">
+            <span class="text-muted small d-block mb-1">Usuario OVI</span>
             <h5 class="mb-2" th:text="${oviUser.name + ' ' + oviUser.lastName}"></h5>
             <div class="text-muted small">
                 <span th:text="${oviUser.phone}"></span>
@@ -51,6 +53,13 @@
                 <span th:if="${oviUser.email != null}" th:text="${oviUser.email}"></span>
             </div>
         </div>
+
+        <p class="text-muted small mb-3" th:if="${isTechnician and papPati != null and oviUser != null}">
+            <strong>Partes:</strong>
+            <span th:text="${oviUser.name + ' ' + oviUser.lastName}"></span>
+            <span> · </span>
+            <span th:text="${papPati.name + ' ' + papPati.lastName}"></span>
+        </p>
 
         <p class="text-muted small mb-4" th:if="${request != null}">
             <strong>Solicitud:</strong>
@@ -61,10 +70,13 @@
         </p>
 
         <div class="decision-actions">
+            <a th:if="${isTechnician}" th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Editar contrato
+            </a>
             <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
                 <i class="bi bi-download"></i> Abrir documento
             </a>
-            <a th:if="${negotiation != null}" class="btn btn-outline-primary" th:href="@{/messages/chat/{id}(id=${negotiation.idNegotiation})}">
+            <a th:if="${negotiation != null and !isTechnician}" class="btn btn-outline-primary" th:href="@{/messages/chat/{id}(id=${negotiation.idNegotiation})}">
                 <i class="bi bi-chat-dots"></i> Ir a conversación
             </a>
         </div>

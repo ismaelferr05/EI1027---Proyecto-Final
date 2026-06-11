@@ -62,6 +62,7 @@
             </tbody>
         </table>
     </div>
+    <div th:replace="~{fragments/table-tools :: tablePager}" th:if="${tableAction != null}"></div>
 </main>
 </body>
 </html>

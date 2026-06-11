@@ -44,6 +44,7 @@
             </tbody>
         </table>
     </div>
+    <div th:replace="~{fragments/table-tools :: tablePager}" th:if="${tableAction != null}"></div>
 
     <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas</h2>
     <div th:if="${!#lists.isEmpty(approvedRequests)}">

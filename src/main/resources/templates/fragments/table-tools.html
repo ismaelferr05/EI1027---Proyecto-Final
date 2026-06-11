@@ -49,7 +49,9 @@
         </div>
     </div>
 </form>
-<div class="table-tools-footer" th:if="${tableTotalPages > 1}">
+</section>
+
+<section th:fragment="tablePager" class="table-pager-footer mt-3" th:if="${tableAction != null and tableTotalPages > 1}">
     <nav class="table-pager" aria-label="Paginación de tabla">
         <ul class="pagination mb-0">
             <li class="page-item" th:classappend="${!tableHasPrevious} ? 'disabled'">
@@ -71,7 +73,6 @@
             </li>
         </ul>
     </nav>
-</div>
 </section>
 </body>
 </html>

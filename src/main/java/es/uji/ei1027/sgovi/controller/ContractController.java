@@ -306,6 +306,7 @@ public class ContractController {
         model.addAttribute("contract", contractDao.get(id));
         model.addAttribute("negotiations", availableNegotiations(session));
         model.addAttribute("isOviUserEditor", sessionUserService.isOviUser(session));
+        model.addAttribute("isTechnicianEditor", sessionUserService.isTechnician(session));
         return "contracts/edit";
     }
 
@@ -316,12 +317,12 @@ public class ContractController {
         }
 
         Contract persisted = contractDao.get(contract.getIdContract());
-        // Las fechas del contrato son inmutables en edición.
-        contract.setStartDate(persisted.getStartDate());
-        contract.setEndDate(persisted.getEndDate());
 
         if (sessionUserService.isOviUser(session)) {
-            // El usuario OVI conserva la negociación original del contrato.
+            contract.setIdNegotiation(persisted.getIdNegotiation());
+            contract.setStartDate(persisted.getStartDate());
+            contract.setEndDate(persisted.getEndDate());
+        } else if (sessionUserService.isTechnician(session)) {
             contract.setIdNegotiation(persisted.getIdNegotiation());
         }
 
@@ -329,13 +330,17 @@ public class ContractController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("negotiations", availableNegotiations(session));
             model.addAttribute("isOviUserEditor", sessionUserService.isOviUser(session));
+            model.addAttribute("isTechnicianEditor", sessionUserService.isTechnician(session));
             return "contracts/edit";
         }
 
         contractDao.update(contract);
         markRequestByContract(contract);
         redirectAttributes.addFlashAttribute("successMessage", "Contrato actualizado correctamente.");
-        return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
+        if (sessionUserService.isOviUser(session)) {
+            return "redirect:/contracts/oviuser/list";
+        }
+        return "redirect:/contracts/view/" + contract.getIdContract();
     }
 
     @GetMapping("/view/{id}")

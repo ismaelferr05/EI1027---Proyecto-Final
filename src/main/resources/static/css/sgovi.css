@@ -1207,18 +1207,15 @@ td .action-btn {
   min-height: 40px;
 }
 
-.table-tools-footer {
+.table-pager-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+  justify-content: center;
 }
 
 .table-pager {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   min-width: 0;
 }
 
@@ -1227,7 +1224,7 @@ td .action-btn {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .table-pager .page-item {
@@ -2922,9 +2919,8 @@ input[type="radio"] {
     justify-content: flex-start;
   }
 
-  .table-tools-footer {
-    align-items: stretch;
-    flex-direction: column;
+  .table-pager-footer {
+    align-items: center;
   }
 
   .table-pager,

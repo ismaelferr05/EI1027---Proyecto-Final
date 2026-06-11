@@ -6,42 +6,52 @@
 <header th:replace="~{fragments/page-header :: pageHeader(title='Editar Contrato', icon='bi-pencil-square', subtitle='')}"></header>
 
 <main class="container page-content mb-5">
-    
+
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
     <div class="form-section">
         <form th:action="@{/contracts/edit}" th:object="${contract}" method="post">
             <input type="hidden" th:field="*{idContract}" />
+            <input type="hidden" th:field="*{idNegotiation}" />
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="wage" class="form-label">Salario (€):</label>
+                <div class="col-md-4 mb-3">
+                    <label for="wage" class="form-label">Salario (€/h)</label>
                     <input id="wage" type="number" th:field="*{wage}" class="form-control" min="0.01" step="0.01" />
                     <div th:if="${#fields.hasErrors('wage')}" th:errors="*{wage}" class="text-danger small mt-2"></div>
                 </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="idNegotiation" class="form-label">Negociación:</label>
-                    <input th:if="${isOviUserEditor}" id="idNegotiation" type="text" class="form-control" th:value="|Negociación #${contract.idNegotiation}|" readonly />
-                    <input th:if="${isOviUserEditor}" type="hidden" th:field="*{idNegotiation}" />
-                    <select th:unless="${isOviUserEditor}" id="idNegotiation" th:field="*{idNegotiation}" class="form-select">
-                        <option value="">Sin negociación</option>
-                        <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
-                    </select>
-                    <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger small mt-2"></div>
+                <div class="col-md-4 mb-3" th:if="${isTechnicianEditor}">
+                    <label for="startDate" class="form-label">Inicio</label>
+                    <input id="startDate" type="date" th:field="*{startDate}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-4 mb-3" th:if="${isTechnicianEditor}">
+                    <label for="endDate" class="form-label">Fin</label>
+                    <input id="endDate" type="date" th:field="*{endDate}" class="form-control" />
+                    <div th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-8 mb-3" th:unless="${isTechnicianEditor}">
+                    <label class="form-label">Vigencia</label>
+                    <input type="text" class="form-control" th:value="${contract.startDate + ' → ' + contract.endDate}" readonly />
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Negociación</label>
+                <input type="text" class="form-control" th:value="|Negociación #${contract.idNegotiation}|" readonly />
+            </div>
 
             <div class="mb-3">
-                <label for="url" class="form-label">URL del Documento:</label>
+                <label for="url" class="form-label">URL del documento</label>
                 <input id="url" type="text" th:field="*{url}" class="form-control" maxlength="255" />
                 <div th:if="${#fields.hasErrors('url')}" th:errors="*{url}" class="text-danger small mt-2"></div>
             </div>
 
             <div class="btn-group-custom">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar Cambios</button>
-                <a th:href="${isOviUserEditor} ? '/contracts/oviuser/list' : '/contracts/list'" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Guardar</button>
+                <a th:href="${isOviUserEditor} ? @{/contracts/oviuser/list} : @{/contracts/view/{id}(id=${contract.idContract})}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
             </div>
         </form>
     </div>
