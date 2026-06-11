@@ -145,6 +145,10 @@ CREATE TABLE IF NOT EXISTS Request (
 ALTER TABLE OviUser ADD COLUMN IF NOT EXISTS rejectionReason TEXT;
 ALTER TABLE PapPati ADD COLUMN IF NOT EXISTS rejectionReason TEXT;
 ALTER TABLE Request ADD COLUMN IF NOT EXISTS rejectionReason TEXT;
+ALTER TABLE Request ADD COLUMN IF NOT EXISTS availabilityDate DATE;
+ALTER TABLE TechnicianCommunication ADD COLUMN IF NOT EXISTS senderId INT;
+ALTER TABLE TechnicianCommunication DROP CONSTRAINT IF EXISTS techniciancommunication_recipienttype_check;
+ALTER TABLE TechnicianCommunication ADD CONSTRAINT techniciancommunication_recipienttype_check CHECK (recipientType IN ('OVIUSER','PAPPATI','TECNICO'));
 
 -- Negotiation table
 CREATE TABLE IF NOT EXISTS Negotiation (

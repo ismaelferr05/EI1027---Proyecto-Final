@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmailService {
@@ -27,10 +28,14 @@ public class EmailService {
     }
 
     public EmailContent sendAcceptanceEmail(Request request, OviUser oviUser, PapPati selectedPapPati) {
+        return sendAcceptanceEmail(request, oviUser, selectedPapPati == null ? List.of() : List.of(selectedPapPati));
+    }
+
+    public EmailContent sendAcceptanceEmail(Request request, OviUser oviUser, List<PapPati> selectedPapPatis) {
         EmailContent email = createEmail(
                 oviUser != null ? oviUser.getEmail() : null,
                 "Solicitud aceptada - " + safeText(request != null ? request.getDescription() : null, "Solicitud"),
-                buildAcceptanceBody(request, oviUser, selectedPapPati)
+                buildAcceptanceBody(request, oviUser, selectedPapPatis)
         );
         logEmail(email);
         return email;
@@ -88,17 +93,17 @@ public class EmailService {
         return body.toString();
     }
 
-    private String buildAcceptanceBody(Request request, OviUser oviUser, PapPati selectedPapPati) {
+    private String buildAcceptanceBody(Request request, OviUser oviUser, List<PapPati> selectedPapPatis) {
         StringBuilder body = new StringBuilder();
         body.append("Hola ").append(formatUserName(oviUser)).append(",\n\n");
         body.append("Su solicitud ha sido ACEPTADA");
-        if (selectedPapPati != null) {
-            body.append(" y se ha asignado un asistente.\n\n");
-            body.append("Asistente asignado: ")
-                    .append(selectedPapPati.getName()).append(" ").append(selectedPapPati.getLastName()).append("\n");
-            body.append("CP: ").append(safeText(selectedPapPati.getPc(), ""))
-                    .append(" | Género: ").append(safeText(selectedPapPati.getGender(), ""))
-                    .append(" | Edad: ").append(selectedPapPati.getAge() != null ? selectedPapPati.getAge() : "").append("\n\n");
+        if (selectedPapPatis != null && !selectedPapPatis.isEmpty()) {
+            body.append(" y se han propuesto los siguientes asistentes:\n\n");
+            for (PapPati selectedPapPati : selectedPapPatis) {
+                body.append("- ")
+                        .append(selectedPapPati.getName()).append(" ").append(selectedPapPati.getLastName()).append("\n");
+            }
+            body.append("\n");
         } else {
             body.append(".\n\n");
             body.append("Por el momento todavía no se ha asignado un asistente concreto.\n\n");
@@ -133,6 +138,9 @@ public class EmailService {
         body.append("- Descripción: ").append(safeText(request.getDescription(), "")).append("\n");
         body.append("- Formación: ").append(safeText(request.getTraining(), "Sin formación indicada")).append("\n");
         body.append("- Periodo: ").append(request.getStartDate()).append(" -> ").append(request.getEndDate()).append("\n");
+        if (request.getAvailabilityDate() != null) {
+            body.append("- Disponibilidad desde: ").append(request.getAvailabilityDate()).append("\n");
+        }
         body.append("- Estado: ").append(safeText(request.getStatus(), "")).append("\n");
     }
 

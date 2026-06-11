@@ -191,23 +191,25 @@ public class ContractController {
         Negotiation negotiation = null;
         Request request = null;
 
-        if (negotiationId != null) {
-            negotiation = negotiationDao.get(negotiationId);
-            if (negotiation == null || !canCreateContractForNegotiation(session, negotiation)) {
-                return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
-            }
+        if (negotiationId == null) {
+            return sessionUserService.isOviUser(session) ? "redirect:/messages/list" : "redirect:/contracts/list";
+        }
 
-            if (contractDao.getByNegotiationId(negotiation.getIdNegotiation()) != null) {
-                return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
-            }
+        negotiation = negotiationDao.get(negotiationId);
+        if (negotiation == null || !canCreateContractForNegotiation(session, negotiation)) {
+            return sessionUserService.getCurrentUser(session) == null ? "redirect:/login" : "redirect:/dashboard";
+        }
 
-            request = requestDao.get(negotiation.getIdRequest());
-            if (request != null) {
-                contract.setIdNegotiation(negotiation.getIdNegotiation());
-                contract.setStartDate(request.getStartDate());
-                contract.setEndDate(request.getEndDate());
-                contract.setUrl(buildAutoContractUrl(negotiation.getIdNegotiation()));
-            }
+        if (contractDao.getByNegotiationId(negotiation.getIdNegotiation()) != null) {
+            return sessionUserService.isOviUser(session) ? "redirect:/contracts/oviuser/list" : "redirect:/contracts/list";
+        }
+
+        request = requestDao.get(negotiation.getIdRequest());
+        if (request != null) {
+            contract.setIdNegotiation(negotiation.getIdNegotiation());
+            contract.setStartDate(request.getStartDate());
+            contract.setEndDate(request.getEndDate());
+            contract.setUrl(buildAutoContractUrl(negotiation.getIdNegotiation()));
         }
 
         model.addAttribute("contract", contract);

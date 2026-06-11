@@ -14,6 +14,8 @@ public class RequestRowMapper implements RowMapper<Request> {
         request.setTraining(rs.getString("training"));
         request.setStartDate(rs.getDate("startDate").toLocalDate());
         request.setEndDate(rs.getDate("endDate").toLocalDate());
+        java.sql.Date availabilityDate = rs.getDate("availabilityDate");
+        request.setAvailabilityDate(availabilityDate != null ? availabilityDate.toLocalDate() : null);
         Object experience = rs.getObject("experience");
         request.setExperience(experience != null ? rs.getInt("experience") : null);
         request.setExperienceType(rs.getString("experienceType"));

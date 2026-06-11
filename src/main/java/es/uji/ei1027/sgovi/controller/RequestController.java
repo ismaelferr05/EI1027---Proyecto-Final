@@ -580,15 +580,15 @@ public class RequestController {
 
     @PostMapping("/backoffice/approve")
     public String backOfficeApprove(@RequestParam("idRequest") int idRequest,
-                                    @RequestParam(value = "selectedPapPatiId", required = false) Integer selectedPapPatiId,
+                                    @RequestParam(value = "selectedPapPatiIds", required = false) List<Integer> selectedPapPatiIds,
                                     HttpSession session,
                                     Model model) {
         if (!sessionUserService.isTechnician(session)) {
             return "redirect:/dashboard";
         }
 
-        if (selectedPapPatiId == null) {
-            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=Debes seleccionar un único candidato para poder aprobar la solicitud";
+        if (selectedPapPatiIds == null || selectedPapPatiIds.isEmpty()) {
+            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=Debes seleccionar al menos un candidato para poder aprobar la solicitud";
         }
 
         Request request = requestDao.get(idRequest);
@@ -597,21 +597,31 @@ public class RequestController {
         }
 
         OviUser oviUser = oviUserDao.get(request.getIdOviUser());
-        PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
+        List<PapPati> selectedPapPatis = new java.util.ArrayList<>();
+        for (Integer selectedPapPatiId : selectedPapPatiIds.stream().distinct().toList()) {
+            PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
+            if (selectedPapPati == null) {
+                continue;
+            }
+            selectedPapPatis.add(selectedPapPati);
+            if (!negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
+                Negotiation negotiation = new Negotiation();
+                negotiation.setStateOfApproval("PENDING");
+                negotiation.setIdRequest(idRequest);
+                negotiation.setIdPapPati(selectedPapPatiId);
+                negotiationDao.add(negotiation);
+            }
+        }
+
+        if (selectedPapPatis.isEmpty()) {
+            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=No se pudo registrar ningún candidato válido";
+        }
 
         requestDao.updateStatus(idRequest, "APPROVED");
         request.setStatus("APPROVED");
 
-        if (!negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
-            Negotiation negotiation = new Negotiation();
-            negotiation.setStateOfApproval("PENDING");
-            negotiation.setIdRequest(idRequest);
-            negotiation.setIdPapPati(selectedPapPatiId);
-            negotiationDao.add(negotiation);
-        }
-
-        EmailContent email = emailService.sendAcceptanceEmail(request, oviUser, selectedPapPati);
-        return showConfirmation(model, request, oviUser, selectedPapPati, email, "acceptance");
+        EmailContent email = emailService.sendAcceptanceEmail(request, oviUser, selectedPapPatis);
+        return showConfirmation(model, request, oviUser, selectedPapPatis.get(0), email, "acceptance");
     }
 
     @PostMapping("/backoffice/propose")

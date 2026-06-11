@@ -42,5 +42,17 @@ public class ParticipantListDao {
         String sql = "SELECT * FROM ParticipantList WHERE activity_id=?";
         return jdbcTemplate.query(sql, new ParticipantListRowMapper(), idActivity);
     }
+
+    public boolean existsByActivityAndOviUser(int idActivity, int idOviUser) {
+        String sql = "SELECT COUNT(*) FROM ParticipantList WHERE activity_id=? AND oviuser_id=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idActivity, idOviUser);
+        return count != null && count > 0;
+    }
+
+    public boolean existsByActivityAndPapPati(int idActivity, int idPapPati) {
+        String sql = "SELECT COUNT(*) FROM ParticipantList WHERE activity_id=? AND pappati_id=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idActivity, idPapPati);
+        return count != null && count > 0;
+    }
 }
 

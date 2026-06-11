@@ -13,6 +13,8 @@ public class TechnicianCommunicationRowMapper implements RowMapper<TechnicianCom
         communication.setIdCommunication(rs.getInt("communication_id"));
         communication.setCommunicationDateTime(rs.getTimestamp("communicationDateTime").toLocalDateTime());
         communication.setSenderRole(rs.getString("senderRole"));
+        Object senderId = rs.getObject("senderId");
+        communication.setSenderId(senderId != null ? rs.getInt("senderId") : null);
         communication.setRecipientType(rs.getString("recipientType"));
         communication.setRecipientId(rs.getInt("recipientId"));
         communication.setSubject(rs.getString("subject"));

@@ -11,6 +11,7 @@
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
     <form th:if="${!isTechnician}" th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm mb-4">
+        <h3 class="h5 mb-3">Nuevo mensaje al técnico OVI</h3>
         <div class="row g-3">
             <div class="col-md-8">
                 <label for="subject" class="form-label">Asunto</label>
@@ -21,12 +22,12 @@
                 <textarea id="text" th:field="*{text}" class="form-control" rows="3" required></textarea>
             </div>
         </div>
-        <button class="btn btn-primary mt-3">Registrar comunicación</button>
+        <button class="btn btn-primary mt-3">Enviar al técnico</button>
     </form>
 
     <div th:if="${isTechnician}" class="communication-compose-grid mb-4">
         <div>
-            <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
+            <form th:action="@{/communications/send}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
                 <input type="hidden" name="recipientType" value="OVIUSER">
                 <div class="row g-3">
                     <div class="col-12">
@@ -51,7 +52,7 @@
         </div>
 
         <div>
-            <form th:action="@{/communications/send}" th:object="${communication}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
+            <form th:action="@{/communications/send}" method="post" class="bg-white p-4 rounded shadow-sm h-100">
                 <input type="hidden" name="recipientType" value="PAPPATI">
                 <div class="row g-3">
                     <div class="col-12">
@@ -83,10 +84,11 @@
                     <th>Destinatario</th>
                     <th>Emisor</th>
                     <th>Fecha</th>
+                    <th th:if="${isTechnician}">Responder</th>
                 </tr>
             </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(communications)}"><td colspan="4">No hay comunicaciones registradas.</td></tr>
+            <tr th:if="${#lists.isEmpty(communications)}"><td th:colspan="${isTechnician} ? 5 : 4">No hay comunicaciones registradas.</td></tr>
             <tr th:each="item : ${communications}">
                 <td>
                     <strong th:text="${item.subject}"></strong>
@@ -97,8 +99,19 @@
                     </details>
                 </td>
                 <td th:text="${@nameMaps.recipientLabel(item.recipientType, item.recipientId)}"></td>
-                <td th:text="${@nameMaps.roleLabel(item.senderRole)}"></td>
+                <td th:text="${@nameMaps.senderLabel(item.senderRole, item.senderId)}"></td>
                 <td th:text="${item.communicationDateTime}"></td>
+                <td th:if="${isTechnician}">
+                    <form th:if="${item.senderRole != 'TECNICO' and item.senderId != null}"
+                          th:action="@{/communications/send}" method="post" class="d-flex flex-column gap-2">
+                        <input type="hidden" name="replyToSenderRole" th:value="${item.senderRole}">
+                        <input type="hidden" name="replyToSenderId" th:value="${item.senderId}">
+                        <input type="hidden" name="subject" th:value="${item.subject}">
+                        <textarea name="text" class="form-control form-control-sm" rows="2" placeholder="Escribe tu respuesta..." required></textarea>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Responder</button>
+                    </form>
+                    <span th:if="${item.senderRole == 'TECNICO'}" class="text-muted small">Enviado</span>
+                </td>
             </tr>
             </tbody>
         </table>

@@ -16,12 +16,13 @@ public class TechnicianCommunicationDao {
     public void add(TechnicianCommunication communication) {
         String sql = """
                 INSERT INTO TechnicianCommunication
-                (communicationDateTime, senderRole, recipientType, recipientId, subject, text)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (communicationDateTime, senderRole, senderId, recipientType, recipientId, subject, text)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
         jdbcTemplate.update(sql,
                 Timestamp.valueOf(communication.getCommunicationDateTime()),
                 communication.getSenderRole(),
+                communication.getSenderId(),
                 communication.getRecipientType(),
                 communication.getRecipientId(),
                 communication.getSubject(),
@@ -40,5 +41,25 @@ public class TechnicianCommunicationDao {
                 ORDER BY communicationDateTime DESC, communication_id DESC
                 """;
         return jdbcTemplate.query(sql, new TechnicianCommunicationRowMapper(), recipientType, recipientId);
+    }
+
+    public List<TechnicianCommunication> getConversationForOviUser(int idOviUser) {
+        String sql = """
+                SELECT * FROM TechnicianCommunication
+                WHERE (recipientType='OVIUSER' AND recipientId=?)
+                   OR (senderRole='OVIUSER' AND senderId=?)
+                ORDER BY communicationDateTime DESC, communication_id DESC
+                """;
+        return jdbcTemplate.query(sql, new TechnicianCommunicationRowMapper(), idOviUser, idOviUser);
+    }
+
+    public List<TechnicianCommunication> getConversationForPapPati(int idPapPati) {
+        String sql = """
+                SELECT * FROM TechnicianCommunication
+                WHERE (recipientType='PAPPATI' AND recipientId=?)
+                   OR (senderRole='PAPPATI' AND senderId=?)
+                ORDER BY communicationDateTime DESC, communication_id DESC
+                """;
+        return jdbcTemplate.query(sql, new TechnicianCommunicationRowMapper(), idPapPati, idPapPati);
     }
 }

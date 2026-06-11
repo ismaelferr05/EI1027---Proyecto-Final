@@ -1,8 +1,10 @@
 package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.ActivityDao;
+import es.uji.ei1027.sgovi.dao.ParticipantListDao;
 import es.uji.ei1027.sgovi.dao.TrainerDao;
 import es.uji.ei1027.sgovi.model.Activity;
+import es.uji.ei1027.sgovi.model.ParticipantList;
 import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import es.uji.ei1027.sgovi.service.TableViewService;
@@ -14,7 +16,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,6 +32,9 @@ public class ActivityController {
 
     @Autowired
     private TrainerDao trainerDao;
+
+    @Autowired
+    private ParticipantListDao participantListDao;
 
     @Autowired
     private SessionUserService sessionUserService;
@@ -130,6 +138,75 @@ public class ActivityController {
         activityDao.update(activity);
         redirectAttributes.addFlashAttribute("successMessage", "Actividad editada correctamente.");
         return "redirect:/activities/list";
+    }
+
+    @GetMapping("/browse")
+    public String browse(HttpSession session, Model model) {
+        if (!sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
+            return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
+        }
+
+        List<Activity> upcoming = activityDao.getAll().stream()
+                .filter(activity -> activity.getDate() != null && !activity.getDate().isBefore(LocalDate.now()))
+                .sorted(Comparator.comparing(Activity::getDate))
+                .toList();
+
+        Map<Integer, Boolean> enrolledByActivityId = new LinkedHashMap<>();
+        for (Activity activity : upcoming) {
+            boolean enrolled = false;
+            if (sessionUserService.isOviUser(session)) {
+                Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+                enrolled = idOviUser != null && participantListDao.existsByActivityAndOviUser(activity.getIdActivity(), idOviUser);
+            } else if (sessionUserService.isPapPati(session)) {
+                Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+                enrolled = idPapPati != null && participantListDao.existsByActivityAndPapPati(activity.getIdActivity(), idPapPati);
+            }
+            enrolledByActivityId.put(activity.getIdActivity(), enrolled);
+        }
+
+        model.addAttribute("activities", upcoming);
+        model.addAttribute("enrolledByActivityId", enrolledByActivityId);
+        model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+        model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+        return "activity/browse";
+    }
+
+    @PostMapping("/{id}/signup")
+    public String signup(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
+            return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
+        }
+
+        Activity activity = activityDao.get(id);
+        if (activity == null || activity.getDate() == null || activity.getDate().isBefore(LocalDate.now())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Esta actividad no está disponible para inscripción.");
+            return "redirect:/activities/browse";
+        }
+
+        ParticipantList participant = new ParticipantList();
+        participant.setAttendance(false);
+        participant.setAttendanceCertificateUrl(null);
+        participant.setIdActivity(id);
+
+        if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            if (idOviUser == null || participantListDao.existsByActivityAndOviUser(id, idOviUser)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Ya estás inscrito en esta actividad.");
+                return "redirect:/activities/browse";
+            }
+            participant.setIdOviUser(idOviUser);
+        } else {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            if (idPapPati == null || participantListDao.existsByActivityAndPapPati(id, idPapPati)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Ya estás inscrito en esta actividad.");
+                return "redirect:/activities/browse";
+            }
+            participant.setIdPapPati(idPapPati);
+        }
+
+        participantListDao.add(participant);
+        redirectAttributes.addFlashAttribute("successMessage", "Inscripción realizada correctamente.");
+        return "redirect:/activities/browse";
     }
 
     @GetMapping("/delete/{id}")

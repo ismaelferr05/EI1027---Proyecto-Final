@@ -137,10 +137,27 @@ public class NameMaps {
         if (type == null || id == null) {
             return "—";
         }
+        if ("TECNICO".equals(type)) {
+            return "Técnico OVI";
+        }
         String name = "OVIUSER".equals(type) ? oviUserNameById(id) : papPatiNameById(id);
         if ("—".equals(name)) {
             return roleLabel(type) + " #" + id;
         }
         return name;
+    }
+
+    public String senderLabel(String role, Integer id) {
+        if (role == null) {
+            return "—";
+        }
+        if ("TECNICO".equals(role)) {
+            return "Técnico OVI";
+        }
+        if (id == null) {
+            return roleLabel(role);
+        }
+        String name = "OVIUSER".equals(role) ? oviUserNameById(id) : papPatiNameById(id);
+        return "—".equals(name) ? roleLabel(role) + " #" + id : name;
     }
 }

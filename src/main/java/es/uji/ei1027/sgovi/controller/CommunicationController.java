@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 @Controller
 @RequestMapping("/communications")
 public class CommunicationController {
+
+    private static final int TECHNICIAN_RECIPIENT_ID = 1;
+
     @Autowired
     private TechnicianCommunicationDao communicationDao;
 
@@ -48,7 +48,6 @@ public class CommunicationController {
                        @RequestParam(value = "dir", required = false) String dir) {
         if (sessionUserService.isTechnician(session)) {
             addCommunicationsTable(model, communicationDao.getAll(), q, sort, dir);
-            // Sólo usuarios aceptados deben aparecer en el selector
             model.addAttribute("oviUsers", oviUserDao.getByStatus("ACCEPTED"));
             model.addAttribute("papPatis", papPatiDao.getByStatus("ACCEPTED"));
             model.addAttribute("communication", new TechnicianCommunication());
@@ -58,7 +57,7 @@ public class CommunicationController {
 
         if (sessionUserService.isOviUser(session)) {
             Integer id = sessionUserService.getCurrentOviUserId(session);
-            addCommunicationsTable(model, communicationDao.getByRecipient("OVIUSER", id), q, sort, dir);
+            addCommunicationsTable(model, communicationDao.getConversationForOviUser(id), q, sort, dir);
             model.addAttribute("communication", new TechnicianCommunication());
             model.addAttribute("recipientType", "OVIUSER");
             model.addAttribute("recipientId", id);
@@ -67,7 +66,7 @@ public class CommunicationController {
 
         if (sessionUserService.isPapPati(session)) {
             Integer id = sessionUserService.getCurrentPapPatiId(session);
-            addCommunicationsTable(model, communicationDao.getByRecipient("PAPPATI", id), q, sort, dir);
+            addCommunicationsTable(model, communicationDao.getConversationForPapPati(id), q, sort, dir);
             model.addAttribute("communication", new TechnicianCommunication());
             model.addAttribute("recipientType", "PAPPATI");
             model.addAttribute("recipientId", id);
@@ -83,27 +82,40 @@ public class CommunicationController {
 
     @PostMapping("/send")
     public String send(@ModelAttribute("communication") TechnicianCommunication communication,
+                       @RequestParam(value = "replyToSenderRole", required = false) String replyToSenderRole,
+                       @RequestParam(value = "replyToSenderId", required = false) Integer replyToSenderId,
                        HttpSession session,
                        RedirectAttributes redirectAttributes) {
         if (sessionUserService.getCurrentUser(session) == null) {
             return "redirect:/login";
         }
 
-        if (!sessionUserService.isTechnician(session)) {
-            if (sessionUserService.isOviUser(session)) {
-                communication.setRecipientType("OVIUSER");
-                communication.setRecipientId(sessionUserService.getCurrentOviUserId(session));
-                communication.setSenderRole("OVIUSER");
-            } else if (sessionUserService.isPapPati(session)) {
-                communication.setRecipientType("PAPPATI");
-                communication.setRecipientId(sessionUserService.getCurrentPapPatiId(session));
-                communication.setSenderRole("PAPPATI");
-            }
-        } else {
+        if (sessionUserService.isTechnician(session)) {
             communication.setSenderRole("TECNICO");
+            communication.setSenderId(TECHNICIAN_RECIPIENT_ID);
+            if (replyToSenderRole != null && replyToSenderId != null) {
+                communication.setRecipientType(replyToSenderRole);
+                communication.setRecipientId(replyToSenderId);
+                if (communication.getSubject() != null && !communication.getSubject().startsWith("Re:")) {
+                    communication.setSubject("Re: " + communication.getSubject());
+                }
+            }
+        } else if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            communication.setSenderRole("OVIUSER");
+            communication.setSenderId(idOviUser);
+            communication.setRecipientType("TECNICO");
+            communication.setRecipientId(TECHNICIAN_RECIPIENT_ID);
+        } else if (sessionUserService.isPapPati(session)) {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            communication.setSenderRole("PAPPATI");
+            communication.setSenderId(idPapPati);
+            communication.setRecipientType("TECNICO");
+            communication.setRecipientId(TECHNICIAN_RECIPIENT_ID);
         }
 
-        if (communication.getRecipientId() == null || communication.getSubject() == null || communication.getSubject().isBlank()
+        if (communication.getRecipientId() == null || communication.getRecipientType() == null
+                || communication.getSubject() == null || communication.getSubject().isBlank()
                 || communication.getText() == null || communication.getText().isBlank()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Rellena destinatario, asunto y texto.");
             return "redirect:/communications/list";

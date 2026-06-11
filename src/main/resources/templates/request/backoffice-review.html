@@ -32,6 +32,8 @@
             <dd class="col-sm-9" th:text="${request.description}"></dd>
             <dt class="col-sm-3">Periodo</dt>
             <dd class="col-sm-9" th:text="${request.startDate + ' -> ' + request.endDate}"></dd>
+            <dt class="col-sm-3" th:if="${request.availabilityDate != null}">Disponibilidad</dt>
+            <dd class="col-sm-9" th:if="${request.availabilityDate != null}" th:text="${request.availabilityDate}"></dd>
             <dt class="col-sm-3">Preferencias</dt>
             <dd class="col-sm-9" th:text="${'Genero: ' + (request.preferredGender != null ? request.preferredGender : '') + ' - CP: ' + (request.preferredPc != null ? request.preferredPc : '') + ' - Edad: ' + (request.preferredAge != null ? request.preferredAge : '')}"></dd>
             <dt class="col-sm-3">Estado actual</dt>
@@ -229,12 +231,11 @@
                     </tr>
                     <tr th:each="proposal : ${proposals}">
                         <td>
-                            <input type="radio"
-                                   name="selectedPapPatiId"
+                            <input type="checkbox"
+                                   name="selectedPapPatiIds"
                                    th:value="${proposal.papPati.idPapPati}"
                                    th:disabled="${existingPapPatis.contains(proposal.papPati.idPapPati)}"
-                                   th:attr="aria-label=|Seleccionar ${proposal.papPati.name} ${proposal.papPati.lastName}|"
-                                   required />
+                                   th:attr="aria-label=|Seleccionar ${proposal.papPati.name} ${proposal.papPati.lastName}|" />
                         </td>
                         <td th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></td>
                         <td th:text="${proposal.papPati.pc}"></td>
@@ -272,7 +273,7 @@
                     <i class="bi bi-pencil-square"></i> Editar datos
                 </a>
                 <button type="submit" class="btn btn-primary" th:disabled="${#lists.isEmpty(proposals)}">
-                    <i class="bi bi-check2-circle"></i> Aprobar con candidato seleccionado
+                    <i class="bi bi-check2-circle"></i> Aprobar con candidatos seleccionados
                 </button>
             </div>
         </form>

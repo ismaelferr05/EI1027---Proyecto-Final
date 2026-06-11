@@ -6,9 +6,6 @@
 <header th:replace="~{fragments/page-header :: pageHeader(title='Listado de Contratos', icon='bi-file-earmark-text', subtitle='')}"></header>
 
 <main class="container page-content mb-5">
-    <div class="action-bar">
-        <a href="/contracts/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Nuevo contrato</a>
-    </div>
     <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
 

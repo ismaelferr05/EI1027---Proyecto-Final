@@ -8,6 +8,7 @@ public class Request {
     private String training;
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalDate availabilityDate;
     private Integer experience;
     private String experienceType;
     private String preferredGender;
@@ -43,6 +44,8 @@ public class Request {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public LocalDate getAvailabilityDate() { return availabilityDate; }
+    public void setAvailabilityDate(LocalDate availabilityDate) { this.availabilityDate = availabilityDate; }
     public Integer getExperience() { return experience; }
     public void setExperience(Integer experience) { this.experience = experience; }
     public String getExperienceType() { return experienceType; }

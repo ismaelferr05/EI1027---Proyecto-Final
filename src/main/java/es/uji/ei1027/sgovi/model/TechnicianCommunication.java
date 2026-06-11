@@ -6,6 +6,7 @@ public class TechnicianCommunication {
     private int idCommunication;
     private LocalDateTime communicationDateTime;
     private String senderRole;
+    private Integer senderId;
     private String recipientType;
     private Integer recipientId;
     private String subject;
@@ -17,6 +18,8 @@ public class TechnicianCommunication {
     public void setCommunicationDateTime(LocalDateTime communicationDateTime) { this.communicationDateTime = communicationDateTime; }
     public String getSenderRole() { return senderRole; }
     public void setSenderRole(String senderRole) { this.senderRole = senderRole; }
+    public Integer getSenderId() { return senderId; }
+    public void setSenderId(Integer senderId) { this.senderId = senderId; }
     public String getRecipientType() { return recipientType; }
     public void setRecipientType(String recipientType) { this.recipientType = recipientType; }
     public Integer getRecipientId() { return recipientId; }

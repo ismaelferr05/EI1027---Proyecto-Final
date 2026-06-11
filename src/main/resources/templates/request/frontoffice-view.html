@@ -24,6 +24,10 @@
                 <span class="info-label">Periodo</span>
                 <span class="info-value" th:text="${request.startDate + ' -> ' + request.endDate}"></span>
             </div>
+            <div class="info-item" th:if="${request.availabilityDate != null}">
+                <span class="info-label">Disponibilidad desde</span>
+                <span class="info-value" th:text="${request.availabilityDate}"></span>
+            </div>
             <div class="info-item">
                 <span class="info-label">Género preferido</span>
                 <span class="info-value" th:text="${request.preferredGender != null ? request.preferredGender : 'Sin preferencia'}"></span>

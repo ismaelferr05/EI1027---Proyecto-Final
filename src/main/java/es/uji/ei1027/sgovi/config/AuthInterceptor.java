@@ -79,6 +79,8 @@ public class AuthInterceptor implements HandlerInterceptor {
                     || path.startsWith("/contracts/view/")
                     || path.startsWith("/communications")
                     || path.startsWith("/requests/frontoffice")
+                    || path.startsWith("/activities/browse")
+                    || path.matches("/activities/\\d+/signup")
                     || "/messages/list".equals(path)
                     || path.startsWith("/messages/chat/");
         }
@@ -91,6 +93,8 @@ public class AuthInterceptor implements HandlerInterceptor {
                     || path.startsWith("/communications")
                     || path.startsWith("/contracts/pappati")
                     || path.startsWith("/contracts/view/")
+                    || path.startsWith("/activities/browse")
+                    || path.matches("/activities/\\d+/signup")
                     || "/messages/list".equals(path)
                     || path.startsWith("/messages/chat/");
         }
