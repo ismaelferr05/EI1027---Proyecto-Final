@@ -40,8 +40,9 @@ import java.util.function.Function;
 @RequestMapping("/messages")
 public class MessageController {
 
-    private static final String NEGOTIATION_REJECTED = "REJECTED";
-    private static final String NEGOTIATION_CANCELLED = "CANCELLED";
+    private static final String NEGOTIATION_PENDING = "PENDING";
+    private static final String NEGOTIATION_IN_PROGRESS = "IN_PROGRESS";
+    private static final String NEGOTIATION_ACCEPTED = "ACCEPTED";
 
     @Autowired
     private MessageDao messageDao;
@@ -228,6 +229,16 @@ public class MessageController {
             return "message/chats";
         }
 
+        negotiation = activateNegotiationIfPending(session, negotiation);
+        if (negotiation == null) {
+            model.addAttribute("errorMessage", "Esta propuesta ya no está disponible para iniciar conversación.");
+            model.addAttribute("chats", buildChats(session));
+            model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
+            model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+            model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+            return "message/chats";
+        }
+
         ChatThreadSummary chat = buildChatSummary(negotiation, sessionUserService.isTechnician(session));
         if (chat == null) {
             model.addAttribute("errorMessage", "Todavía no hay información suficiente para abrir este chat.");
@@ -272,6 +283,12 @@ public class MessageController {
         Negotiation negotiation = negotiationDao.get(idNegotiation);
         if (negotiation == null || !isNegotiationForCurrentUser(session, negotiation)) {
             redirectAttributes.addFlashAttribute("errorMessage", "No puedes enviar mensajes en esta conversación.");
+            return "redirect:/messages/list";
+        }
+
+        negotiation = activateNegotiationIfPending(session, negotiation);
+        if (negotiation == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Esta propuesta ya no está disponible para iniciar conversación.");
             return "redirect:/messages/list";
         }
 
@@ -397,8 +414,23 @@ public class MessageController {
         if (negotiation == null || negotiation.getStateOfApproval() == null) {
             return false;
         }
-        return !NEGOTIATION_REJECTED.equals(negotiation.getStateOfApproval())
-                && !NEGOTIATION_CANCELLED.equals(negotiation.getStateOfApproval());
+        String state = negotiation.getStateOfApproval();
+        return NEGOTIATION_IN_PROGRESS.equals(state) || NEGOTIATION_ACCEPTED.equals(state);
+    }
+
+    private Negotiation activateNegotiationIfPending(HttpSession session, Negotiation negotiation) {
+        if (negotiation == null || sessionUserService.isTechnician(session)) {
+            return negotiation;
+        }
+        if (!NEGOTIATION_PENDING.equals(negotiation.getStateOfApproval())) {
+            return negotiation;
+        }
+        if (!isNegotiationForCurrentUser(session, negotiation)) {
+            return null;
+        }
+        negotiation.setStateOfApproval(NEGOTIATION_IN_PROGRESS);
+        negotiationDao.update(negotiation);
+        return negotiation;
     }
 
     private String getCurrentParticipantLabel(HttpSession session) {

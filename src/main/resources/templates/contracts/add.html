@@ -35,7 +35,9 @@
                     <label for="idNegotiation" class="form-label">Negociación:</label>
                     <select id="idNegotiation" th:field="*{idNegotiation}" class="form-select">
                         <option value="">Sin negociación</option>
-                        <option th:each="negotiation : ${negotiations}" th:value="${negotiation.idNegotiation}" th:text="${negotiation.stateOfApproval}"></option>
+                        <option th:each="negotiation : ${negotiations}"
+                                th:value="${negotiation.idNegotiation}"
+                                th:text="${'Negociación #' + negotiation.idNegotiation + ' · ' + @nameMaps.papPatiNameById(negotiation.idPapPati) + ' · ' + negotiation.stateOfApproval}"></option>
                     </select>
                     <div th:if="${#fields.hasErrors('idNegotiation')}" th:errors="*{idNegotiation}" class="text-danger small mt-2"></div>
                 </div>

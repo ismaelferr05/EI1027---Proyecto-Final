@@ -352,39 +352,39 @@ public class RequestController {
         }
 
         List<Negotiation> negotiations = negotiationDao.getByRequest(id);
-        Set<Integer> negotiatedPapPatiIds = negotiations.stream()
-                .map(Negotiation::getIdPapPati)
-                .filter(java.util.Objects::nonNull)
-                .collect(Collectors.toSet());
 
-        // Propuestas calculadas, excluyendo PAP/PATI ya propuestos o negociados.
-        List<CandidateProposal> proposals = requestProposalService.buildProposals(request).stream()
-                .filter(proposal -> proposal.getPapPati() != null
-                        && !negotiatedPapPatiIds.contains(proposal.getPapPati().getIdPapPati()))
-                .toList();
-
+        // Propuestas del técnico pendientes de que el usuario OVI inicie conversación.
+        List<ChatThreadSummary> proposedChats = new java.util.ArrayList<>();
         // Asistentes asignados: solo si hay contrato o negociación aceptada.
         List<ChatThreadSummary> assignedChats = new java.util.ArrayList<>();
         for (Negotiation n : negotiations) {
             boolean closedNegotiation = "REJECTED".equals(n.getStateOfApproval()) || "CANCELLED".equals(n.getStateOfApproval());
             Contract contract = contractDao.getByNegotiationId(n.getIdNegotiation());
-            if (n.getIdPapPati() != null
-                    && !closedNegotiation
-                    && ("ACCEPTED".equals(n.getStateOfApproval()) || contract != null)) {
-                es.uji.ei1027.sgovi.model.PapPati papPati = papPatiDao.get(n.getIdPapPati());
-                if (papPati != null) {
-                    ChatThreadSummary assignedChat = new ChatThreadSummary();
-                    assignedChat.setNegotiation(n);
-                    assignedChat.setRequest(request);
-                    assignedChat.setPapPati(papPati);
-                    assignedChat.setContract(contract);
-                    assignedChats.add(assignedChat);
-                }
+            if (n.getIdPapPati() == null || closedNegotiation) {
+                continue;
+            }
+            es.uji.ei1027.sgovi.model.PapPati papPati = papPatiDao.get(n.getIdPapPati());
+            if (papPati == null) {
+                continue;
+            }
+            if ("PENDING".equals(n.getStateOfApproval())) {
+                ChatThreadSummary proposedChat = new ChatThreadSummary();
+                proposedChat.setNegotiation(n);
+                proposedChat.setRequest(request);
+                proposedChat.setPapPati(papPati);
+                proposedChats.add(proposedChat);
+            } else if ("ACCEPTED".equals(n.getStateOfApproval()) || contract != null) {
+                ChatThreadSummary assignedChat = new ChatThreadSummary();
+                assignedChat.setNegotiation(n);
+                assignedChat.setRequest(request);
+                assignedChat.setPapPati(papPati);
+                assignedChat.setContract(contract);
+                assignedChats.add(assignedChat);
             }
         }
 
         model.addAttribute("request", request);
-        model.addAttribute("proposals", proposals);
+        model.addAttribute("proposedChats", proposedChats);
         model.addAttribute("assignedChats", assignedChats);
         model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
@@ -418,6 +418,9 @@ public class RequestController {
         } else if ("REJECTED".equals(negotiation.getStateOfApproval()) || "CANCELLED".equals(negotiation.getStateOfApproval())) {
             redirectAttributes.addFlashAttribute("errorMessage", "Esta propuesta ya no está disponible para iniciar conversación.");
             return "redirect:/requests/frontoffice/view/" + idRequest;
+        } else if ("PENDING".equals(negotiation.getStateOfApproval())) {
+            negotiation.setStateOfApproval("IN_PROGRESS");
+            negotiationDao.update(negotiation);
         }
 
         return "redirect:/messages/chat/" + negotiation.getIdNegotiation();

@@ -39,7 +39,7 @@
 			<div class="chat-context-status">
 				<span th:replace="~{fragments/status-badge :: statusBadge(${chat.negotiation.stateOfApproval})}"></span>
 				<span class="text-muted small" th:if="${chat.contract != null}" th:text="${'Contrato: ' + chat.contract.startDate + ' -> ' + chat.contract.endDate}"></span>
-				<a th:if="${isOviUser and chat.contract == null and chat.negotiation.stateOfApproval == 'ACCEPTED'}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-sm btn-primary">
+				<a th:if="${isOviUser and chat.contract == null and (chat.negotiation.stateOfApproval == 'IN_PROGRESS' or chat.negotiation.stateOfApproval == 'ACCEPTED')}" th:href="@{/contracts/add(negotiationId=${chat.negotiation.idNegotiation})}" class="btn btn-sm btn-primary">
 					<i class="bi bi-plus-circle"></i> Crear contrato
 				</a>
 				<a th:if="${isOviUser and chat.contract != null}" th:href="@{/contracts/edit/{id}(id=${chat.contract.idContract})}" class="btn btn-sm btn-outline-primary">

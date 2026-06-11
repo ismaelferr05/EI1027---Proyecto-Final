@@ -9,7 +9,9 @@
     
     <div class="action-bar">
         <a href="/contracts/add" class="action-link btn-primary-custom"><i class="bi bi-plus-circle"></i> Registrar contrato</a>
+        <a href="/messages/list" class="action-link btn-outline-custom"><i class="bi bi-chat-left-text"></i> Ir a mis chats</a>
     </div>
+    <p class="text-muted small mb-3">Puedes registrar un contrato desde un chat activo o seleccionando una negociación en curso.</p>
     <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
     <div class="table-responsive sgovi-table-shell">

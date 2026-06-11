@@ -416,7 +416,7 @@ public class ContractController {
             }
         }
         return negotiations.stream()
-                .filter(this::isAcceptedNegotiation)
+                .filter(this::isContractableNegotiation)
                 .filter(negotiation -> contractDao.getByNegotiationId(negotiation.getIdNegotiation()) == null)
                 .toList();
     }
@@ -426,7 +426,7 @@ public class ContractController {
             return true;
         }
 
-        if (!isAcceptedNegotiation(negotiation)) {
+        if (!isContractableNegotiation(negotiation)) {
             return false;
         }
 
@@ -439,8 +439,12 @@ public class ContractController {
         return false;
     }
 
-    private boolean isAcceptedNegotiation(Negotiation negotiation) {
-        return negotiation != null && "ACCEPTED".equals(negotiation.getStateOfApproval());
+    private boolean isContractableNegotiation(Negotiation negotiation) {
+        if (negotiation == null || negotiation.getStateOfApproval() == null) {
+            return false;
+        }
+        String state = negotiation.getStateOfApproval();
+        return "IN_PROGRESS".equals(state) || "ACCEPTED".equals(state);
     }
 
     private String buildAutoContractUrl(int idNegotiation) {

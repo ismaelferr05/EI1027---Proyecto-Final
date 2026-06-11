@@ -43,6 +43,31 @@
         </div>
     </div>
 
+    <div class="panel-card" th:if="${request.status == 'APPROVED' and isOviUser}">
+        <h2 class="section-title"><i class="bi bi-person-plus" aria-hidden="true"></i> PAP/PATI propuestos</h2>
+        <div th:if="${#lists.isEmpty(proposedChats)}" class="empty-state">Todavía no hay PAP/PATI propuestos por el técnico.</div>
+        <div th:each="proposedChat : ${proposedChats}" th:with="pap=${proposedChat.papPati}" class="pap-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h5 th:text="${pap.name + ' ' + pap.lastName}"></h5>
+                    <div class="pap-meta">
+                        <div class="row g-2">
+                            <div class="col-md-6"><strong>CP:</strong> <span th:text="${pap.pc}"></span></div>
+                            <div class="col-md-6"><strong>Género:</strong> <span th:text="${pap.gender}"></span></div>
+                            <div class="col-md-6"><strong>Edad:</strong> <span th:text="${pap.age}"></span></div>
+                            <div class="col-md-6"><strong>Teléfono:</strong> <span th:text="${pap.phone}"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <form th:action="@{/requests/frontoffice/start-chat}" method="post">
+                    <input type="hidden" name="idRequest" th:value="${request.idRequest}">
+                    <input type="hidden" name="idPapPati" th:value="${pap.idPapPati}">
+                    <button class="btn btn-primary" type="submit">Iniciar conversación</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="panel-card">
         <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistentes asignados</h2>
         <div th:if="${request.status != 'APPROVED'}" class="empty-state">
@@ -72,25 +97,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel-card" th:if="${request.status == 'APPROVED' and isOviUser}">
-        <h2 class="section-title"><i class="bi bi-people" aria-hidden="true"></i> PAP/PATI compatibles</h2>
-        <div th:if="${#lists.isEmpty(proposals)}" class="empty-state">No hay candidaturas compatibles disponibles.</div>
-        <div th:each="proposal : ${proposals}" class="pap-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                    <h5 th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></h5>
-                    <div class="pap-meta" th:text="${'CP: ' + proposal.papPati.pc + ' · Género: ' + proposal.papPati.gender + ' · Edad: ' + proposal.papPati.age}"></div>
-                    <div class="text-muted small" th:text="${proposal.matchSummary}"></div>
-                </div>
-                <form th:action="@{/requests/frontoffice/start-chat}" method="post">
-                    <input type="hidden" name="idRequest" th:value="${request.idRequest}">
-                    <input type="hidden" name="idPapPati" th:value="${proposal.papPati.idPapPati}">
-                    <button class="btn btn-primary" type="submit">Iniciar conversación</button>
-                </form>
             </div>
         </div>
     </div>
