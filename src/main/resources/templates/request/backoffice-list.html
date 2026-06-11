@@ -45,11 +45,11 @@
         </table>
     </div>
 
-    <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas sin contrato</h2>
+    <h2 class="section-title"><i class="bi bi-check-circle" aria-hidden="true"></i> Solicitudes Aprobadas</h2>
     <div th:if="${!#lists.isEmpty(approvedRequests)}">
         <div class="list-group">
             <div class="list-group-item d-flex align-items-center flex-wrap gap-3" th:each="request : ${approvedRequests}">
-                <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver negociaciones</a>
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}"><i class="bi bi-tools"></i> Gestionar</a>
                 <div>
                     <h6 class="mb-1">
                         <strong>#<span th:text="${request.idRequest}"></span></strong>

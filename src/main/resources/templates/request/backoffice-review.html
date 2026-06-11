@@ -9,6 +9,18 @@
     
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
     <div class="panel-card" th:if="${msg != null}">
         <div class="alert alert-info mb-0" th:text="${msg}"></div>
     </div>
@@ -39,14 +51,41 @@
                 <div>
                     <strong th:text="${'Negociación #' + negotiation.idNegotiation}"></strong>
                     <div class="small text-muted">
-                        <span th:text="${'PAP/PATI #' + negotiation.idPapPati}"></span>
+                        <span th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati) + ' · PAP/PATI #' + negotiation.idPapPati}"></span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span>
+                    <form th:if="${request.status == 'APPROVED'}" th:action="@{/requests/backoffice/negotiation-status}" method="post" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <label th:for="|negotiation-state-${negotiation.idNegotiation}|" class="visually-hidden">Estado</label>
+                        <select th:id="|negotiation-state-${negotiation.idNegotiation}|"
+                                name="stateOfApproval"
+                                class="form-select form-select-sm w-auto">
+                            <option value="PENDING" th:selected="${negotiation.stateOfApproval == 'PENDING'}">PENDING</option>
+                            <option value="ACCEPTED" th:selected="${negotiation.stateOfApproval == 'ACCEPTED'}">ACCEPTED</option>
+                            <option value="IN_PROGRESS" th:selected="${negotiation.stateOfApproval == 'IN_PROGRESS'}">IN_PROGRESS</option>
+                            <option value="REJECTED" th:selected="${negotiation.stateOfApproval == 'REJECTED'}">REJECTED</option>
+                            <option value="CANCELLED" th:selected="${negotiation.stateOfApproval == 'CANCELLED'}">CANCELLED</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </form>
                     <a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${negotiation.idNegotiation})}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-chat-dots"></i> Abrir chat
                     </a>
+                    <form th:if="${request.status == 'APPROVED'}"
+                          th:action="@{/requests/backoffice/unpropose}"
+                          method="post"
+                          onsubmit="return confirm('Desproponer este PAP/PATI eliminará la negociación y sus datos asociados. ¿Continuar?');">
+                        <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-person-dash"></i> Desproponer
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -91,8 +130,96 @@
             </div>
         </div>
 
-        <div class="btn-group-custom mt-4">
+        <div class="btn-group-custom mt-4" th:if="${request.status == 'REJECTED'}">
             <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
+        </div>
+    </div>
+
+    <div class="panel-card" th:if="${request.status == 'APPROVED'}">
+        <h2 class="section-title"><i class="bi bi-tools" aria-hidden="true"></i> Gestionar solicitud aprobada</h2>
+
+        <div class="decision-actions mb-4">
+            <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Editar datos
+            </a>
+            <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
+        </div>
+
+        <form th:action="@{/requests/backoffice/reject}" method="post" class="reject-panel">
+            <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="reject-panel-copy">
+                <strong>Denegar solicitud aprobada</strong>
+                <span>La solicitud pasará a rechazada y el motivo se incluirá en la comunicación al usuario OVI.</span>
+            </div>
+            <label th:for="|reject-approved-reason-${request.idRequest}|" class="form-label">Motivo de la denegación</label>
+            <textarea th:id="|reject-approved-reason-${request.idRequest}|"
+                      name="reason"
+                      class="form-control"
+                      rows="3"
+                      maxlength="500"
+                      placeholder="Explica de forma breve y concreta por qué se deniega esta solicitud aprobada"
+                      required></textarea>
+            <div class="decision-actions mt-3">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-circle"></i> Denegar solicitud
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel-card" th:if="${request.status == 'APPROVED'}">
+        <h2 class="section-title"><i class="bi bi-person-plus" aria-hidden="true"></i> Proponer PAP/PATI</h2>
+
+        <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
+
+        <div class="table-responsive mb-3">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Gestión</th>
+                    <th>PAP/PATI</th>
+                    <th>CP</th>
+                    <th>Género</th>
+                    <th>Edad</th>
+                    <th>Puntuación</th>
+                    <th>Detalle</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(proposals)}">
+                    <td colspan="7" class="text-center text-muted py-4">No hay PAP/PATI disponibles para este periodo.</td>
+                </tr>
+                <tr th:each="proposal : ${proposals}">
+                    <td>
+                        <span th:if="${existingPapPatis.contains(proposal.papPati.idPapPati)}" class="badge bg-success">Ya propuesto</span>
+                        <form th:if="${!existingPapPatis.contains(proposal.papPati.idPapPati)}" th:action="@{/requests/backoffice/propose}" method="post">
+                            <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
+                            <input type="hidden" name="selectedPapPatiId" th:value="${proposal.papPati.idPapPati}" />
+                            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-person-plus"></i> Proponer
+                            </button>
+                        </form>
+                    </td>
+                    <td th:text="${proposal.papPati.name + ' ' + proposal.papPati.lastName}"></td>
+                    <td th:text="${proposal.papPati.pc}"></td>
+                    <td th:text="${proposal.papPati.gender}"></td>
+                    <td th:text="${proposal.papPati.age}"></td>
+                    <td>
+                        <span class="badge bg-primary fs-6" th:text="${proposal.score + '/100'}"></span>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <span class="badge rounded-pill text-bg-light border reason-pill"
+                                  th:each="reason : ${proposal.reasonDetails}"
+                                  th:text="${reason}"></span>
+                        </div>
+                        <div class="text-muted small" th:text="${proposal.matchSummary}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

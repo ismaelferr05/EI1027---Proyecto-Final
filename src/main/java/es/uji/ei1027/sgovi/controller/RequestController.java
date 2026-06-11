@@ -411,13 +411,11 @@ public class RequestController {
         }
 
         List<Request> pending = requestDao.getByStatus("IN_REVIEW");
-        List<Request> approvedWithoutContract = requestDao.getByStatus("APPROVED").stream()
-                .filter(request -> !hasAnyContractForRequest(request.getIdRequest()))
-                .collect(Collectors.toList());
-        log.info("pendingRequests size={}, approvedWithoutContract size={}", pending.size(), approvedWithoutContract.size());
+        List<Request> approved = requestDao.getByStatus("APPROVED");
+        log.info("pendingRequests size={}, approvedRequests size={}", pending.size(), approved.size());
 
         addRequestsTable(model, "pendingRequests", "/requests/backoffice/list", pending, q, sort, dir);
-        model.addAttribute("approvedRequests", sortedFilteredRequests(approvedWithoutContract, q, sort, dir));
+        model.addAttribute("approvedRequests", sortedFilteredRequests(approved, q, sort, dir));
         return "request/backoffice-list";
     }
 
@@ -533,6 +531,14 @@ public class RequestController {
                 ));
     }
 
+    private boolean isValidNegotiationState(String stateOfApproval) {
+        return "PENDING".equals(stateOfApproval)
+                || "ACCEPTED".equals(stateOfApproval)
+                || "IN_PROGRESS".equals(stateOfApproval)
+                || "REJECTED".equals(stateOfApproval)
+                || "CANCELLED".equals(stateOfApproval);
+    }
+
     @PostMapping("/backoffice/approve")
     public String backOfficeApprove(@RequestParam("idRequest") int idRequest,
                                     @RequestParam(value = "selectedPapPatiId", required = false) Integer selectedPapPatiId,
@@ -567,6 +573,87 @@ public class RequestController {
 
         EmailContent email = emailService.sendAcceptanceEmail(request, oviUser, selectedPapPati);
         return showConfirmation(model, request, oviUser, selectedPapPati, email, "acceptance");
+    }
+
+    @PostMapping("/backoffice/propose")
+    public String backOfficePropose(@RequestParam("idRequest") int idRequest,
+                                    @RequestParam("selectedPapPatiId") int selectedPapPatiId,
+                                    HttpSession session,
+                                    RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+
+        Request request = requestDao.get(idRequest);
+        PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
+        if (request == null || selectedPapPati == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Solicitud o PAP/PATI no encontrado.");
+            return "redirect:/requests/backoffice/list";
+        }
+
+        if (!"APPROVED".equals(request.getStatus())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Esta acción solo está disponible para solicitudes aprobadas.");
+            return "redirect:/requests/backoffice/review/" + idRequest;
+        }
+
+        if (negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Ese PAP/PATI ya está propuesto para esta solicitud.");
+            return "redirect:/requests/backoffice/review/" + idRequest;
+        }
+
+        Negotiation negotiation = new Negotiation();
+        negotiation.setStateOfApproval("PENDING");
+        negotiation.setIdRequest(idRequest);
+        negotiation.setIdPapPati(selectedPapPatiId);
+        negotiationDao.add(negotiation);
+        redirectAttributes.addFlashAttribute("successMessage", "PAP/PATI propuesto correctamente.");
+        return "redirect:/requests/backoffice/review/" + idRequest;
+    }
+
+    @PostMapping("/backoffice/unpropose")
+    public String backOfficeUnpropose(@RequestParam("idNegotiation") int idNegotiation,
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+
+        Negotiation negotiation = negotiationDao.get(idNegotiation);
+        if (negotiation == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Negociación no encontrada.");
+            return "redirect:/requests/backoffice/list";
+        }
+
+        int idRequest = negotiation.getIdRequest();
+        negotiationDao.delete(idNegotiation);
+        redirectAttributes.addFlashAttribute("successMessage", "PAP/PATI despropuesto correctamente.");
+        return "redirect:/requests/backoffice/review/" + idRequest;
+    }
+
+    @PostMapping("/backoffice/negotiation-status")
+    public String backOfficeNegotiationStatus(@RequestParam("idNegotiation") int idNegotiation,
+                                              @RequestParam("stateOfApproval") String stateOfApproval,
+                                              HttpSession session,
+                                              RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isTechnician(session)) {
+            return "redirect:/dashboard";
+        }
+
+        Negotiation negotiation = negotiationDao.get(idNegotiation);
+        if (negotiation == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Negociación no encontrada.");
+            return "redirect:/requests/backoffice/list";
+        }
+
+        if (!isValidNegotiationState(stateOfApproval)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Estado de negociación no válido.");
+            return "redirect:/requests/backoffice/review/" + negotiation.getIdRequest();
+        }
+
+        negotiation.setStateOfApproval(stateOfApproval);
+        negotiationDao.update(negotiation);
+        redirectAttributes.addFlashAttribute("successMessage", "Estado de la negociación actualizado.");
+        return "redirect:/requests/backoffice/review/" + negotiation.getIdRequest();
     }
 
     @PostMapping("/backoffice/reject")
