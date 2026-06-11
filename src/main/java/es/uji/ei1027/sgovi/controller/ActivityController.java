@@ -148,7 +148,7 @@ public class ActivityController {
 
         List<Activity> upcoming = activityDao.getAll().stream()
                 .filter(activity -> activity.getDate() != null && !activity.getDate().isBefore(LocalDate.now()))
-                .sorted(Comparator.comparing(Activity::getDate))
+                .sorted(Comparator.comparing(Activity::getIdActivity).reversed())
                 .toList();
 
         Map<Integer, Boolean> enrolledByActivityId = new LinkedHashMap<>();

@@ -32,8 +32,6 @@
             <dd class="col-sm-9" th:text="${request.description}"></dd>
             <dt class="col-sm-3">Periodo</dt>
             <dd class="col-sm-9" th:text="${request.startDate + ' -> ' + request.endDate}"></dd>
-            <dt class="col-sm-3" th:if="${request.availabilityDate != null}">Disponibilidad</dt>
-            <dd class="col-sm-9" th:if="${request.availabilityDate != null}" th:text="${request.availabilityDate}"></dd>
             <dt class="col-sm-3">Preferencias</dt>
             <dd class="col-sm-9" th:text="${'Genero: ' + (request.preferredGender != null ? request.preferredGender : '') + ' - CP: ' + (request.preferredPc != null ? request.preferredPc : '') + ' - Edad: ' + (request.preferredAge != null ? request.preferredAge : '')}"></dd>
             <dt class="col-sm-3">Estado actual</dt>
@@ -163,13 +161,14 @@
                     <th>CP</th>
                     <th>Género</th>
                     <th>Edad</th>
+                    <th>Disponibilidad</th>
                     <th>Puntuación</th>
                     <th>Detalle</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(availableProposals)}">
-                    <td colspan="7" class="text-center text-muted py-4">No hay más PAP/PATI disponibles para añadir.</td>
+                    <td colspan="8" class="text-center text-muted py-4">No hay más PAP/PATI disponibles para añadir.</td>
                 </tr>
                 <tr th:each="proposal : ${availableProposals}">
                     <td>
@@ -186,6 +185,8 @@
                     <td th:text="${proposal.papPati.pc}"></td>
                     <td th:text="${proposal.papPati.gender}"></td>
                     <td th:text="${proposal.papPati.age}"></td>
+                    <td class="text-nowrap small"
+                        th:text="${proposal.papPati.availabilityStartDate + ' → ' + proposal.papPati.availabilityEndDate}"></td>
                     <td>
                         <span class="badge bg-primary fs-6" th:text="${proposal.score + '/100'}"></span>
                     </td>
@@ -221,13 +222,14 @@
                         <th>CP</th>
                         <th>Género</th>
                         <th>Edad</th>
+                        <th>Disponibilidad</th>
                         <th>Puntuación</th>
                         <th>Detalle</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${#lists.isEmpty(proposals)}">
-                        <td colspan="7" class="text-center text-muted py-4">No hay PAP/PATI disponibles para este periodo.</td>
+                        <td colspan="8" class="text-center text-muted py-4">No hay PAP/PATI disponibles para este periodo.</td>
                     </tr>
                     <tr th:each="proposal : ${proposals}">
                         <td>
@@ -241,6 +243,8 @@
                         <td th:text="${proposal.papPati.pc}"></td>
                         <td th:text="${proposal.papPati.gender}"></td>
                         <td th:text="${proposal.papPati.age}"></td>
+                        <td class="text-nowrap small"
+                            th:text="${proposal.papPati.availabilityStartDate + ' → ' + proposal.papPati.availabilityEndDate}"></td>
                         <td>
                             <div class="score-box">
                                 <div class="d-flex align-items-center gap-2 mb-2">

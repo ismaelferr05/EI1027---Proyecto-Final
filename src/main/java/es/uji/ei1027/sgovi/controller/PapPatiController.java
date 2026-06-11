@@ -80,6 +80,8 @@ public class PapPatiController {
     public String addForm(Model model) {
         PapPati papPati = new PapPati();
         papPati.setStatus("PENDING");
+        papPati.setAvailabilityStartDate(LocalDate.of(2026, 1, 1));
+        papPati.setAvailabilityEndDate(LocalDate.of(2026, 12, 31));
         model.addAttribute("papPati", papPati);
         return "pappati/add";
     }
@@ -88,6 +90,8 @@ public class PapPatiController {
     public String registerForm(Model model) {
         PapPati papPati = new PapPati();
         papPati.setStatus("PENDING");
+        papPati.setAvailabilityStartDate(LocalDate.of(2026, 1, 1));
+        papPati.setAvailabilityEndDate(LocalDate.of(2026, 12, 31));
         model.addAttribute("papPati", papPati);
         return "pappati/register";
     }
@@ -175,7 +179,7 @@ public class PapPatiController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String updateProfile(@ModelAttribute("papPati") PapPati papPati, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         PapPati current = sessionUserService.getCurrentPapPati(session);
         if (current == null || current.getIdPapPati() != papPati.getIdPapPati()) {
             return "redirect:/dashboard";
@@ -191,6 +195,7 @@ public class PapPatiController {
         PapPatiValidator papPatiValidator = new PapPatiValidator();
         papPatiValidator.validate(papPati, bindingResult);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("selfProfile", true);
             return "pappati/edit";
         }
         papPatiDao.update(papPati);

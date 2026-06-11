@@ -1,5 +1,7 @@
 package es.uji.ei1027.sgovi.model;
 
+import java.time.LocalDate;
+
 public class PapPati {
     private int idPapPati;
     private String name;
@@ -16,6 +18,8 @@ public class PapPati {
     private String training;
     private String experience;
     private String experienceType;
+    private LocalDate availabilityStartDate;
+    private LocalDate availabilityEndDate;
     private String status;
     private String rejectionReason;
 
@@ -74,6 +78,10 @@ public class PapPati {
     public void setExperience(String experience) { this.experience = experience; }
     public String getExperienceType() { return experienceType; }
     public void setExperienceType(String experienceType) { this.experienceType = experienceType; }
+    public LocalDate getAvailabilityStartDate() { return availabilityStartDate; }
+    public void setAvailabilityStartDate(LocalDate availabilityStartDate) { this.availabilityStartDate = availabilityStartDate; }
+    public LocalDate getAvailabilityEndDate() { return availabilityEndDate; }
+    public void setAvailabilityEndDate(LocalDate availabilityEndDate) { this.availabilityEndDate = availabilityEndDate; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getRejectionReason() { return rejectionReason; }

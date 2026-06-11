@@ -5,7 +5,7 @@
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
 <header th:replace="~{fragments/page-header :: pageHeader(title=|Contrato #${contract.idContract}|, icon='bi-file-earmark-text', subtitle='')}"></header>
 <main class="container page-content mb-5">
-    
+
     <div class="action-bar">
         <a th:if="${isTechnician}" href="/contracts/list" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a contratos</a>
         <a th:if="${isPapPati}" th:href="@{/contracts/pappati/list}" class="action-link btn-outline-custom"><i class="bi bi-arrow-left"></i> Volver a mis contratos</a>
@@ -13,17 +13,63 @@
     </div>
 
     <div class="panel-card">
-        <p><strong>Salario:</strong> <span th:text="|€ ${contract.wage}|"></span></p>
-        <p><strong>Inicio:</strong> <span th:text="${contract.startDate}"></span></p>
-        <p><strong>Fin:</strong> <span th:text="${contract.endDate}"></span></p>
-        <p th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}"><strong>Estado:</strong>
-            <span th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <h2 class="section-title mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contrato</h2>
+            <span th:with="contractStatus=${contract.endDate.isBefore(T(java.time.LocalDate).now()) ? 'FINALIZADO' : 'ACTIVO'}"
+                  th:replace="~{fragments/status-badge :: statusBadge(${contractStatus})}"></span>
+        </div>
+
+        <div class="meta-grid mb-4">
+            <div class="meta-item">
+                <span class="meta-label">Salario</span>
+                <span class="meta-value" th:text="|€ ${contract.wage}/h|"></span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Inicio</span>
+                <span class="meta-value" th:text="${contract.startDate}"></span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Fin</span>
+                <span class="meta-value" th:text="${contract.endDate}"></span>
+            </div>
+        </div>
+
+        <div class="pap-card mb-3" th:if="${papPati != null and (isOviUser or isTechnician)}">
+            <h5 class="mb-2" th:text="${papPati.name + ' ' + papPati.lastName}"></h5>
+            <div class="text-muted small">
+                <span th:text="${papPati.phone}"></span>
+                <span th:if="${papPati.email != null}"> · </span>
+                <span th:if="${papPati.email != null}" th:text="${papPati.email}"></span>
+            </div>
+        </div>
+
+        <div class="pap-card mb-3" th:if="${oviUser != null and (isPapPati or isTechnician)}">
+            <h5 class="mb-2" th:text="${oviUser.name + ' ' + oviUser.lastName}"></h5>
+            <div class="text-muted small">
+                <span th:text="${oviUser.phone}"></span>
+                <span th:if="${oviUser.email != null}"> · </span>
+                <span th:if="${oviUser.email != null}" th:text="${oviUser.email}"></span>
+            </div>
+        </div>
+
+        <p class="text-muted small mb-4" th:if="${request != null}">
+            <strong>Solicitud:</strong>
+            <a th:if="${isOviUser}" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}" th:text="${request.description}"></a>
+            <a th:if="${isTechnician}" th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" th:text="${request.description}"></a>
+            <span th:if="${isPapPati}" th:text="${request.description}"></span>
+            <span th:text="' (' + ${request.startDate} + ' → ' + ${request.endDate} + ')'"></span>
         </p>
-        <p><strong>Negociación:</strong> <span th:text="${contract.idNegotiation}"></span></p>
-        <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="action-link btn-primary-custom mt-3" target="_blank" rel="noopener noreferrer">
-            <i class="bi bi-download" aria-hidden="true"></i> Abrir documento
-        </a>
+
+        <div class="decision-actions">
+            <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-download"></i> Abrir documento
+            </a>
+            <a th:if="${negotiation != null}" class="btn btn-outline-primary" th:href="@{/messages/chat/{id}(id=${negotiation.idNegotiation})}">
+                <i class="bi bi-chat-dots"></i> Ir a conversación
+            </a>
+        </div>
     </div>
+
 </main>
 </body>
 </html>

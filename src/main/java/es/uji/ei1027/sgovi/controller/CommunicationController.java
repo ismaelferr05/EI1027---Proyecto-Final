@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Controller
 @RequestMapping("/communications")
@@ -77,7 +80,25 @@ public class CommunicationController {
     }
 
     private void addCommunicationsTable(Model model, List<TechnicianCommunication> communications, String q, String sort, String dir) {
-        model.addAttribute("communications", communications);
+        Map<String, Function<TechnicianCommunication, ?>> sorters = new LinkedHashMap<>();
+        sorters.put("date", TechnicianCommunication::getCommunicationDateTime);
+        sorters.put("subject", TechnicianCommunication::getSubject);
+        sorters.put("text", TechnicianCommunication::getText);
+        sorters.put("sender", communication -> nameMaps.senderLabel(communication.getSenderRole(), communication.getSenderId()));
+        sorters.put("recipient", communication -> nameMaps.recipientLabel(communication.getRecipientType(), communication.getRecipientId()));
+        sorters.put("id", TechnicianCommunication::getIdCommunication);
+
+        model.addAttribute("communications", tableViewService.applySorted(communications, q, sort, dir, sorters,
+                tableViewService.fields(
+                        TechnicianCommunication::getIdCommunication,
+                        TechnicianCommunication::getCommunicationDateTime,
+                        TechnicianCommunication::getSubject,
+                        TechnicianCommunication::getText,
+                        TechnicianCommunication::getSenderRole,
+                        TechnicianCommunication::getRecipientType,
+                        communication -> nameMaps.senderLabel(communication.getSenderRole(), communication.getSenderId()),
+                        communication -> nameMaps.recipientLabel(communication.getRecipientType(), communication.getRecipientId())
+                )));
     }
 
     @PostMapping("/send")

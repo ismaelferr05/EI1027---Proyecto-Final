@@ -24,6 +24,10 @@ public class PapPatiRowMapper implements RowMapper<PapPati> {
         papPati.setTraining(rs.getString("training"));
         papPati.setExperience(rs.getString("experience"));
         papPati.setExperienceType(rs.getString("experienceType"));
+        java.sql.Date availabilityStartDate = rs.getDate("availabilityStartDate");
+        papPati.setAvailabilityStartDate(availabilityStartDate != null ? availabilityStartDate.toLocalDate() : null);
+        java.sql.Date availabilityEndDate = rs.getDate("availabilityEndDate");
+        papPati.setAvailabilityEndDate(availabilityEndDate != null ? availabilityEndDate.toLocalDate() : null);
         papPati.setStatus(rs.getString("status"));
         papPati.setRejectionReason(rs.getString("rejectionReason"));
         return papPati;

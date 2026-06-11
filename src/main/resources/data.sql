@@ -32,37 +32,36 @@ INSERT INTO OviUser (oviuser_id, name, lastName, email, phone, password, provinc
     (4, 'Carmen', 'Ruiz',     'carmen.ruiz@oviuser.com',   '644444441', 'password4', 'Valencia', 'Valencia', '46003', 55, 'F', 'REJECTED', 'Documentación incompleta.', true),
     (5, 'Miguel', 'Torres',   'miguel.torres@oviuser.com', '655555552', 'password5', 'Valencia', 'Valencia', '46004', 45, 'M', 'ACCEPTED', NULL, true);
 
-INSERT INTO PapPati (pappati_id, name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, status, rejectionReason) VALUES
-    (1, 'Jordi', 'Puig',    'jordi.puig@pappati.com',    '644444444', 'password1', 'Valencia',  'Valencia',  '46002', 35, 'M', 'http://cv.sgovi.es/jordi', 'Grado en Trabajo Social',   '3', 'Formal', 'ACCEPTED', NULL),
-    (2, 'Marta', 'Vidal',   'marta.vidal@pappati.com',   '655555555', 'password2', 'Castellón', 'Castellón', '12002', 28, 'F', 'http://cv.sgovi.es/marta', 'FP Auxiliar Enfermería',    '2', 'Formal', 'ACCEPTED', NULL),
-    (3, 'Elena', 'Costa',   'elena.costa@pappati.com',   '677777777', 'password4', 'Valencia',  'Valencia',  '46001', 32, 'F', 'http://cv.sgovi.es/elena', 'Grado en Educación Social', '4', 'Formal', 'ACCEPTED', NULL),
-    (4, 'Pablo', 'Navarro', 'pablo.navarro@pappati.com', '688888888', 'password5', 'Valencia',  'Valencia',  '46005', 38, 'M', 'http://cv.sgovi.es/pablo', 'Técnico en Cuidados Aux.',  '5', 'Formal', 'ACCEPTED', NULL),
-    (5, 'Tomàs', 'Ferrer',  'tomas.ferrer@pappati.com',  '666666666', 'password3', 'Alicante',  'Alicante',  '03002', 42, 'M', NULL,                       NULL,                        NULL, NULL,     'PENDING',  NULL);
+INSERT INTO PapPati (pappati_id, name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, availabilityStartDate, availabilityEndDate, status, rejectionReason) VALUES
+    (1, 'Jordi', 'Puig',    'jordi.puig@pappati.com',    '644444444', 'password1', 'Valencia',  'Valencia',  '46002', 35, 'M', 'http://cv.sgovi.es/jordi', 'Grado en Trabajo Social',   '3', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (2, 'Marta', 'Vidal',   'marta.vidal@pappati.com',   '655555555', 'password2', 'Castellón', 'Castellón', '12002', 28, 'F', 'http://cv.sgovi.es/marta', 'FP Auxiliar Enfermería',    '2', 'Formal', '2026-01-01', '2026-06-30', 'ACCEPTED', NULL),
+    (3, 'Elena', 'Costa',   'elena.costa@pappati.com',   '677777777', 'password4', 'Valencia',  'Valencia',  '46001', 32, 'F', 'http://cv.sgovi.es/elena', 'Grado en Educación Social', '4', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (4, 'Pablo', 'Navarro', 'pablo.navarro@pappati.com', '688888888', 'password5', 'Valencia',  'Valencia',  '46005', 38, 'M', 'http://cv.sgovi.es/pablo', 'Técnico en Cuidados Aux.',  '5', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (5, 'Tomàs', 'Ferrer',  'tomas.ferrer@pappati.com',  '666666666', 'password3', 'Alicante',  'Alicante',  '03002', 42, 'M', NULL,                       NULL,                        NULL, NULL,     '2026-01-01', '2026-12-31', 'PENDING',  NULL);
 
 -- Solicitud 1: Ana con contrato activo (Jordi).
 -- Solicitud 2: Laura aprobada, chat en curso con Jordi.
 -- Solicitud 3: Ana aprobada, 3 PAP/PATI propuestos pendientes de chat.
 -- Solicitud 4: Miguel en revisión (aprobar con varios candidatos).
 -- Solicitud 5: Miguel rechazada (ejemplo).
-INSERT INTO Request (request_id, description, training, startDate, endDate, availabilityDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, rejectionReason, oviuser_id) VALUES
+INSERT INTO Request (request_id, description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, rejectionReason, oviuser_id) VALUES
     (1, 'Apoyo con tareas del hogar y desplazamientos diarios.',
-        'Auxiliar de enfermería', '2026-07-01', '2026-12-31', '2026-06-15', 2, 'Formal', 'M', '46001', 30, 'CONTRACT_ACTIVE', NULL, 1),
+        'Auxiliar de enfermería', '2026-07-01', '2026-12-31', 2, 'Formal', 'M', '46001', 30, 'CONTRACT_ACTIVE', NULL, 1),
     (2, 'Asistente para movilidad y actividades externas.',
-        NULL, '2026-07-01', '2026-11-30', '2026-06-10', NULL, NULL, 'F', '03001', 40, 'APPROVED', NULL, 3),
+        NULL, '2026-07-01', '2026-11-30', NULL, NULL, 'F', '03001', 40, 'APPROVED', NULL, 3),
     (3, 'Apoyo vespertino los fines de semana.',
-        'Educación social', '2026-08-01', '2026-12-15', '2026-07-01', 1, 'Formal', NULL, '46001', NULL, 'APPROVED', NULL, 1),
+        'Educación social', '2026-08-01', '2026-12-15', 1, 'Formal', NULL, '46001', NULL, 'APPROVED', NULL, 1),
     (4, 'Ayuda con medicación y citas médicas.',
-        'Auxiliar de enfermería', '2026-09-01', '2026-12-31', '2026-08-15', 2, 'Formal', 'F', '46004', 45, 'IN_REVIEW', NULL, 5),
+        'Auxiliar de enfermería', '2026-09-01', '2026-12-31', 2, 'Formal', 'F', '46004', 45, 'IN_REVIEW', NULL, 5),
     (5, 'Acompañamiento en desplazamientos laborales.',
-        NULL, '2026-08-01', '2026-10-31', '2026-07-01', NULL, NULL, NULL, NULL, NULL, 'REJECTED', 'No hay candidatos disponibles en la zona.', 5);
+        NULL, '2026-01-01', '2026-06-30', NULL, NULL, NULL, NULL, NULL, 'REJECTED', 'No hay candidatos disponibles en la zona.', 5);
 
 INSERT INTO Negotiation (negotiation_id, stateOfApproval, request_id, pappati_id) VALUES
     (1, 'ACCEPTED',    1, 1),
     (2, 'REJECTED',    1, 2),
     (3, 'IN_PROGRESS', 2, 1),
-    (4, 'PENDING',     3, 2),
-    (5, 'PENDING',     3, 3),
-    (6, 'PENDING',     3, 4);
+    (4, 'PENDING',     3, 3),
+    (5, 'PENDING',     3, 4);
 
 INSERT INTO Message (messageId, messageDateTime, sender, receiver, text, negotiation_id) VALUES
     (1, '2026-06-01 10:00:00', 'Jordi Puig',   'Ana Martínez', 'Hola Ana, me interesa tu solicitud.', 1),

@@ -100,6 +100,23 @@
             </div>
 
             <div class="row">
+                <div class="col-12 mb-2">
+                    <h3 class="h6 text-muted">Período de disponibilidad para asistir</h3>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="availabilityStartDate" class="form-label">Disponible desde *</label>
+                    <input id="availabilityStartDate" type="date" th:field="*{availabilityStartDate}" class="form-control" required />
+                    <div th:if="${#fields.hasErrors('availabilityStartDate')}" th:errors="*{availabilityStartDate}" class="text-danger small mt-2"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="availabilityEndDate" class="form-label">Disponible hasta *</label>
+                    <input id="availabilityEndDate" type="date" th:field="*{availabilityEndDate}" class="form-control" required />
+                    <div class="form-text">Debe solaparse con el periodo de las solicitudes para aparecer como candidato.</div>
+                    <div th:if="${#fields.hasErrors('availabilityEndDate')}" th:errors="*{availabilityEndDate}" class="text-danger small mt-2"></div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-4 mb-3">
                     <label for="training" class="form-label">Formación:</label>
                     <input id="training" type="text" th:field="*{training}" class="form-control" maxlength="100" />

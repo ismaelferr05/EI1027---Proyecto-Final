@@ -81,11 +81,14 @@ CREATE TABLE PapPati (
     training VARCHAR(100),
     experience VARCHAR(50),
     experienceType VARCHAR(50),
+    availabilityStartDate DATE,
+    availabilityEndDate DATE,
     status VARCHAR(20) NOT NULL,
     rejectionReason TEXT,
 
     CHECK(status IN ('PENDING','ACCEPTED','REJECTED')),
-    CHECK (age >= 0)
+    CHECK (age >= 0),
+    CHECK (availabilityEndDate IS NULL OR availabilityStartDate IS NULL OR availabilityEndDate >= availabilityStartDate)
 );
 
 CREATE TABLE ParticipantList (
@@ -122,7 +125,6 @@ CREATE TABLE Request (
     training VARCHAR(100),
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
-    availabilityDate DATE,
     experience INT,
     experienceType VARCHAR(50),
     preferredGender VARCHAR(10),

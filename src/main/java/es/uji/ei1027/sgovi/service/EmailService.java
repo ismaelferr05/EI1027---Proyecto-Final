@@ -138,9 +138,6 @@ public class EmailService {
         body.append("- Descripción: ").append(safeText(request.getDescription(), "")).append("\n");
         body.append("- Formación: ").append(safeText(request.getTraining(), "Sin formación indicada")).append("\n");
         body.append("- Periodo: ").append(request.getStartDate()).append(" -> ").append(request.getEndDate()).append("\n");
-        if (request.getAvailabilityDate() != null) {
-            body.append("- Disponibilidad desde: ").append(request.getAvailabilityDate()).append("\n");
-        }
         body.append("- Estado: ").append(safeText(request.getStatus(), "")).append("\n");
     }
 

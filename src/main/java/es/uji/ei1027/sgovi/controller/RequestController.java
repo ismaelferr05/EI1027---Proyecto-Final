@@ -29,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -317,16 +318,20 @@ public class RequestController {
         model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
         model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
 
+        List<Request> requests;
         if (sessionUserService.isTechnician(session)) {
-            addRequestsTable(model, "requests", "/requests/frontoffice/track", requestDao.getAll(), q, sort, dir);
+            requests = requestDao.getAll();
+            addRequestsTable(model, "requests", "/requests/frontoffice/track", requests, q, sort, dir);
         } else {
             Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
             if (idOviUser == null) {
                 return "redirect:/login";
             }
-            addRequestsTable(model, "requests", "/requests/frontoffice/track", requestDao.getByOviUser(idOviUser), q, sort, dir);
+            requests = requestDao.getByOviUser(idOviUser);
+            addRequestsTable(model, "requests", "/requests/frontoffice/track", requests, q, sort, dir);
             model.addAttribute("currentOviUser", sessionUserService.getCurrentOviUser(session));
         }
+        model.addAttribute("followUpByRequestId", buildFollowUpByRequestId(requests));
 
         return "request/frontoffice-track";
     }
@@ -367,7 +372,7 @@ public class RequestController {
             if (papPati == null) {
                 continue;
             }
-            if ("PENDING".equals(n.getStateOfApproval())) {
+            if ("PENDING".equals(n.getStateOfApproval()) || "IN_PROGRESS".equals(n.getStateOfApproval())) {
                 ChatThreadSummary proposedChat = new ChatThreadSummary();
                 proposedChat.setNegotiation(n);
                 proposedChat.setRequest(request);
@@ -451,7 +456,7 @@ public class RequestController {
         model.addAttribute(attribute, sortedFilteredRequests(requests, q, sort, dir));
         Map<String, String> options;
         if ("/requests/frontoffice/track".equals(action)) {
-            options = tableViewService.options("description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "status", "Estado");
+            options = tableViewService.options("description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "id", "ID");
         } else {
             options = tableViewService.options("oviUser", "Usuario OVI", "description", "Descripción", "startDate", "Inicio", "endDate", "Fin", "status", "Estado", "id", "ID");
         }
@@ -512,8 +517,12 @@ public class RequestController {
         }
 
         List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
-        List<Negotiation> negotiations = negotiationDao.getByRequest(id);
-        List<Contract> associatedContracts = getContractsForRequest(id);
+        List<Negotiation> negotiations = negotiationDao.getByRequest(id).stream()
+                .sorted(Comparator.comparing(Negotiation::getIdNegotiation).reversed())
+                .collect(Collectors.toList());
+        List<Contract> associatedContracts = getContractsForRequest(id).stream()
+                .sorted(Comparator.comparing(Contract::getIdContract).reversed())
+                .collect(Collectors.toList());
         Set<Integer> existingPapPatis = new HashSet<>();
         List<PapPati> proposedPapPatis = new java.util.ArrayList<>();
         Map<Integer, Contract> contractByNegotiationId = new LinkedHashMap<>();
@@ -540,7 +549,7 @@ public class RequestController {
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
         tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
-                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
+                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle", "id", "ID"));
         return "request/backoffice-review";
     }
 
@@ -757,5 +766,52 @@ public class RequestController {
             }
         }
         return contracts;
+    }
+
+    private Map<Integer, RequestFollowUp> buildFollowUpByRequestId(List<Request> requests) {
+        Map<Integer, RequestFollowUp> followUpByRequestId = new LinkedHashMap<>();
+        for (Request request : requests) {
+            followUpByRequestId.put(request.getIdRequest(), buildRequestFollowUp(request.getIdRequest()));
+        }
+        return followUpByRequestId;
+    }
+
+    private RequestFollowUp buildRequestFollowUp(int idRequest) {
+        Integer contractId = null;
+        Integer chatNegotiationId = null;
+        for (Negotiation negotiation : negotiationDao.getByRequest(idRequest)) {
+            if ("REJECTED".equals(negotiation.getStateOfApproval())
+                    || "CANCELLED".equals(negotiation.getStateOfApproval())) {
+                continue;
+            }
+            Contract contract = contractDao.getByNegotiationId(negotiation.getIdNegotiation());
+            if (contract != null && contractId == null) {
+                contractId = contract.getIdContract();
+            }
+            if (chatNegotiationId == null
+                    && ("IN_PROGRESS".equals(negotiation.getStateOfApproval())
+                    || "ACCEPTED".equals(negotiation.getStateOfApproval()))) {
+                chatNegotiationId = negotiation.getIdNegotiation();
+            }
+        }
+        return new RequestFollowUp(contractId, chatNegotiationId);
+    }
+
+    private static final class RequestFollowUp {
+        private final Integer contractId;
+        private final Integer chatNegotiationId;
+
+        private RequestFollowUp(Integer contractId, Integer chatNegotiationId) {
+            this.contractId = contractId;
+            this.chatNegotiationId = chatNegotiationId;
+        }
+
+        public Integer getContractId() {
+            return contractId;
+        }
+
+        public Integer getChatNegotiationId() {
+            return chatNegotiationId;
+        }
     }
 }

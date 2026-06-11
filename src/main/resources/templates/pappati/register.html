@@ -42,6 +42,17 @@
                     <option value="Mixta">Mixta</option>
                 </select>
             </div>
+            <div class="col-12"><h3 class="h6 text-muted mt-2">Período de disponibilidad para asistir *</h3></div>
+            <div class="col-md-6">
+                <label for="availabilityStartDate" class="form-label">Disponible desde</label>
+                <input id="availabilityStartDate" type="date" th:field="*{availabilityStartDate}" class="form-control" required>
+                <div th:errors="*{availabilityStartDate}" class="text-danger small"></div>
+            </div>
+            <div class="col-md-6">
+                <label for="availabilityEndDate" class="form-label">Disponible hasta</label>
+                <input id="availabilityEndDate" type="date" th:field="*{availabilityEndDate}" class="form-control" required>
+                <div th:errors="*{availabilityEndDate}" class="text-danger small"></div>
+            </div>
         </div>
         <input type="hidden" th:field="*{status}">
         <button class="btn btn-primary mt-4" type="submit">Enviar solicitud</button>

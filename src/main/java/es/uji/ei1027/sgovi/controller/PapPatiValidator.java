@@ -4,6 +4,8 @@ import es.uji.ei1027.sgovi.model.PapPati;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 public class PapPatiValidator implements Validator {
 
     @Override
@@ -79,6 +81,16 @@ public class PapPatiValidator implements Validator {
 
         if (!isBlank(papPati.getExperienceType()) && papPati.getExperienceType().length() > 50) {
             errors.rejectValue("experienceType", "maximo", "El tipo de experiencia no puede superar 50 caracteres");
+        }
+
+        if (papPati.getAvailabilityStartDate() == null) {
+            errors.rejectValue("availabilityStartDate", "obligatorio", "La fecha de inicio de disponibilidad es obligatoria");
+        }
+
+        if (papPati.getAvailabilityEndDate() == null) {
+            errors.rejectValue("availabilityEndDate", "obligatorio", "La fecha de fin de disponibilidad es obligatoria");
+        } else if (papPati.getAvailabilityStartDate() != null && papPati.getAvailabilityEndDate().isBefore(papPati.getAvailabilityStartDate())) {
+            errors.rejectValue("availabilityEndDate", "rango", "La fecha de fin debe ser igual o posterior al inicio");
         }
 
         if (isBlank(papPati.getStatus())) {

@@ -24,10 +24,6 @@
                 <span class="info-label">Periodo</span>
                 <span class="info-value" th:text="${request.startDate + ' -> ' + request.endDate}"></span>
             </div>
-            <div class="info-item" th:if="${request.availabilityDate != null}">
-                <span class="info-label">Disponibilidad desde</span>
-                <span class="info-value" th:text="${request.availabilityDate}"></span>
-            </div>
             <div class="info-item">
                 <span class="info-label">Género preferido</span>
                 <span class="info-value" th:text="${request.preferredGender != null ? request.preferredGender : 'Sin preferencia'}"></span>
@@ -50,10 +46,14 @@
     <div class="panel-card" th:if="${request.status == 'APPROVED' and isOviUser}">
         <h2 class="section-title"><i class="bi bi-person-plus" aria-hidden="true"></i> PAP/PATI propuestos</h2>
         <div th:if="${#lists.isEmpty(proposedChats)}" class="empty-state">Todavía no hay PAP/PATI propuestos por el técnico.</div>
-        <div th:each="proposedChat : ${proposedChats}" th:with="pap=${proposedChat.papPati}" class="pap-card">
+        <div th:each="proposedChat : ${proposedChats}" th:with="pap=${proposedChat.papPati}, negotiation=${proposedChat.negotiation}" class="pap-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div>
-                    <h5 th:text="${pap.name + ' ' + pap.lastName}"></h5>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                        <h5 class="mb-0" th:text="${pap.name + ' ' + pap.lastName}"></h5>
+                        <span th:if="${negotiation.stateOfApproval == 'PENDING'}" class="badge text-bg-secondary">Pendiente de contacto</span>
+                        <span th:if="${negotiation.stateOfApproval == 'IN_PROGRESS'}" class="badge text-bg-info">Conversación en curso</span>
+                    </div>
                     <div class="pap-meta">
                         <div class="row g-2">
                             <div class="col-md-6"><strong>CP:</strong> <span th:text="${pap.pc}"></span></div>
@@ -63,30 +63,42 @@
                         </div>
                     </div>
                 </div>
-                <form th:action="@{/requests/frontoffice/start-chat}" method="post">
-                    <input type="hidden" name="idRequest" th:value="${request.idRequest}">
-                    <input type="hidden" name="idPapPati" th:value="${pap.idPapPati}">
-                    <button class="btn btn-primary" type="submit">Iniciar conversación</button>
-                </form>
+                <div class="d-flex gap-2 flex-wrap">
+                    <form th:if="${negotiation.stateOfApproval == 'PENDING'}" th:action="@{/requests/frontoffice/start-chat}" method="post">
+                        <input type="hidden" name="idRequest" th:value="${request.idRequest}">
+                        <input type="hidden" name="idPapPati" th:value="${pap.idPapPati}">
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-chat-dots"></i> Iniciar conversación</button>
+                    </form>
+                    <a th:if="${negotiation.stateOfApproval == 'IN_PROGRESS'}"
+                       class="btn btn-outline-primary"
+                       th:href="@{/messages/chat/{id}(id=${negotiation.idNegotiation})}">
+                        <i class="bi bi-chat-dots"></i> Ir a conversación
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="panel-card">
         <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistentes asignados</h2>
-        <div th:if="${request.status != 'APPROVED'}" class="empty-state">
+        <div th:if="${request.status != 'APPROVED' and request.status != 'CONTRACT_ACTIVE'}" class="empty-state">
             Los asistentes estarán visibles una vez la solicitud sea aprobada.
         </div>
-        <div th:if="${request.status == 'APPROVED'}">
+        <div th:if="${request.status == 'APPROVED' or request.status == 'CONTRACT_ACTIVE'}">
             <div th:if="${#lists.isEmpty(assignedChats)}" class="empty-state">Todavía no hay ningún asistente aceptado o con contrato.</div>
             <div th:each="assignedChat : ${assignedChats}" th:with="pap=${assignedChat.papPati}">
                 <div class="pap-card">
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
                         <h5 th:text="${pap.name + ' ' + pap.lastName}"></h5>
                         <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <span class="badge text-bg-success">Asignado</span>
+                            <span class="badge text-bg-success" th:text="${assignedChat.contract != null ? 'Con contrato' : 'Asignado'}">Asignado</span>
                             <a class="btn btn-sm btn-outline-primary" th:href="@{/messages/chat/{id}(id=${assignedChat.negotiation.idNegotiation})}">
-                                <i class="bi bi-chat-dots"></i> Abrir chat
+                                <i class="bi bi-chat-dots"></i> Ir a conversación
+                            </a>
+                            <a th:if="${assignedChat.contract != null}"
+                               class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/contracts/view/{id}(id=${assignedChat.contract.idContract})}">
+                                <i class="bi bi-file-earmark-text"></i> Ver contrato
                             </a>
                         </div>
                     </div>

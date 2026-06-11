@@ -2,10 +2,15 @@ package es.uji.ei1027.sgovi.controller;
 
 import es.uji.ei1027.sgovi.dao.ContractDao;
 import es.uji.ei1027.sgovi.dao.NegotiationDao;
+import es.uji.ei1027.sgovi.dao.OviUserDao;
+import es.uji.ei1027.sgovi.dao.PapPatiDao;
 import es.uji.ei1027.sgovi.dao.RequestDao;
 import es.uji.ei1027.sgovi.model.Contract;
 import es.uji.ei1027.sgovi.model.Negotiation;
+import es.uji.ei1027.sgovi.model.OviUser;
+import es.uji.ei1027.sgovi.model.PapPati;
 import es.uji.ei1027.sgovi.model.Request;
+import org.springframework.dao.EmptyResultDataAccessException;
 import es.uji.ei1027.sgovi.service.NameMaps;
 import es.uji.ei1027.sgovi.service.SessionUserService;
 import es.uji.ei1027.sgovi.service.TableViewService;
@@ -38,6 +43,12 @@ public class ContractController {
 
     @Autowired
     private RequestDao requestDao;
+
+    @Autowired
+    private OviUserDao oviUserDao;
+
+    @Autowired
+    private PapPatiDao papPatiDao;
 
     @Autowired
     private SessionUserService sessionUserService;
@@ -93,7 +104,7 @@ public class ContractController {
                 .filter(contract -> !contract.getEndDate().isBefore(today))
                 .count();
 
-        model.addAttribute("contracts", contracts);
+        addContractsTable(model, "/contracts/pappati/list", contracts, q, sort, dir);
         model.addAttribute("contractCount", contracts.size());
         model.addAttribute("activeContractCount", activeContractCount);
         model.addAttribute("currentPapPati", sessionUserService.getCurrentPapPati(session));
@@ -333,8 +344,13 @@ public class ContractController {
             return "redirect:/login";
         }
 
+        Contract contract = contractDao.get(id);
+        if (contract == null) {
+            return "redirect:/dashboard";
+        }
+
         if (sessionUserService.isTechnician(session)) {
-            model.addAttribute("contract", contractDao.get(id));
+            addContractViewModel(model, contract, session);
             return "contracts/view";
         }
 
@@ -343,7 +359,7 @@ public class ContractController {
             if (idPapPati == null || !contractDao.belongsToPapPati(id, idPapPati)) {
                 return "redirect:/contracts/pappati/list";
             }
-            model.addAttribute("contract", contractDao.get(id));
+            addContractViewModel(model, contract, session);
             return "contracts/view";
         }
 
@@ -352,11 +368,47 @@ public class ContractController {
             if (idOviUser == null || !contractDao.belongsToOviUser(id, idOviUser)) {
                 return "redirect:/contracts/oviuser/list";
             }
-            model.addAttribute("contract", contractDao.get(id));
+            addContractViewModel(model, contract, session);
             return "contracts/view";
         }
 
         return "redirect:/dashboard";
+    }
+
+    private void addContractViewModel(Model model, Contract contract, HttpSession session) {
+        model.addAttribute("contract", contract);
+        model.addAttribute("isTechnician", sessionUserService.isTechnician(session));
+        model.addAttribute("isOviUser", sessionUserService.isOviUser(session));
+        model.addAttribute("isPapPati", sessionUserService.isPapPati(session));
+
+        Negotiation negotiation = nameMaps.negotiationById(contract.getIdNegotiation());
+        model.addAttribute("negotiation", negotiation);
+
+        Request request = negotiation != null ? nameMaps.requestById(negotiation.getIdRequest()) : null;
+        model.addAttribute("request", request);
+
+        if (negotiation != null && negotiation.getIdPapPati() != null) {
+            model.addAttribute("papPati", loadPapPati(negotiation.getIdPapPati()));
+        }
+        if (request != null && request.getIdOviUser() != null) {
+            model.addAttribute("oviUser", loadOviUser(request.getIdOviUser()));
+        }
+    }
+
+    private PapPati loadPapPati(int id) {
+        try {
+            return papPatiDao.get(id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    private OviUser loadOviUser(int id) {
+        try {
+            return oviUserDao.get(id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @GetMapping("/document/{id}")

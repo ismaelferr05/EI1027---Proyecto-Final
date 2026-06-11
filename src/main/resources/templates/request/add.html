@@ -41,11 +41,6 @@
 
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="availabilityDate" class="form-label">Fecha disponibilidad:</label>
-                    <input id="availabilityDate" type="date" th:field="*{availabilityDate}" th:attr="min=${today}" class="form-control">
-                    <div th:if="${#fields.hasErrors('availabilityDate')}" th:errors="*{availabilityDate}" class="text-danger small mt-2"></div>
-                </div>
-                <div class="col-md-4 mb-3">
                     <label for="startDate" class="form-label">Fecha inicio:</label>
                     <input id="startDate" type="date" th:field="*{startDate}" th:attr="min=${today}" class="form-control">
                     <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="text-danger small mt-2"></div>

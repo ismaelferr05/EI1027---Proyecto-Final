@@ -109,7 +109,6 @@ public class MessageController {
     }
 
     private void addChatsTable(Model model, List<ChatThreadSummary> chats, String q, String sort, String dir) {
-        String effectiveDir = dir == null || dir.isBlank() ? "desc" : dir;
         Map<String, Function<ChatThreadSummary, ?>> sorters = new LinkedHashMap<>();
         sorters.put("last", this::chatSortKey);
         sorters.put("ovi", chat -> chat.getOviUser().getName() + " " + chat.getOviUser().getLastName());
@@ -119,7 +118,7 @@ public class MessageController {
         sorters.put("messages", ChatThreadSummary::getMessageCount);
         sorters.put("id", chat -> chat.getNegotiation().getIdNegotiation());
 
-        model.addAttribute("chats", tableViewService.apply(chats, q, sort, effectiveDir, sorters,
+        model.addAttribute("chats", tableViewService.apply(chats, q, sort, dir, sorters,
                 tableViewService.fields(
                         chat -> chat.getNegotiation().getIdNegotiation(),
                         chat -> chat.getNegotiation().getStateOfApproval(),
@@ -135,7 +134,7 @@ public class MessageController {
                         chat -> chat.getLastMessage() == null ? null : chat.getLastMessage().getSender(),
                         chat -> chat.getLastMessage() == null ? null : chat.getLastMessage().getText()),
                 chat -> chat.getNegotiation().getStateOfApproval()));
-        tableViewService.addState(model, "/messages/list", q, sort, effectiveDir,
+        tableViewService.addState(model, "/messages/list", q, sort, dir,
                 tableViewService.options("last", "Último mensaje", "ovi", "Usuario OVI", "pap", "PAP/PATI",
                         "request", "Solicitud", "state", "Estado", "messages", "Mensajes", "id", "Negociación"),
                 tableViewService.negotiationStatusOptions());

@@ -44,6 +44,10 @@ public class RequestProposalService {
 		}
 
 		for (PapPati papPati : papPatiDao.getByStatus("ACCEPTED")) {
+			if (!periodsOverlap(papPati, request)) {
+				continue;
+			}
+
 			boolean available = isAvailable(papPati, request);
 
 			int score = 0;
@@ -67,7 +71,7 @@ public class RequestProposalService {
 			CriterionScore experienceTypeScore = scoreExperienceTypeMatch(papPati, request);
 			score += addReason(reasons, experienceTypeScore, MAX_SCORE_TIPO_EXPERIENCIA);
 
-			score += addReason(reasons, scoreAvailability(available), MAX_SCORE_DISPONIBILIDAD);
+			score += addReason(reasons, scoreAvailability(papPati, request, available), MAX_SCORE_DISPONIBILIDAD);
 
 			String summary = score + "/" + MAX_SCORE_TOTAL;
 			proposals.add(new CandidateProposal(papPati, score, summary, List.copyOf(reasons)));
@@ -77,8 +81,18 @@ public class RequestProposalService {
 		return proposals;
 	}
 
+	private boolean periodsOverlap(PapPati papPati, Request request) {
+		if (papPati == null || request == null
+				|| papPati.getAvailabilityStartDate() == null || papPati.getAvailabilityEndDate() == null
+				|| request.getStartDate() == null || request.getEndDate() == null) {
+			return false;
+		}
+		return !request.getStartDate().isAfter(papPati.getAvailabilityEndDate())
+				&& !request.getEndDate().isBefore(papPati.getAvailabilityStartDate());
+	}
+
 	private boolean isAvailable(PapPati papPati, Request request) {
-		if (papPati == null || request == null || request.getStartDate() == null || request.getEndDate() == null) {
+		if (!periodsOverlap(papPati, request)) {
 			return false;
 		}
 		return !contractDao.hasOverlappingContractForPapPati(
@@ -88,9 +102,14 @@ public class RequestProposalService {
 		);
 	}
 
-	private CriterionScore scoreAvailability(boolean available) {
+	private CriterionScore scoreAvailability(PapPati papPati, Request request, boolean available) {
+		if (!periodsOverlap(papPati, request)) {
+			return new CriterionScore(0, "su periodo de disponibilidad no coincide con la solicitud", "Disponibilidad");
+		}
 		if (available) {
-			return new CriterionScore(MAX_SCORE_DISPONIBILIDAD, "disponible en todo el periodo solicitado", "Disponibilidad");
+			return new CriterionScore(MAX_SCORE_DISPONIBILIDAD,
+					"disponible en el periodo solicitado (" + papPati.getAvailabilityStartDate() + " a " + papPati.getAvailabilityEndDate() + ")",
+					"Disponibilidad");
 		}
 		return new CriterionScore(0, "tiene un contrato que se solapa con el periodo solicitado", "Disponibilidad");
 	}

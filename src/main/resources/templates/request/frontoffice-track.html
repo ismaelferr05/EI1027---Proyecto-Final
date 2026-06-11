@@ -43,10 +43,20 @@
             <tr th:if="${#lists.isEmpty(requests)}">
                 <td colspan="5" class="text-center">No hay solicitudes para mostrar.</td>
             </tr>
-            <tr th:each="request : ${requests}">
+            <tr th:each="request : ${requests}" th:with="followUp=${followUpByRequestId[request.idRequest]}">
                 <td class="table-action-col">
-                    <a th:if="${request.status == 'APPROVED'}" class="btn btn-sm btn-outline-primary" th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}"><i class="bi bi-eye"></i> Ver resolución</a>
-                    <span th:if="${request.status != 'APPROVED'}" class="text-muted small">—</span>
+                    <a th:if="${followUp != null and followUp.contractId != null}"
+                       class="btn btn-sm btn-outline-secondary"
+                       th:href="@{/contracts/view/{id}(id=${followUp.contractId})}">
+                        <i class="bi bi-file-earmark-text"></i> Ir a contrato
+                    </a>
+                    <a th:if="${(followUp == null or followUp.contractId == null) and request.status == 'APPROVED'}"
+                       class="btn btn-sm btn-outline-primary"
+                       th:href="@{/requests/frontoffice/view/{id}(id=${request.idRequest})}">
+                        <i class="bi bi-eye"></i> Ver resolución
+                    </a>
+                    <span th:if="${(followUp == null or followUp.contractId == null) and request.status != 'APPROVED'}"
+                          class="text-muted small">—</span>
                 </td>
                 <td th:text="${request.description}"></td>
                 <td th:text="|${request.startDate} -> ${request.endDate}|"></td>

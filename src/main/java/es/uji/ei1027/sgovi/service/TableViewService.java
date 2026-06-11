@@ -27,6 +27,18 @@ public class TableViewService {
     private static final int TEST_PAGE_SIZE = 3;
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int MAX_PAGE_SIZE = 20;
+    private static final List<String> RECENCY_SORT_KEYS = List.of(
+            "id",
+            "last",
+            "date",
+            "communicationDateTime",
+            "messageDateTime",
+            "startDate",
+            "endDate",
+            "negotiation",
+            "messages",
+            "score"
+    );
 
     public <T> List<T> apply(List<T> rows,
                              String query,
@@ -44,10 +56,29 @@ public class TableViewService {
                              Map<String, Function<T, ?>> sorters,
                              List<Function<T, ?>> searchableFields,
                              Function<T, ?> statusField) {
+        return paginate(applySorted(rows, query, sort, direction, sorters, searchableFields, statusField));
+    }
+
+    public <T> List<T> applySorted(List<T> rows,
+                                   String query,
+                                   String sort,
+                                   String direction,
+                                   Map<String, Function<T, ?>> sorters,
+                                   List<Function<T, ?>> searchableFields) {
+        return applySorted(rows, query, sort, direction, sorters, searchableFields, null);
+    }
+
+    public <T> List<T> applySorted(List<T> rows,
+                                   String query,
+                                   String sort,
+                                   String direction,
+                                   Map<String, Function<T, ?>> sorters,
+                                   List<Function<T, ?>> searchableFields,
+                                   Function<T, ?> statusField) {
         List<T> result = filterByStatus(rows, statusField);
         result = filter(result, query, searchableFields);
         sort(result, sort, direction, sorters);
-        return paginate(result);
+        return result;
     }
 
     public void addState(Model model,
@@ -69,7 +100,7 @@ public class TableViewService {
         model.addAttribute("tableAction", action);
         model.addAttribute("tableQuery", clean(query));
         model.addAttribute("tableSort", selectedSort(sort, sortOptions));
-        model.addAttribute("tableDir", "desc".equalsIgnoreCase(direction) ? "desc" : "asc");
+        model.addAttribute("tableDir", resolveDirection(direction));
         model.addAttribute("tableSortOptions", sortOptions);
         model.addAttribute("tableStatus", selectedStatus(statusOptions));
         model.addAttribute("tableStatusOptions", statusOptions);
@@ -244,10 +275,8 @@ public class TableViewService {
     }
 
     private <T> void sort(List<T> rows, String sort, String direction, Map<String, Function<T, ?>> sorters) {
-        Function<T, ?> extractor = sorters.get(sort);
-        if (extractor == null) {
-            extractor = sorters.values().stream().findFirst().orElse(null);
-        }
+        String sortKey = resolveSortKey(sort, sorters);
+        Function<T, ?> extractor = sorters.get(sortKey);
         if (extractor == null) {
             return;
         }
@@ -257,7 +286,7 @@ public class TableViewService {
                 row -> comparableValue(safeApply(selectedExtractor, row)),
                 Comparator.nullsLast(Comparator.naturalOrder())
         );
-        if ("desc".equalsIgnoreCase(direction)) {
+        if ("desc".equals(resolveDirection(direction))) {
             comparator = comparator.reversed();
         }
         rows.sort(comparator);
@@ -382,11 +411,31 @@ public class TableViewService {
     }
 
     private String selectedSort(String sort, Map<String, String> sortOptions) {
+        return resolveSortKey(sort, sortOptions);
+    }
+
+    private String resolveSortKey(String sort, Map<String, ?> sortKeys) {
         String cleaned = clean(sort);
-        if (!cleaned.isEmpty() && sortOptions.containsKey(cleaned)) {
+        if (!cleaned.isEmpty() && sortKeys.containsKey(cleaned)) {
             return cleaned;
         }
-        return sortOptions.keySet().stream().findFirst().orElse("");
+        for (String key : RECENCY_SORT_KEYS) {
+            if (sortKeys.containsKey(key)) {
+                return key;
+            }
+        }
+        String lastKey = "";
+        for (String key : sortKeys.keySet()) {
+            lastKey = key;
+        }
+        return lastKey;
+    }
+
+    private String resolveDirection(String direction) {
+        if (direction == null || direction.isBlank()) {
+            return "desc";
+        }
+        return "desc".equalsIgnoreCase(direction) ? "desc" : "asc";
     }
 
     private String selectedStatus(Map<String, String> statusOptions) {

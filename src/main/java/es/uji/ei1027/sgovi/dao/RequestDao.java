@@ -13,21 +13,19 @@ public class RequestDao {
     private JdbcTemplate jdbcTemplate;
 
     public int add(Request request) {
-        String sql = "INSERT INTO Request (description, training, startDate, endDate, availabilityDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, rejectionReason, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING request_id";
+        String sql = "INSERT INTO Request (description, training, startDate, endDate, experience, experienceType, preferredGender, preferredPc, preferredAge, status, rejectionReason, oviuser_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING request_id";
         int generatedId = jdbcTemplate.queryForObject(sql, Integer.class,
                 request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getAvailabilityDate() != null ? Date.valueOf(request.getAvailabilityDate()) : null,
-                request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
                 request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getRejectionReason(), request.getIdOviUser());
         request.setIdRequest(generatedId);
         return generatedId;
     }
 
     public void update(Request request) {
-        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, availabilityDate=?, experience=?, experienceType=?, preferredGender=?, preferredPc=?, preferredAge=?, status=?, rejectionReason=?, oviuser_id=? WHERE request_id=?";
+        String sql = "UPDATE Request SET description=?, training=?, startDate=?, endDate=?, experience=?, experienceType=?, preferredGender=?, preferredPc=?, preferredAge=?, status=?, rejectionReason=?, oviuser_id=? WHERE request_id=?";
         jdbcTemplate.update(sql, request.getDescription(), request.getTraining(), Date.valueOf(request.getStartDate()),
-                Date.valueOf(request.getEndDate()), request.getAvailabilityDate() != null ? Date.valueOf(request.getAvailabilityDate()) : null,
-                request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
+                Date.valueOf(request.getEndDate()), request.getExperience(), request.getExperienceType(), request.getPreferredGender(),
                 request.getPreferredPc(), request.getPreferredAge(), request.getStatus(), request.getRejectionReason(), request.getIdOviUser(), request.getIdRequest());
     }
 

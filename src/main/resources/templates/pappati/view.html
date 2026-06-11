@@ -11,6 +11,12 @@
     <div class="bg-white p-4 rounded shadow-sm mb-4">
         <p><strong>Email:</strong> <span th:text="${papPati.email}"></span></p>
         <p><strong>Estado:</strong> <span th:replace="~{fragments/status-badge :: statusBadge(${papPati.status})}"></span></p>
+        <p th:if="${papPati.availabilityStartDate != null and papPati.availabilityEndDate != null}">
+            <strong>Disponibilidad:</strong>
+            <span th:text="${papPati.availabilityStartDate}"></span>
+            &rarr;
+            <span th:text="${papPati.availabilityEndDate}"></span>
+        </p>
         <p th:if="${papPati.status == 'REJECTED'}"><strong>Motivo rechazo:</strong> <span th:text="${papPati.rejectionReason}"></span></p>
     </div>
 

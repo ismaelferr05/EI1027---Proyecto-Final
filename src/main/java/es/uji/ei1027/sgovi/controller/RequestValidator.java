@@ -42,16 +42,6 @@ public class RequestValidator implements Validator {
             errors.rejectValue("endDate", "rango", "La fecha de fin debe ser igual o posterior a la fecha de inicio");
         }
 
-        if (request.getAvailabilityDate() == null && "IN_REVIEW".equals(request.getStatus())) {
-            errors.rejectValue("availabilityDate", "obligatorio", "La fecha de disponibilidad es obligatoria");
-        } else if (request.getAvailabilityDate() != null) {
-            if (request.getAvailabilityDate().isBefore(LocalDate.now())) {
-                errors.rejectValue("availabilityDate", "pasada", "La fecha de disponibilidad no puede ser anterior a hoy");
-            } else if (request.getStartDate() != null && request.getAvailabilityDate().isAfter(request.getStartDate())) {
-                errors.rejectValue("availabilityDate", "rango", "La disponibilidad debe ser anterior o igual al inicio del periodo");
-            }
-        }
-
         if (request.getExperience() != null && request.getExperience() < 0) {
             errors.rejectValue("experience", "minimo", "La experiencia no puede ser negativa");
         }

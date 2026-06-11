@@ -23,14 +23,6 @@
         <!-- Sección: Fechas -->
         <div class="form-section">
             <h2><i class="bi bi-calendar-event" aria-hidden="true"></i> Período de Asistencia *</h2>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="availabilityDate" class="form-label">Fecha de disponibilidad *</label>
-                    <input id="availabilityDate" type="date" th:field="*{availabilityDate}" th:attr="min=${today}" class="form-control" required>
-                    <div class="form-text">Desde cuándo necesitas que empiece la asistencia.</div>
-                    <div th:if="${#fields.hasErrors('availabilityDate')}" th:errors="*{availabilityDate}" class="text-danger small mt-2"></div>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-md-6">
                     <label for="startDate" class="form-label">Fecha de inicio</label>
