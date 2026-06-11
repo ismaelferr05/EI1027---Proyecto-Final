@@ -488,15 +488,26 @@ public class RequestController {
         List<Contract> associatedContracts = getContractsForRequest(id);
         Set<Integer> existingPapPatis = new HashSet<>();
         List<PapPati> proposedPapPatis = new java.util.ArrayList<>();
+        Map<Integer, Contract> contractByNegotiationId = new LinkedHashMap<>();
         for (Negotiation negotiation : negotiations) {
             existingPapPatis.add(negotiation.getIdPapPati());
             proposedPapPatis.add(papPatiDao.get(negotiation.getIdPapPati()));
+            Contract contract = contractDao.getByNegotiationId(negotiation.getIdNegotiation());
+            if (contract != null) {
+                contractByNegotiationId.put(negotiation.getIdNegotiation(), contract);
+            }
         }
+        List<CandidateProposal> sortedProposals = sortedFilteredProposals(proposals, q, sort, dir);
+        List<CandidateProposal> availableProposals = sortedProposals.stream()
+                .filter(proposal -> !existingPapPatis.contains(proposal.getPapPati().getIdPapPati()))
+                .collect(Collectors.toList());
 
         model.addAttribute("request", request);
-        model.addAttribute("proposals", sortedFilteredProposals(proposals, q, sort, dir));
+        model.addAttribute("proposals", sortedProposals);
+        model.addAttribute("availableProposals", availableProposals);
         model.addAttribute("negotiations", negotiations);
         model.addAttribute("associatedContracts", associatedContracts);
+        model.addAttribute("contractByNegotiationId", contractByNegotiationId);
         model.addAttribute("existingPapPatis", existingPapPatis);
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);

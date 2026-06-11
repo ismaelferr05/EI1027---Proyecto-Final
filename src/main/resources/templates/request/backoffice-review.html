@@ -39,108 +39,12 @@
         </dl>
     </div>
 
-    <div class="panel-card">
-        <h2 class="section-title"><i class="bi bi-diagram-3" aria-hidden="true"></i> Estado de las negociaciones</h2>
-
-        <div th:if="${#lists.isEmpty(negotiations)}" class="text-muted">
-            Todavía no hay negociaciones para esta solicitud.
-        </div>
-
-        <div th:if="${!#lists.isEmpty(negotiations)}" class="list-group">
-            <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2" th:each="negotiation : ${negotiations}">
-                <div>
-                    <strong th:text="${'Negociación #' + negotiation.idNegotiation}"></strong>
-                    <div class="small text-muted">
-                        <span th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati) + ' · PAP/PATI #' + negotiation.idPapPati}"></span>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span>
-                    <form th:if="${request.status == 'APPROVED'}" th:action="@{/requests/backoffice/negotiation-status}" method="post" class="d-flex align-items-center gap-2">
-                        <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
-                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <label th:for="|negotiation-state-${negotiation.idNegotiation}|" class="visually-hidden">Estado</label>
-                        <select th:id="|negotiation-state-${negotiation.idNegotiation}|"
-                                name="stateOfApproval"
-                                class="form-select form-select-sm w-auto">
-                            <option value="PENDING" th:selected="${negotiation.stateOfApproval == 'PENDING'}">PENDING</option>
-                            <option value="ACCEPTED" th:selected="${negotiation.stateOfApproval == 'ACCEPTED'}">ACCEPTED</option>
-                            <option value="IN_PROGRESS" th:selected="${negotiation.stateOfApproval == 'IN_PROGRESS'}">IN_PROGRESS</option>
-                            <option value="REJECTED" th:selected="${negotiation.stateOfApproval == 'REJECTED'}">REJECTED</option>
-                            <option value="CANCELLED" th:selected="${negotiation.stateOfApproval == 'CANCELLED'}">CANCELLED</option>
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-save"></i> Guardar
-                        </button>
-                    </form>
-                    <a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${negotiation.idNegotiation})}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-chat-dots"></i> Abrir chat
-                    </a>
-                    <form th:if="${request.status == 'APPROVED'}"
-                          th:action="@{/requests/backoffice/unpropose}"
-                          method="post"
-                          onsubmit="return confirm('Desproponer este PAP/PATI eliminará la negociación y sus datos asociados. ¿Continuar?');">
-                        <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
-                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-person-dash"></i> Desproponer
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel-card">
-        <h2 class="section-title"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contratos asociados</h2>
-
-        <div th:if="${#lists.isEmpty(associatedContracts)}" class="text-muted">
-            Esta solicitud aún no tiene contratos asociados.
-        </div>
-
-        <div th:if="${!#lists.isEmpty(associatedContracts)}" class="list-group">
-            <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2" th:each="contract : ${associatedContracts}">
-                <div>
-                    <strong th:text="${'Contrato #' + contract.idContract}"></strong>
-                    <div class="small text-muted" th:text="${'Salario: € ' + contract.wage + ' · ' + contract.startDate + ' → ' + contract.endDate}"></div>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-eye"></i> Ver contrato
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel-card" th:if="${request.status == 'APPROVED' or request.status == 'REJECTED'}">
-        <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> Asistente propuesto</h2>
-
-        <div th:if="${#lists.isEmpty(proposedPapPatis)}" class="text-muted">
-            Todavía no se ha asignado ningún asistente a esta solicitud.
-        </div>
-
-        <div th:if="${!#lists.isEmpty(proposedPapPatis)}" class="list-group">
-            <div class="list-group-item d-flex justify-content-between align-items-center" th:each="papPati : ${proposedPapPatis}">
-                <div>
-                    <h6 class="mb-1"><strong th:text="${papPati.name + ' ' + papPati.lastName}"></strong></h6>
-                    <small class="text-muted" th:text="${'CP: ' + papPati.pc + ' · Genero: ' + papPati.gender + ' · Edad: ' + papPati.age}"></small>
-                </div>
-                <span class="badge bg-success">Propuesto</span>
-            </div>
-        </div>
-
-        <div class="btn-group-custom mt-4" th:if="${request.status == 'REJECTED'}">
-            <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
-        </div>
-    </div>
-
     <div class="panel-card" th:if="${request.status == 'APPROVED'}">
-        <h2 class="section-title"><i class="bi bi-tools" aria-hidden="true"></i> Gestionar solicitud aprobada</h2>
+        <h2 class="section-title"><i class="bi bi-tools" aria-hidden="true"></i> Gestión general</h2>
 
         <div class="decision-actions mb-4">
             <a th:href="@{/requests/edit/{id}(id=${request.idRequest})}" class="btn btn-outline-secondary">
-                <i class="bi bi-pencil-square"></i> Editar datos
+                <i class="bi bi-pencil-square"></i> Editar solicitud
             </a>
             <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
         </div>
@@ -149,16 +53,16 @@
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="reject-panel-copy">
-                <strong>Denegar solicitud aprobada</strong>
-                <span>La solicitud pasará a rechazada y el motivo se incluirá en la comunicación al usuario OVI.</span>
+                <strong>Denegar solicitud</strong>
+                <span>Cambia la solicitud a REJECTED y comunica el motivo al usuario OVI.</span>
             </div>
-            <label th:for="|reject-approved-reason-${request.idRequest}|" class="form-label">Motivo de la denegación</label>
+            <label th:for="|reject-approved-reason-${request.idRequest}|" class="form-label">Motivo</label>
             <textarea th:id="|reject-approved-reason-${request.idRequest}|"
                       name="reason"
                       class="form-control"
                       rows="3"
                       maxlength="500"
-                      placeholder="Explica de forma breve y concreta por qué se deniega esta solicitud aprobada"
+                      placeholder="Motivo de la denegación"
                       required></textarea>
             <div class="decision-actions mt-3">
                 <button type="submit" class="btn btn-danger">
@@ -168,8 +72,83 @@
         </form>
     </div>
 
+    <div class="panel-card">
+        <h2 class="section-title"><i class="bi bi-person-check" aria-hidden="true"></i> PAP/PATI propuestos</h2>
+
+        <div th:if="${#lists.isEmpty(negotiations)}" class="text-muted">
+            Todavía no hay PAP/PATI propuestos para esta solicitud.
+        </div>
+
+        <div th:if="${!#lists.isEmpty(negotiations)}" class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>PAP/PATI</th>
+                    <th>Estado</th>
+                    <th>Contrato</th>
+                    <th class="table-action-col">Gestión</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="negotiation : ${negotiations}" th:with="contract=${contractByNegotiationId[negotiation.idNegotiation]}">
+                    <td>
+                        <strong th:text="${@nameMaps.papPatiNameById(negotiation.idPapPati)}"></strong>
+                        <div class="small text-muted" th:text="${'Negociación #' + negotiation.idNegotiation + ' · PAP/PATI #' + negotiation.idPapPati}"></div>
+                    </td>
+                    <td>
+                        <span th:replace="~{fragments/status-badge :: statusBadge(${negotiation.stateOfApproval})}"></span>
+                    </td>
+                    <td>
+                        <a th:if="${contract != null}"
+                           th:href="@{/contracts/view/{id}(id=${contract.idContract})}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span th:text="${'Contrato #' + contract.idContract}"></span>
+                        </a>
+                        <span th:if="${contract == null}" class="text-muted small">Sin contrato</span>
+                    </td>
+                    <td class="table-action-col">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <form th:if="${request.status == 'APPROVED'}" th:action="@{/requests/backoffice/negotiation-status}" method="post" class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <label th:for="|negotiation-state-${negotiation.idNegotiation}|" class="visually-hidden">Estado</label>
+                                <select th:id="|negotiation-state-${negotiation.idNegotiation}|"
+                                        name="stateOfApproval"
+                                        class="form-select form-select-sm w-auto">
+                                    <option value="PENDING" th:selected="${negotiation.stateOfApproval == 'PENDING'}">Pendiente</option>
+                                    <option value="ACCEPTED" th:selected="${negotiation.stateOfApproval == 'ACCEPTED'}">Aceptada</option>
+                                    <option value="IN_PROGRESS" th:selected="${negotiation.stateOfApproval == 'IN_PROGRESS'}">En progreso</option>
+                                    <option value="REJECTED" th:selected="${negotiation.stateOfApproval == 'REJECTED'}">Rechazada</option>
+                                    <option value="CANCELLED" th:selected="${negotiation.stateOfApproval == 'CANCELLED'}">Cancelada</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-save"></i> Guardar
+                                </button>
+                            </form>
+                            <a th:href="@{/messages/chat/{idNegotiation}(idNegotiation=${negotiation.idNegotiation})}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-chat-dots"></i> Chat
+                            </a>
+                            <form th:if="${request.status == 'APPROVED'}"
+                                  th:action="@{/requests/backoffice/unpropose}"
+                                  method="post"
+                                  onsubmit="return confirm('Desproponer este PAP/PATI eliminará la negociación, mensajes y contrato asociado si existe. ¿Continuar?');">
+                                <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-person-dash"></i> Desproponer
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="panel-card" th:if="${request.status == 'APPROVED'}">
-        <h2 class="section-title"><i class="bi bi-person-plus" aria-hidden="true"></i> Proponer PAP/PATI</h2>
+        <h2 class="section-title"><i class="bi bi-person-plus" aria-hidden="true"></i> Candidatos disponibles para añadir</h2>
 
         <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
@@ -187,13 +166,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${#lists.isEmpty(proposals)}">
-                    <td colspan="7" class="text-center text-muted py-4">No hay PAP/PATI disponibles para este periodo.</td>
+                <tr th:if="${#lists.isEmpty(availableProposals)}">
+                    <td colspan="7" class="text-center text-muted py-4">No hay más PAP/PATI disponibles para añadir.</td>
                 </tr>
-                <tr th:each="proposal : ${proposals}">
+                <tr th:each="proposal : ${availableProposals}">
                     <td>
-                        <span th:if="${existingPapPatis.contains(proposal.papPati.idPapPati)}" class="badge bg-success">Ya propuesto</span>
-                        <form th:if="${!existingPapPatis.contains(proposal.papPati.idPapPati)}" th:action="@{/requests/backoffice/propose}" method="post">
+                        <form th:action="@{/requests/backoffice/propose}" method="post">
                             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
                             <input type="hidden" name="selectedPapPatiId" th:value="${proposal.papPati.idPapPati}" />
                             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
