@@ -10,7 +10,9 @@
 
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
-    <div th:if="${#lists.isEmpty(activities)}" class="empty-state">No hay actividades próximas disponibles.</div>
+    <div th:if="${#lists.isEmpty(activities)}" class="empty-state">
+        No hay actividades próximas disponibles. Solo se muestran actividades con fecha de hoy o futura.
+    </div>
 
     <div class="table-responsive sgovi-table-shell" th:if="${!#lists.isEmpty(activities)}">
         <table class="table table-striped bg-white">
@@ -33,7 +35,10 @@
                 <td th:text="${@nameMaps.trainerNameById(activity.idTrainer)}"></td>
                 <td th:text="${activity.location}"></td>
                 <td>
-                    <span class="badge text-bg-success" th:if="${enrolledByActivityId[activity.idActivity]}">Inscrito</span>
+                    <form th:if="${enrolledByActivityId[activity.idActivity]}" th:action="@{/activities/{id}/unsignup(id=${activity.idActivity})}" method="post" class="d-flex align-items-center gap-2">
+                        <span class="badge text-bg-success">Inscrito</span>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Desinscribirse</button>
+                    </form>
                     <form th:unless="${enrolledByActivityId[activity.idActivity]}" th:action="@{/activities/{id}/signup(id=${activity.idActivity})}" method="post">
                         <button type="submit" class="btn btn-sm btn-primary">Inscribirse</button>
                     </form>

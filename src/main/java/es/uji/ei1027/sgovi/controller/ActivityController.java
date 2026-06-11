@@ -209,6 +209,44 @@ public class ActivityController {
         return "redirect:/activities/browse";
     }
 
+    @PostMapping("/{id}/unsignup")
+    public String unsignup(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (!sessionUserService.isOviUser(session) && !sessionUserService.isPapPati(session)) {
+            return sessionUserService.isLoggedIn(session) ? "redirect:/dashboard" : "redirect:/login";
+        }
+
+        Activity activity = activityDao.get(id);
+        if (activity == null || activity.getDate() == null || activity.getDate().isBefore(LocalDate.now())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No puedes desinscribirte de esta actividad.");
+            return "redirect:/activities/browse";
+        }
+
+        int deleted;
+        if (sessionUserService.isOviUser(session)) {
+            Integer idOviUser = sessionUserService.getCurrentOviUserId(session);
+            if (idOviUser == null || !participantListDao.existsByActivityAndOviUser(id, idOviUser)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No estás inscrito en esta actividad.");
+                return "redirect:/activities/browse";
+            }
+            deleted = participantListDao.deleteByActivityAndOviUser(id, idOviUser);
+        } else {
+            Integer idPapPati = sessionUserService.getCurrentPapPatiId(session);
+            if (idPapPati == null || !participantListDao.existsByActivityAndPapPati(id, idPapPati)) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No estás inscrito en esta actividad.");
+                return "redirect:/activities/browse";
+            }
+            deleted = participantListDao.deleteByActivityAndPapPati(id, idPapPati);
+        }
+
+        if (deleted == 0) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No se pudo cancelar la inscripción.");
+            return "redirect:/activities/browse";
+        }
+
+        redirectAttributes.addFlashAttribute("successMessage", "Inscripción cancelada correctamente.");
+        return "redirect:/activities/browse";
+    }
+
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {

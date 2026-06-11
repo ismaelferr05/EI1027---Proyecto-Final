@@ -54,5 +54,15 @@ public class ParticipantListDao {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, idActivity, idPapPati);
         return count != null && count > 0;
     }
+
+    public int deleteByActivityAndOviUser(int idActivity, int idOviUser) {
+        String sql = "DELETE FROM ParticipantList WHERE activity_id=? AND oviuser_id=?";
+        return jdbcTemplate.update(sql, idActivity, idOviUser);
+    }
+
+    public int deleteByActivityAndPapPati(int idActivity, int idPapPati) {
+        String sql = "DELETE FROM ParticipantList WHERE activity_id=? AND pappati_id=?";
+        return jdbcTemplate.update(sql, idActivity, idPapPati);
+    }
 }
 

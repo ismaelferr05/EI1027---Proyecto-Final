@@ -114,6 +114,11 @@
                    th:href="@{/ovi-users/profile}" href="/ovi-users/profile">
                     <i class="bi bi-person" aria-hidden="true"></i><span>Perfil OVI</span>
                 </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/activities/browse')} ? ' is-active' : ''"
+                   th:href="@{/activities/browse}" href="/activities/browse">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i><span>Actividades</span>
+                </a>
             </section>
 
             <section class="app-sidebar-section" th:if="${isPapPati}">
@@ -132,6 +137,11 @@
                    th:classappend="${currentPath.startsWith('/pap-patis/profile')} ? ' is-active' : ''"
                    th:href="@{/pap-patis/profile}" href="/pap-patis/profile">
                     <i class="bi bi-person" aria-hidden="true"></i><span>Perfil PAP/PATI</span>
+                </a>
+                <a class="app-sidebar-link"
+                   th:classappend="${currentPath.startsWith('/activities/browse')} ? ' is-active' : ''"
+                   th:href="@{/activities/browse}" href="/activities/browse">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i><span>Actividades</span>
                 </a>
             </section>
 
