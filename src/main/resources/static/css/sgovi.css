@@ -2933,3 +2933,34 @@ input[type="radio"] {
     min-width: 74px;
   }
 }
+
+.proposal-table-shell {
+  contain: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.proposal-table-shell .table {
+  min-width: 1080px;
+  white-space: nowrap;
+}
+
+.proposal-table-shell .table tbody td {
+  max-width: none;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.proposal-table-shell .table tbody td:last-child {
+  min-width: 420px;
+  white-space: normal;
+}
+
+.proposal-table-shell .reason-pill {
+  white-space: nowrap;
+}
+
+.proposal-table-shell .score-box {
+  min-width: 120px;
+}

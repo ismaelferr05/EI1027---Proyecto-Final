@@ -19,7 +19,7 @@
                         th:selected="${option.key == tableStatus}"></option>
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" th:if="${tableSortLocked == null or !tableSortLocked}">
             <label for="table-sort" class="form-label">Ordenar por</label>
             <select id="table-sort" name="sort" class="form-select">
                 <option th:each="option : ${tableSortOptions}"
@@ -28,7 +28,7 @@
                         th:selected="${option.key == tableSort}"></option>
             </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" th:if="${tableSortLocked == null or !tableSortLocked}">
             <label for="table-dir" class="form-label">Dirección</label>
             <select id="table-dir" name="dir" class="form-select">
                 <option value="asc" th:selected="${tableDir != 'desc'}">Ascendente</option>

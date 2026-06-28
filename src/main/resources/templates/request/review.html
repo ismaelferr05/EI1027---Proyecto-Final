@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/head :: head('Back-office - Revisar solicitud')}"></head>
+<head th:replace="~{fragments/head :: head('Revisar solicitud')}"></head>
 <body>
 <nav th:replace="~{fragments/topbar :: topbar}"></nav>
 <header th:replace="~{fragments/page-header :: pageHeader(title=|Revisar solicitud #${request.idRequest}|, icon='bi-check2-all', subtitle='')}"></header>
@@ -49,7 +49,7 @@
             <a th:href="@{/requests/list}" class="btn btn-outline-secondary">Volver al listado</a>
         </div>
 
-        <form th:action="@{/requests/backoffice/reject}" method="post" class="reject-panel">
+        <form th:action="@{/requests/review/reject}" method="post" class="reject-panel">
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="reject-panel-copy">
@@ -109,7 +109,7 @@
                     </td>
                     <td class="table-action-col">
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <form th:if="${request.status == 'APPROVED'}" th:action="@{/requests/backoffice/negotiation-status}" method="post" class="d-flex align-items-center gap-2">
+                            <form th:if="${request.status == 'APPROVED'}" th:action="@{/requests/review/negotiation-status}" method="post" class="d-flex align-items-center gap-2">
                                 <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <label th:for="|negotiation-state-${negotiation.idNegotiation}|" class="visually-hidden">Estado</label>
@@ -130,7 +130,7 @@
                                 <i class="bi bi-chat-dots"></i> Chat
                             </a>
                             <form th:if="${request.status == 'APPROVED'}"
-                                  th:action="@{/requests/backoffice/unpropose}"
+                                  th:action="@{/requests/review/unpropose}"
                                   method="post"
                                   onsubmit="return confirm('Desproponer este PAP/PATI eliminará la negociación, mensajes y contrato asociado si existe. ¿Continuar?');">
                                 <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
@@ -152,7 +152,7 @@
 
         <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
-        <div class="table-responsive mb-3">
+        <div class="table-responsive sgovi-table-shell proposal-table-shell mb-3">
             <table class="table table-hover align-middle">
                 <thead>
                 <tr>
@@ -172,7 +172,7 @@
                 </tr>
                 <tr th:each="proposal : ${availableProposals}">
                     <td>
-                        <form th:action="@{/requests/backoffice/propose}" method="post">
+                        <form th:action="@{/requests/review/propose}" method="post">
                             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
                             <input type="hidden" name="selectedPapPatiId" th:value="${proposal.papPati.idPapPati}" />
                             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -210,11 +210,11 @@
 
         <div th:replace="~{fragments/table-tools :: tableTools}" th:if="${tableAction != null}"></div>
 
-        <form th:action="@{/requests/backoffice/approve}" method="post">
+        <form th:action="@{/requests/review/approve}" method="post">
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-            <div class="table-responsive mb-3">
+            <div class="table-responsive sgovi-table-shell proposal-table-shell mb-3">
                 <table class="table table-hover align-middle">
                     <thead>
                     <tr>

@@ -37,7 +37,7 @@
             <tbody>
                 <tr th:each="request : ${requests}">
                     <td th:if="${isTechnician}" class="table-action-col">
-                        <a th:href="@{/requests/backoffice/review/{id}(id=${request.idRequest})}" class="action-btn btn-view">
+                        <a th:href="@{/requests/review/{id}(id=${request.idRequest})}" class="action-btn btn-view">
                             <i class="bi bi-arrow-right" aria-hidden="true"></i> Gestionar
                         </a>
                     </td>

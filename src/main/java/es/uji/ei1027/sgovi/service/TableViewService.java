@@ -28,6 +28,7 @@ public class TableViewService {
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int MAX_PAGE_SIZE = 20;
     private static final List<String> RECENCY_SORT_KEYS = List.of(
+            "score",
             "id",
             "last",
             "date",
@@ -36,8 +37,7 @@ public class TableViewService {
             "startDate",
             "endDate",
             "negotiation",
-            "messages",
-            "score"
+            "messages"
     );
 
     public <T> List<T> apply(List<T> rows,

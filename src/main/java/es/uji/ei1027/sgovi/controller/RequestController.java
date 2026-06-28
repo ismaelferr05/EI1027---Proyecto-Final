@@ -432,24 +432,8 @@ public class RequestController {
     }
 
     @GetMapping("/backoffice/list")
-    public String backOfficeList(HttpSession session, Model model,
-                                 @RequestParam(value = "q", required = false) String q,
-                                 @RequestParam(value = "sort", required = false) String sort,
-                                 @RequestParam(value = "dir", required = false) String dir) {
-        boolean isTech = sessionUserService.isTechnician(session);
-        log.info("backOfficeList called - isTechnician={}", isTech);
-        if (!isTech) {
-            log.warn("Acceso denegado a backoffice: usuario no es técnico o no está logueado");
-            return "redirect:/dashboard";
-        }
-
-        List<Request> pending = requestDao.getByStatus("IN_REVIEW");
-        List<Request> approved = requestDao.getByStatus("APPROVED");
-        log.info("pendingRequests size={}, approvedRequests size={}", pending.size(), approved.size());
-
-        addRequestsTable(model, "pendingRequests", "/requests/backoffice/list", pending, q, sort, dir);
-        model.addAttribute("approvedRequests", sortedFilteredRequests(approved, q, sort, dir));
-        return "request/backoffice-list";
+    public String legacyBackOfficeList() {
+        return "redirect:/requests/list";
     }
 
     private void addRequestsTable(Model model, String attribute, String action, List<Request> requests, String q, String sort, String dir) {
@@ -499,8 +483,8 @@ public class RequestController {
                 Request::getStatus);
     }
 
-    @GetMapping("/backoffice/review/{id}")
-    public String backOfficeReview(@PathVariable("id") int id,
+    @GetMapping({"/review/{id}", "/backoffice/review/{id}"})
+    public String reviewRequest(@PathVariable("id") int id,
                                    @RequestParam(value = "msg", required = false) String msg,
                                    @RequestParam(value = "q", required = false) String q,
                                    @RequestParam(value = "sort", required = false) String sort,
@@ -513,16 +497,12 @@ public class RequestController {
 
         Request request = requestDao.get(id);
         if (request == null) {
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
-        // Default sort by score (afinidad) in descending order
-        if (sort == null || sort.isBlank()) {
-            sort = "score";
-        }
-        if (dir == null || dir.isBlank()) {
-            dir = "desc";
-        }
+        // Esta pantalla muestra candidaturas por afinidad: siempre por puntuación descendente.
+        sort = "score";
+        dir = "desc";
 
         List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
         List<Negotiation> negotiations = negotiationDao.getByRequest(id).stream()
@@ -556,9 +536,10 @@ public class RequestController {
         model.addAttribute("existingPapPatis", existingPapPatis);
         model.addAttribute("proposedPapPatis", proposedPapPatis);
         model.addAttribute("msg", msg);
-        tableViewService.addState(model, "/requests/backoffice/review/" + id, q, sort, dir,
-                tableViewService.options("name", "PAP/PATI", "score", "Puntuación", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle", "id", "ID"));
-        return "request/backoffice-review";
+        model.addAttribute("tableSortLocked", true);
+        tableViewService.addState(model, "/requests/review/" + id, q, sort, dir,
+                tableViewService.options("score", "Puntuación", "name", "PAP/PATI", "pc", "CP", "gender", "Género", "age", "Edad", "detail", "Detalle"));
+        return "request/review";
     }
 
     private List<CandidateProposal> sortedFilteredProposals(List<CandidateProposal> proposals, String q, String sort, String dir) {
@@ -595,8 +576,8 @@ public class RequestController {
                 || "CANCELLED".equals(stateOfApproval);
     }
 
-    @PostMapping("/backoffice/approve")
-    public String backOfficeApprove(@RequestParam("idRequest") int idRequest,
+    @PostMapping({"/review/approve", "/backoffice/approve"})
+    public String reviewApprove(@RequestParam("idRequest") int idRequest,
                                     @RequestParam(value = "selectedPapPatiIds", required = false) List<Integer> selectedPapPatiIds,
                                     HttpSession session,
                                     Model model) {
@@ -605,12 +586,12 @@ public class RequestController {
         }
 
         if (selectedPapPatiIds == null || selectedPapPatiIds.isEmpty()) {
-            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=Debes seleccionar al menos un candidato para poder aprobar la solicitud";
+            return "redirect:/requests/review/" + idRequest + "?msg=Debes seleccionar al menos un candidato para poder aprobar la solicitud";
         }
 
         Request request = requestDao.get(idRequest);
         if (request == null) {
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
         OviUser oviUser = oviUserDao.get(request.getIdOviUser());
@@ -631,7 +612,7 @@ public class RequestController {
         }
 
         if (selectedPapPatis.isEmpty()) {
-            return "redirect:/requests/backoffice/review/" + idRequest + "?msg=No se pudo registrar ningún candidato válido";
+            return "redirect:/requests/review/" + idRequest + "?msg=No se pudo registrar ningún candidato válido";
         }
 
         requestDao.updateStatus(idRequest, "APPROVED");
@@ -641,8 +622,8 @@ public class RequestController {
         return showConfirmation(model, request, oviUser, selectedPapPatis.get(0), email, "acceptance");
     }
 
-    @PostMapping("/backoffice/propose")
-    public String backOfficePropose(@RequestParam("idRequest") int idRequest,
+    @PostMapping({"/review/propose", "/backoffice/propose"})
+    public String reviewPropose(@RequestParam("idRequest") int idRequest,
                                     @RequestParam("selectedPapPatiId") int selectedPapPatiId,
                                     HttpSession session,
                                     RedirectAttributes redirectAttributes) {
@@ -654,17 +635,17 @@ public class RequestController {
         PapPati selectedPapPati = papPatiDao.get(selectedPapPatiId);
         if (request == null || selectedPapPati == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Solicitud o PAP/PATI no encontrado.");
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
         if (!"APPROVED".equals(request.getStatus())) {
             redirectAttributes.addFlashAttribute("errorMessage", "Esta acción solo está disponible para solicitudes aprobadas.");
-            return "redirect:/requests/backoffice/review/" + idRequest;
+            return "redirect:/requests/review/" + idRequest;
         }
 
         if (negotiationDao.existsByRequestAndPapPati(idRequest, selectedPapPatiId)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ese PAP/PATI ya está propuesto para esta solicitud.");
-            return "redirect:/requests/backoffice/review/" + idRequest;
+            return "redirect:/requests/review/" + idRequest;
         }
 
         Negotiation negotiation = new Negotiation();
@@ -673,11 +654,11 @@ public class RequestController {
         negotiation.setIdPapPati(selectedPapPatiId);
         negotiationDao.add(negotiation);
         redirectAttributes.addFlashAttribute("successMessage", "PAP/PATI propuesto correctamente.");
-        return "redirect:/requests/backoffice/review/" + idRequest;
+        return "redirect:/requests/review/" + idRequest;
     }
 
-    @PostMapping("/backoffice/unpropose")
-    public String backOfficeUnpropose(@RequestParam("idNegotiation") int idNegotiation,
+    @PostMapping({"/review/unpropose", "/backoffice/unpropose"})
+    public String reviewUnpropose(@RequestParam("idNegotiation") int idNegotiation,
                                       HttpSession session,
                                       RedirectAttributes redirectAttributes) {
         if (!sessionUserService.isTechnician(session)) {
@@ -687,17 +668,17 @@ public class RequestController {
         Negotiation negotiation = negotiationDao.get(idNegotiation);
         if (negotiation == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Negociación no encontrada.");
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
         int idRequest = negotiation.getIdRequest();
         negotiationDao.delete(idNegotiation);
         redirectAttributes.addFlashAttribute("successMessage", "PAP/PATI despropuesto correctamente.");
-        return "redirect:/requests/backoffice/review/" + idRequest;
+        return "redirect:/requests/review/" + idRequest;
     }
 
-    @PostMapping("/backoffice/negotiation-status")
-    public String backOfficeNegotiationStatus(@RequestParam("idNegotiation") int idNegotiation,
+    @PostMapping({"/review/negotiation-status", "/backoffice/negotiation-status"})
+    public String reviewNegotiationStatus(@RequestParam("idNegotiation") int idNegotiation,
                                               @RequestParam("stateOfApproval") String stateOfApproval,
                                               HttpSession session,
                                               RedirectAttributes redirectAttributes) {
@@ -708,22 +689,22 @@ public class RequestController {
         Negotiation negotiation = negotiationDao.get(idNegotiation);
         if (negotiation == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Negociación no encontrada.");
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
         if (!isValidNegotiationState(stateOfApproval)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Estado de negociación no válido.");
-            return "redirect:/requests/backoffice/review/" + negotiation.getIdRequest();
+            return "redirect:/requests/review/" + negotiation.getIdRequest();
         }
 
         negotiation.setStateOfApproval(stateOfApproval);
         negotiationDao.update(negotiation);
         redirectAttributes.addFlashAttribute("successMessage", "Estado de la negociación actualizado.");
-        return "redirect:/requests/backoffice/review/" + negotiation.getIdRequest();
+        return "redirect:/requests/review/" + negotiation.getIdRequest();
     }
 
-    @PostMapping("/backoffice/reject")
-    public String backOfficeReject(@RequestParam("idRequest") int idRequest,
+    @PostMapping({"/review/reject", "/backoffice/reject"})
+    public String reviewReject(@RequestParam("idRequest") int idRequest,
                                    @RequestParam(value = "reason", required = false) String reason,
                                    HttpSession session,
                                    Model model) {
@@ -733,7 +714,7 @@ public class RequestController {
 
         Request request = requestDao.get(idRequest);
         if (request == null) {
-            return "redirect:/requests/backoffice/list";
+            return "redirect:/requests/list";
         }
 
         String rejectionReason = reason != null && !reason.isBlank()
@@ -762,8 +743,8 @@ public class RequestController {
             model.addAttribute("returnUrl", "/requests/frontoffice/track");
             model.addAttribute("returnLabel", "Ver mis solicitudes");
         } else {
-            model.addAttribute("returnUrl", "/requests/backoffice/list");
-            model.addAttribute("returnLabel", "Volver al back-office");
+            model.addAttribute("returnUrl", "/requests/list");
+            model.addAttribute("returnLabel", "Volver al listado");
         }
         return "request/confirmation";
     }
