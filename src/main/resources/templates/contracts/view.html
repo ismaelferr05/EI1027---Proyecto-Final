@@ -70,7 +70,7 @@
         </p>
 
         <div class="decision-actions">
-            <a th:if="${isTechnician}" th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="btn btn-outline-secondary">
+            <a th:if="${isTechnician or isOviUser}" th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="btn btn-outline-secondary">
                 <i class="bi bi-pencil-square"></i> Editar contrato
             </a>
             <a th:href="@{/contracts/document/{id}(id=${contract.idContract})}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">

@@ -30,6 +30,9 @@
                     <a th:href="@{/contracts/view/{id}(id=${contract.idContract})}" class="action-btn btn-view">
                         <i class="bi bi-arrow-right"></i> Gestionar
                     </a>
+                    <a th:if="${isTechnician}" th:href="@{/contracts/edit/{id}(id=${contract.idContract})}" class="action-btn btn-view">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
                 </td>
                 <td th:text="${req != null ? @nameMaps.oviUserNameById(req.idOviUser) : '—'}">Usuario OVI</td>
                 <td th:text="${neg != null ? @nameMaps.papPatiNameById(neg.idPapPati) : '—'}">PAP/PATI</td>

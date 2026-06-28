@@ -9,13 +9,19 @@
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
     <div class="alert alert-success">
-        Acción aplicada sobre <strong th:text="${entityName}"></strong>.
+        Acción aplicada sobre <strong th:text="${entityName}"></strong>
+        <span th:if="${entityType != null}" th:text="|(${entityType})|"></span>.
     </div>
     <div class="bg-white p-4 rounded shadow-sm">
         <h2>Email generado</h2>
         <p><strong>Para:</strong> <span th:text="${email.to}"></span></p>
         <p><strong>Asunto:</strong> <span th:text="${email.subject}"></span></p>
         <pre th:text="${email.body}"></pre>
+    </div>
+    <div class="mt-4">
+        <a th:href="${backUrl}" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i> <span th:text="${backLabel}"></span>
+        </a>
     </div>
 </main>
 </body>

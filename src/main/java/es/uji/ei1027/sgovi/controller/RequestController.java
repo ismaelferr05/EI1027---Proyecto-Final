@@ -516,6 +516,14 @@ public class RequestController {
             return "redirect:/requests/backoffice/list";
         }
 
+        // Default sort by score (afinidad) in descending order
+        if (sort == null || sort.isBlank()) {
+            sort = "score";
+        }
+        if (dir == null || dir.isBlank()) {
+            dir = "desc";
+        }
+
         List<CandidateProposal> proposals = requestProposalService.buildProposals(request);
         List<Negotiation> negotiations = negotiationDao.getByRequest(id).stream()
                 .sorted(Comparator.comparing(Negotiation::getIdNegotiation).reversed())
@@ -750,6 +758,13 @@ public class RequestController {
         model.addAttribute("selectedPapPati", selectedPapPati);
         model.addAttribute("email", email);
         model.addAttribute("action", action);
+        if ("creation".equals(action)) {
+            model.addAttribute("returnUrl", "/requests/frontoffice/track");
+            model.addAttribute("returnLabel", "Ver mis solicitudes");
+        } else {
+            model.addAttribute("returnUrl", "/requests/backoffice/list");
+            model.addAttribute("returnLabel", "Volver al back-office");
+        }
         return "request/confirmation";
     }
 

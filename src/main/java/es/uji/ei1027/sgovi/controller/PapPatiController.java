@@ -80,8 +80,7 @@ public class PapPatiController {
     public String addForm(Model model) {
         PapPati papPati = new PapPati();
         papPati.setStatus("PENDING");
-        papPati.setAvailabilityStartDate(LocalDate.of(2026, 1, 1));
-        papPati.setAvailabilityEndDate(LocalDate.of(2026, 12, 31));
+        applyDefaultAvailabilityDates(papPati);
         model.addAttribute("papPati", papPati);
         return "pappati/add";
     }
@@ -90,8 +89,7 @@ public class PapPatiController {
     public String registerForm(Model model) {
         PapPati papPati = new PapPati();
         papPati.setStatus("PENDING");
-        papPati.setAvailabilityStartDate(LocalDate.of(2026, 1, 1));
-        papPati.setAvailabilityEndDate(LocalDate.of(2026, 12, 31));
+        applyDefaultAvailabilityDates(papPati);
         model.addAttribute("papPati", papPati);
         return "pappati/register";
     }
@@ -142,7 +140,9 @@ public class PapPatiController {
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable int id, Model model) {
-        model.addAttribute("papPati", papPatiDao.get(id));
+        PapPati papPati = papPatiDao.get(id);
+        applyDefaultAvailabilityDates(papPati);
+        model.addAttribute("papPati", papPati);
         return "pappati/edit";
     }
 
@@ -153,6 +153,7 @@ public class PapPatiController {
             return "redirect:/login";
         }
         current.setPassword("");
+        applyDefaultAvailabilityDates(current);
         model.addAttribute("papPati", current);
         model.addAttribute("selfProfile", true);
         return "pappati/edit";
@@ -236,6 +237,19 @@ public class PapPatiController {
                 tableViewService.contractStatusOptions());
     }
 
+    private void applyDefaultAvailabilityDates(PapPati papPati) {
+        if (papPati == null) {
+            return;
+        }
+        int currentYear = LocalDate.now().getYear();
+        if (papPati.getAvailabilityStartDate() == null) {
+            papPati.setAvailabilityStartDate(LocalDate.of(currentYear, 1, 1));
+        }
+        if (papPati.getAvailabilityEndDate() == null) {
+            papPati.setAvailabilityEndDate(LocalDate.of(currentYear, 12, 31));
+        }
+    }
+
     @PostMapping("/accept")
     public String accept(@RequestParam("idPapPati") int idPapPati, Model model) {
         PapPati papPati = papPatiDao.get(idPapPati);
@@ -243,6 +257,9 @@ public class PapPatiController {
         EmailContent email = emailService.sendUserStatusEmail(papPati.getEmail(), papPati.getName() + " " + papPati.getLastName(), "ACCEPTED", null);
         model.addAttribute("email", email);
         model.addAttribute("entityName", papPati.getName() + " " + papPati.getLastName());
+        model.addAttribute("entityType", "PAP/PATI");
+        model.addAttribute("backUrl", "/pap-patis/list");
+        model.addAttribute("backLabel", "Volver al listado de PAP/PATI");
         model.addAttribute("action", "acceptance");
         return "user-status-confirmation";
     }
@@ -254,6 +271,9 @@ public class PapPatiController {
         EmailContent email = emailService.sendUserStatusEmail(papPati.getEmail(), papPati.getName() + " " + papPati.getLastName(), "REJECTED", reason);
         model.addAttribute("email", email);
         model.addAttribute("entityName", papPati.getName() + " " + papPati.getLastName());
+        model.addAttribute("entityType", "PAP/PATI");
+        model.addAttribute("backUrl", "/pap-patis/list");
+        model.addAttribute("backLabel", "Volver al listado de PAP/PATI");
         model.addAttribute("action", "rejection");
         return "user-status-confirmation";
     }

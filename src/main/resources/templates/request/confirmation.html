@@ -110,20 +110,8 @@
 
     <div class="confirmation-card">
         <div class="action-buttons">
-            <a href="/requests/frontoffice/track" class="btn btn-outline-secondary" th:if="${action == 'creation'}">
-                <i class="bi bi-search"></i> Ver mis solicitudes
-            </a>
-            <a href="/requests/backoffice/list" class="btn btn-outline-secondary" th:if="${action == 'acceptance' or action == 'rejection'}">
-                <i class="bi bi-arrow-left"></i> Volver al back-office
-            </a>
-            <a href="/requests/list" class="btn btn-outline-secondary">
-                <i class="bi bi-list"></i> Ver listado general
-            </a>
-            <a href="/requests/list" class="btn btn-primary" th:if="${isTechnician}">
-                <i class="bi bi-inbox"></i> Solicitudes
-            </a>
-            <a href="/requests/frontoffice/track" class="btn btn-primary" th:if="${isOviUser}">
-                <i class="bi bi-search"></i> Mis solicitudes
+            <a th:href="${returnUrl}" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> <span th:text="${returnLabel}"></span>
             </a>
         </div>
     </div>

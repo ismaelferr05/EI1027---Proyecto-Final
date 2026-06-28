@@ -177,7 +177,7 @@ public class OviUserController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String updateProfile(@ModelAttribute("oviUser") OviUser oviUser, BindingResult bindingResult, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         OviUser current = sessionUserService.getCurrentOviUser(session);
         if (current == null || current.getIdOviUser() != oviUser.getIdOviUser()) {
             return "redirect:/dashboard";
@@ -193,6 +193,7 @@ public class OviUserController {
         OviUserValidator oviUserValidator = new OviUserValidator();
         oviUserValidator.validate(oviUser, bindingResult);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("selfProfile", true);
             return "oviuser/edit";
         }
         oviUserDao.update(oviUser);
@@ -240,6 +241,9 @@ public class OviUserController {
         EmailContent email = emailService.sendUserStatusEmail(user.getEmail(), user.getName() + " " + user.getLastName(), "ACCEPTED", null);
         model.addAttribute("email", email);
         model.addAttribute("entityName", user.getName() + " " + user.getLastName());
+        model.addAttribute("entityType", "usuario OVI");
+        model.addAttribute("backUrl", "/ovi-users/list");
+        model.addAttribute("backLabel", "Volver al listado de usuarios");
         model.addAttribute("action", "acceptance");
         return "user-status-confirmation";
     }
@@ -251,6 +255,9 @@ public class OviUserController {
         EmailContent email = emailService.sendUserStatusEmail(user.getEmail(), user.getName() + " " + user.getLastName(), "REJECTED", reason);
         model.addAttribute("email", email);
         model.addAttribute("entityName", user.getName() + " " + user.getLastName());
+        model.addAttribute("entityType", "usuario OVI");
+        model.addAttribute("backUrl", "/ovi-users/list");
+        model.addAttribute("backLabel", "Volver al listado de usuarios");
         model.addAttribute("action", "rejection");
         return "user-status-confirmation";
     }
