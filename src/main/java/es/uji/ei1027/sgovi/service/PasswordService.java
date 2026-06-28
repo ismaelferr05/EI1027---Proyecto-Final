@@ -5,7 +5,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * Servicio para encapsular el encriptado/chequeo de contraseñas usando Jasypt BasicPasswordEncryptor
+ * Servicio para encapsular el encriptado y la verificación de contraseñas con BCrypt.
+ * Mantiene compatibilidad con hashes antiguos generados con Jasypt.
  */
 @Service
 public class PasswordService {
@@ -23,13 +24,9 @@ public class PasswordService {
 			return encryptor.matches(plainPassword, encrypted);
 		}
 		try {
-			if (legacyEncryptor.checkPassword(plainPassword, encrypted)) {
-				return true;
-			}
+			return legacyEncryptor.checkPassword(plainPassword, encrypted);
 		} catch (RuntimeException ignored) {
-			// Compatible con contraseñas antiguas guardadas en texto plano o hashes inválidos.
+			return false;
 		}
-		return plainPassword.equals(encrypted);
 	}
 }
-

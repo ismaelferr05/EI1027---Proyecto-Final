@@ -15,7 +15,7 @@ INSERT INTO Trainer (trainer_id, email, name, lastName, occupation, phone, addre
     (3, 'david.serra@trainer.com',   'David',  'Serra',  'Educador social','634567890', 'Plaza Mayor 3, Alicante');
 
 INSERT INTO Technician (technician_id, email, password, name, lastName) VALUES
-    (1, 'tecnico1@gmail.com', '1tecnico123', 'Técnico', 'Principal');
+    (1, 'tecnico1@gmail.com', '$2y$10$/QEXqPEUd.lmHOO3sOSN8Oo5OV5bTOxwFMFZQJy0OkAkhjm3E7zOe', 'Técnico', 'Principal');
 
 INSERT INTO Activity (activity_id, name, date, duration, location, category, description, trainer_id) VALUES
     (1, 'Taller de autonomía personal', '2026-05-10', 120, 'Valencia',  'Taller',    'Técnicas para la vida independiente', 1),
@@ -26,18 +26,18 @@ INSERT INTO Activity (activity_id, name, date, duration, location, category, des
     (6, 'Primeros auxilios básicos',   '2026-09-10', 120, 'Alicante',  'Formación', 'Emergencias domésticas', 3);
 
 INSERT INTO OviUser (oviuser_id, name, lastName, email, phone, password, province, town, pc, age, gender, status, rejectionReason, lopdConsent) VALUES
-    (1, 'Ana',    'Martínez', 'ana.martinez@oviuser.com',  '611111111', 'password1', 'Valencia', 'Valencia', '46001', 30, 'F', 'ACCEPTED', NULL, true),
-    (2, 'Pedro',  'Sánchez',  'pedro.sanchez@oviuser.com', '622222222', 'password2', 'Castellón','Castellón','12001', 25, 'M', 'PENDING',  NULL, true),
-    (3, 'Laura',  'Gómez',    'laura.gomez@oviuser.com',   '633333333', 'password3', 'Alicante', 'Alicante', '03001', 40, 'F', 'ACCEPTED', NULL, true),
-    (4, 'Carmen', 'Ruiz',     'carmen.ruiz@oviuser.com',   '644444441', 'password4', 'Valencia', 'Valencia', '46003', 55, 'F', 'REJECTED', 'Documentación incompleta.', true),
-    (5, 'Miguel', 'Torres',   'miguel.torres@oviuser.com', '655555552', 'password5', 'Valencia', 'Valencia', '46004', 45, 'M', 'ACCEPTED', NULL, true);
+    (1, 'Ana',    'Martínez', 'ana.martinez@oviuser.com',  '611111111', '$2y$10$SqitjOsz169iEt2zyvKsfOCUk3vuGMEnOgJGIYV/c7X5A9EM2Uh86', 'Valencia', 'Valencia', '46001', 30, 'F', 'ACCEPTED', NULL, true),
+    (2, 'Pedro',  'Sánchez',  'pedro.sanchez@oviuser.com', '622222222', '$2y$10$Ou2W7m09Ld06UNgbM.3jyuQNevfPbm2i0blHVpEFz1/Ir8952hftK', 'Castellón','Castellón','12001', 25, 'M', 'PENDING',  NULL, true),
+    (3, 'Laura',  'Gómez',    'laura.gomez@oviuser.com',   '633333333', '$2y$10$Fa.m8FZ9HhsAB46j88TK.OMtGvav5pQnacsUIzdNb2vvlQOguECBq', 'Alicante', 'Alicante', '03001', 40, 'F', 'ACCEPTED', NULL, true),
+    (4, 'Carmen', 'Ruiz',     'carmen.ruiz@oviuser.com',   '644444441', '$2y$10$p7K85lItu5mezGbibgYc8eI0pJm/CzJYNEbvnBoEoR8y3cTdu3Kpi', 'Valencia', 'Valencia', '46003', 55, 'F', 'REJECTED', 'Documentación incompleta.', true),
+    (5, 'Miguel', 'Torres',   'miguel.torres@oviuser.com', '655555552', '$2y$10$J7ftDawGHNhU/pktIjJX3OGTyEDx2Xn/AUrlEGHvX1ozsF1m8yfLm', 'Valencia', 'Valencia', '46004', 45, 'M', 'ACCEPTED', NULL, true);
 
 INSERT INTO PapPati (pappati_id, name, lastName, email, phone, password, province, town, pc, age, gender, cvUrl, training, experience, experienceType, availabilityStartDate, availabilityEndDate, status, rejectionReason) VALUES
-    (1, 'Jordi', 'Puig',    'jordi.puig@pappati.com',    '644444444', 'password1', 'Valencia',  'Valencia',  '46002', 35, 'M', 'http://cv.sgovi.es/jordi', 'Grado en Trabajo Social',   '3', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
-    (2, 'Marta', 'Vidal',   'marta.vidal@pappati.com',   '655555555', 'password2', 'Castellón', 'Castellón', '12002', 28, 'F', 'http://cv.sgovi.es/marta', 'FP Auxiliar Enfermería',    '2', 'Formal', '2026-01-01', '2026-06-30', 'ACCEPTED', NULL),
-    (3, 'Elena', 'Costa',   'elena.costa@pappati.com',   '677777777', 'password4', 'Valencia',  'Valencia',  '46001', 32, 'F', 'http://cv.sgovi.es/elena', 'Grado en Educación Social', '4', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
-    (4, 'Pablo', 'Navarro', 'pablo.navarro@pappati.com', '688888888', 'password5', 'Valencia',  'Valencia',  '46005', 38, 'M', 'http://cv.sgovi.es/pablo', 'Técnico en Cuidados Aux.',  '5', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
-    (5, 'Tomàs', 'Ferrer',  'tomas.ferrer@pappati.com',  '666666666', 'password3', 'Alicante',  'Alicante',  '03002', 42, 'M', NULL,                       NULL,                        NULL, NULL,     '2026-01-01', '2026-12-31', 'PENDING',  NULL);
+    (1, 'Jordi', 'Puig',    'jordi.puig@pappati.com',    '644444444', '$2y$10$SqitjOsz169iEt2zyvKsfOCUk3vuGMEnOgJGIYV/c7X5A9EM2Uh86', 'Valencia',  'Valencia',  '46002', 35, 'M', 'http://cv.sgovi.es/jordi', 'Grado en Trabajo Social',   '3', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (2, 'Marta', 'Vidal',   'marta.vidal@pappati.com',   '655555555', '$2y$10$Ou2W7m09Ld06UNgbM.3jyuQNevfPbm2i0blHVpEFz1/Ir8952hftK', 'Castellón', 'Castellón', '12002', 28, 'F', 'http://cv.sgovi.es/marta', 'FP Auxiliar Enfermería',    '2', 'Formal', '2026-01-01', '2026-06-30', 'ACCEPTED', NULL),
+    (3, 'Elena', 'Costa',   'elena.costa@pappati.com',   '677777777', '$2y$10$p7K85lItu5mezGbibgYc8eI0pJm/CzJYNEbvnBoEoR8y3cTdu3Kpi', 'Valencia',  'Valencia',  '46001', 32, 'F', 'http://cv.sgovi.es/elena', 'Grado en Educación Social', '4', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (4, 'Pablo', 'Navarro', 'pablo.navarro@pappati.com', '688888888', '$2y$10$J7ftDawGHNhU/pktIjJX3OGTyEDx2Xn/AUrlEGHvX1ozsF1m8yfLm', 'Valencia',  'Valencia',  '46005', 38, 'M', 'http://cv.sgovi.es/pablo', 'Técnico en Cuidados Aux.',  '5', 'Formal', '2026-01-01', '2026-12-31', 'ACCEPTED', NULL),
+    (5, 'Tomàs', 'Ferrer',  'tomas.ferrer@pappati.com',  '666666666', '$2y$10$Fa.m8FZ9HhsAB46j88TK.OMtGvav5pQnacsUIzdNb2vvlQOguECBq', 'Alicante',  'Alicante',  '03002', 42, 'M', NULL,                       NULL,                        NULL, NULL,     '2026-01-01', '2026-12-31', 'PENDING',  NULL);
 
 -- Solicitud 1: Ana con contrato activo (Jordi).
 -- Solicitud 2: Laura aprobada, chat en curso con Jordi.
