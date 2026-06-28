@@ -9,6 +9,8 @@
     <form th:action="@{/requests/frontoffice/add}" th:object="${request}" method="post">
         <input type="hidden" th:field="*{status}" />
         <input type="hidden" th:field="*{idOviUser}" />
+        <fieldset class="form-fieldset">
+        <legend class="visually-hidden">Datos de la solicitud de asistencia personal</legend>
 
         <!-- Sección: Información Principal -->
         <div class="form-section">
@@ -105,6 +107,7 @@
                 <i class="bi bi-check-circle"></i> Enviar solicitud
             </button>
         </div>
+        </fieldset>
 
     </form>
 </main>

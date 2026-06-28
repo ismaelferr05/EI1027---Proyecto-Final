@@ -10,21 +10,21 @@
     <div th:replace="~{fragments/action-bar :: dashboardBackBar}"></div>
 
     <div class="confirmation-card" th:if="${action == 'creation'}">
-        <div class="alert alert-success mb-0">
+        <div class="alert alert-success mb-0" role="status">
             <strong>Solicitud enviada correctamente.</strong>
             <div>Se ha simulado el correo que recibiría el usuario OVI con la confirmación del alta.</div>
         </div>
     </div>
 
     <div class="confirmation-card" th:if="${action == 'acceptance'}">
-        <div class="alert alert-success mb-0">
+        <div class="alert alert-success mb-0" role="status">
             <strong>Solicitud aceptada correctamente.</strong>
             <div>Se ha simulado el correo que recibiría el usuario OVI con la confirmación y el asistente asignado.</div>
         </div>
     </div>
 
     <div class="confirmation-card" th:if="${action == 'rejection'}">
-        <div class="alert alert-warning mb-0">
+        <div class="alert alert-warning mb-0" role="alert">
             <strong>Solicitud rechazada correctamente.</strong>
             <div>Se ha simulado el correo que recibiría el usuario OVI con la notificación de rechazo.</div>
         </div>

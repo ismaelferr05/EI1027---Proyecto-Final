@@ -22,7 +22,7 @@
     </div>
 
     <div class="panel-card" th:if="${msg != null}">
-        <div class="alert alert-info mb-0" th:text="${msg}"></div>
+        <div class="alert alert-info mb-0" role="status" th:text="${msg}"></div>
     </div>
 
     <div class="panel-card">
@@ -131,8 +131,7 @@
                             </a>
                             <form th:if="${request.status == 'APPROVED'}"
                                   th:action="@{/requests/review/unpropose}"
-                                  method="post"
-                                  onsubmit="return confirm('Desproponer este PAP/PATI eliminará la negociación, mensajes y contrato asociado si existe. ¿Continuar?');">
+                                  method="post">
                                 <input type="hidden" name="idNegotiation" th:value="${negotiation.idNegotiation}" />
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -213,6 +212,8 @@
         <form th:action="@{/requests/review/approve}" method="post">
             <input type="hidden" name="idRequest" th:value="${request.idRequest}" />
             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <fieldset class="form-fieldset">
+            <legend class="visually-hidden">Seleccionar candidatos PAP/PATI para aprobar la solicitud</legend>
 
             <div class="table-responsive sgovi-table-shell proposal-table-shell mb-3">
                 <table class="table table-hover align-middle">
@@ -282,6 +283,7 @@
                     <i class="bi bi-check2-circle"></i> Aprobar con candidatos seleccionados
                 </button>
             </div>
+            </fieldset>
         </form>
 
         <form th:action="@{/requests/reject}" method="post" class="reject-panel mt-4">

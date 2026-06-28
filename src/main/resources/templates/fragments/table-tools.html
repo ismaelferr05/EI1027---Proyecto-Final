@@ -3,6 +3,8 @@
 <body>
 <section th:fragment="tableTools" class="table-tools mb-3">
 <form class="table-tools-form" method="get" th:action="${tableAction}">
+    <fieldset class="form-fieldset">
+    <legend class="visually-hidden">Filtros y ordenación de tabla</legend>
     <input type="hidden" name="page" value="1">
     <div class="row g-2 align-items-end">
         <div class="col-md-3">
@@ -48,6 +50,7 @@
             <a th:href="${tableAction}" class="btn btn-outline-secondary">Limpiar</a>
         </div>
     </div>
+    </fieldset>
 </form>
 </section>
 
